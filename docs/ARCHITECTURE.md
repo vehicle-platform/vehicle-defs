@@ -19,7 +19,7 @@ If this file conflicts with the raw document, **this file + DECISIONS.md** gover
 
 | Unit | Chip | Memory (RAM / flash) | CAN peripheral | Repo | Role |
 |---|---|---|---|---|---|
-| Domain controller | STM32H755, **Cortex-M7** core (NUCLEO-H755ZI-Q, D-072) | ~1 MB / 2 MB, shared with the M4 (M4: flash bank 2 + D2 SRAM) | FDCAN x2 (both on the M7) | `vehicle-rt-core` | CAN gateway, single vehicle-bus tester, logging, fusion, UDS/ISO-TP, bootloader, XCP, EKF (Layer 2), context, dyno, anomaly safety net, derived signals (D-070), power management and park mode (from io-node, D-072) |
+| Domain controller | STM32H745/H755, **Cortex-M7** core (prototype board NUCLEO-H745ZI-Q, D-072, D-094) | ~1 MB / 2 MB, shared with the M4 (M4: flash bank 2 + D2 SRAM) | FDCAN x2 (both on the M7) | `vehicle-rt-core` | CAN gateway, single vehicle-bus tester, logging, fusion, UDS/ISO-TP, bootloader, XCP, EKF (Layer 2), context, dyno, anomaly safety net, derived signals (D-070), power management and park mode (from io-node, D-072) |
 | Safety partition | same STM32H755, **Cortex-M4** core (D-072) | D2 SRAM / flash bank 2 | none (mailbox to the M7, E2E) | `vehicle-safety-node` | Lean-angle safety decision (Layer 1, closed form, D-041), own fallback IMU (D-042), blind-spot decision with 2 radars, immobilizer, LED ring and mirror LEDs (Q-026 resolved) |
 | ~~Zone/I/O~~ | ~~STM32G0~~ — retired by D-072 | — | — | `vehicle-io-node` (no code; archive pending) | functions moved to the M4 (blind spot, immobilizer) and the M7 (power, park mode) |
 | Connectivity, bike | ESP32-S3 (WROOM module) | 512 KB (+PSRAM) | TWAI x1 (classic) | `vehicle-connectivity-node` | Temporary vehicle-bus tester until rt-core (D-023); then platform bus ↔ BLE bridge to the phone and the helmet, Wi-Fi |
@@ -169,7 +169,7 @@ Requirement–test traceability (Ç8): requirement IDs (`REQ-<DOMAIN>-NNN`) appe
 1. `vehicle-defs` skeleton + codegen + `platform.dbc` draft → `v0.1.0`
 2. `vehicle-hil-bench` host (Python, hardware-free) + Renode
 3. `vehicle-connectivity-node` (migration of existing code)
-4. `vehicle-rt-core` (once the NUCLEO-H755ZI-Q arrives, D-072)
+4. `vehicle-rt-core` (once the NUCLEO-H745ZI-Q arrives, D-072, D-094)
 5. `vehicle-server` → 6. `vehicle-ml` → 7. `vehicle-safety-node` (the M4 image, D-072) → ~~8. `vehicle-io-node`~~ (retired, D-072) → 9. `vehicle-linux-node` + `vehicle-mcp` → 10. `vehicle-mobile` → 11. `vehicle-analyzer` (D-081; started early by an external tool, 2026-10-20)
 
 The thesis core (Ç1-Ç8) is covered by steps 1-4 above, plus HIL, in this order.

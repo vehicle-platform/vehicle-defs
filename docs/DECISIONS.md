@@ -766,6 +766,13 @@ Both modes share the scenario format and the evaluation/report. Before hardware 
 - Not chosen: a header written by hand in rt-core and copied into safety-node (two copies drift, and the safety image would depend on rt-core's source tree); a design note first (the user preferred the generated layout now; review happens in the PR).
 - Why: the mailbox is the M4's only data path, so its layout is a platform contract like the DBC; generating it from the same source keeps one pinned definition for both images, and the layout ID turns a pin mismatch into a detected loss instead of silent misreads.
 
+**D-094 — The prototype board is the NUCLEO-H745ZI-Q (amends D-072 item 1)** (2026-11-02, user bought it because the H755 board was not in local stock; Claude checked the difference after a Gemini research log claimed none; D-072, D-093, invariant 8)
+1. **Board:** the domain controller + safety partition prototype is a **NUCLEO-H745ZI-Q** (STM32H745ZIT6), not the NUCLEO-H755ZI-Q. Cortex-M7 480 MHz + Cortex-M4 240 MHz, 2 MB flash in two banks, ~1 MB RAM, SRAM4 at 0x3800_0000 and FDCAN x2 are the same, so D-072 (M7 = rt-core, M4 = safety partition, isolation, MPU, mailbox) and D-093 (mailbox region, HSEM) apply unchanged.
+2. **What the H745 lacks:** the STM32H755's CRYP and HASH hardware accelerators (and the crypto-related secure-access features). No recorded decision relies on them. From now on nothing may assume hardware crypto: bootloader/OTA image checks and any signing use software implementations sized within the existing flash/RAM budgets; a later product board may still be an H755.
+3. **Names:** "H755" in docs, file names (`mailbox/h755_mailbox.yaml`) and code means the dual-core STM32H7x5 part family; no rename. The CubeMX pin plan (roadmap S2) and rt-core/safety-node `cubemx/` target the **STM32H745ZIT6**. ARCHITECTURE names the board.
+- Not chosen: waiting for an H755 board (blocks H2, flashing, Renode and FDCAN work for an unneeded feature); renaming every "H755" reference (churn without a functional change).
+- Why: same cores, memory map and peripherals the platform uses; only unused crypto accelerators are missing.
+
 ## Open questions (awaiting decision)
 
 | ID | Question | When to resolve | Note |
