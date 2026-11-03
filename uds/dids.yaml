@@ -14,8 +14,9 @@
 #   rt-core 0xFDxx blocks: 0xFD00-0xFD0F node/health, 0xFD10-0xFD3F vehicle samples
 #   (room for the 40 polled DIDs, E-19), 0xFD40-0xFD5F reserved for the D-070 class-B
 #   ride-summary records: assigned in derived/cl250_derived.yaml (ride_summary_records,
-#   codegen keeps them inside this block and off every DID here); their entries and
-#   byte layout come here with the rt-core module that fills them.
+#   codegen keeps them inside this block and off every DID here). The ride-summary
+#   records are generated from derived/cl250_derived.yaml (D-098), never typed here;
+#   their fields never saturate (all-ones = NOT_AVAILABLE, *_MAX = largest valid raw value).
 #   bitfield fields are {byte, mask}; record fields are {byte, mask} or {byte, length}
 #   (unsigned big-endian, 1/2/4 bytes, saturating at their maximum, never wrapping), and
 #   every byte of a record belongs to a field.
