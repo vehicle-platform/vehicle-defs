@@ -7,7 +7,17 @@ import shutil
 import sys
 from pathlib import Path
 
-from . import config, gen_ble, gen_c, gen_catalog, gen_mailbox, gen_python, gen_uds, gen_vss
+from . import (
+    config,
+    gen_ble,
+    gen_c,
+    gen_catalog,
+    gen_mailbox,
+    gen_python,
+    gen_uds,
+    gen_vss,
+    ride_records,
+)
 from .dbc_checks import check_cl250_dbc, check_platform_dbc, load_dbc
 from .derived import check_derived
 from .yaml_checks import (
@@ -48,7 +58,7 @@ def run_checks(with_vss: bool = True) -> list[str]:
     if not ble_errors:
         errors += gen_ble.check_vehicle_signal_table(ble, load_yaml(config.VEHICLE_YAML))
     if not (const_errors or ble_errors or iso_errors):
-        errors += check_derived(
+        derived_errors = check_derived(
             load_yaml(config.DERIVED_YAML),
             load_yaml(config.VEHICLE_YAML),
             load_yaml(config.VEHICLE_CONSTANTS_YAML),
@@ -56,6 +66,14 @@ def run_checks(with_vss: bool = True) -> list[str]:
             platform_db,
             load_yaml(config.DIDS_YAML),
         )
+        errors += derived_errors
+        if not (derived_errors or iso_errors):
+            errors += ride_records.check_ride_records(
+                load_yaml(config.DERIVED_YAML),
+                load_yaml(config.DIDS_YAML),
+                iso,
+                load_yaml(config.VEHICLE_YAML),
+            )
     errors += gen_mailbox.check_mailbox(load_yaml(config.MAILBOX_YAML), platform_db)
     errors += gen_catalog.check_catalog(
         load_yaml(config.OBD_CATALOG_YAML), load_yaml(config.VEHICLE_YAML)
@@ -78,6 +96,7 @@ def render_all(with_vss: bool = True) -> dict[Path, str]:
     iso = load_yaml(config.ISO14229_YAML)
     dids = load_yaml(config.DIDS_YAML)
     mailbox = load_yaml(config.MAILBOX_YAML)
+    dids = ride_records.with_ride_records(dids, derived)  # D-098, after the explicit DIDs
     servers = gen_uds.servers(dids)
     files: dict[Path, str] = {}
     for target in config.C_TARGETS:

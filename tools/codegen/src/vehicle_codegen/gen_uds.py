@@ -19,7 +19,8 @@ VEHICLE_SAMPLE_HEADER_LEN = 3  # [state][age_ms hi][age_ms lo]
 VEHICLE_SAMPLE_STATES = {"NONE": 0, "VALID": 1, "STALE": 2}
 VEHICLE_SAMPLE_AGE_MAX_MS = 0xFFFF
 NO_VEHICLE_IDX = 0xFF
-FIELD_KEYS = {"byte", "mask", "length", "name", "description"}
+RIDE_RECORD_LAYOUT_VERSION = 1  # header byte 0 of every generated ride record (D-098)
+FIELD_KEYS = {"byte", "mask", "length", "name", "description", "ride_signal"}  # see ride_records
 _NAME_RE = re.compile(r"^[A-Z][A-Z0-9_]*$")
 ISOTP_MAX_LEN = 4095  # 12-bit FF_DL, classic CAN
 TRANSPORT_KEYS = ("frame_dlc", "padding_byte", "block_size", "st_min_ms", "n_bs_ms", "n_cr_ms")
@@ -57,6 +58,12 @@ _J2012_LETTER = {"P": 0, "C": 1, "B": 2, "U": 3}
 
 def _hex(value: int, width: int) -> str:
     return f"0x{value:0{width}X}u"
+
+
+def _c_float(value: float) -> str:
+    """A C float literal (`f` suffix) that reads back as the same float32."""
+    text = repr(float(value))
+    return text + "f"
 
 
 def j2012_to_dtc(code: str) -> int | None:
@@ -494,6 +501,10 @@ def generate_server_c(node: str, content: dict[str, Any], data: dict[str, Any],
     dtcs = content.get("dtcs") or []
     tables = iso_tables(iso)
     uses_vehicle = any(d["encoding"] == "vehicle_sample" for d in dids)
+    ride_fields = [
+        (d, f) for d in dids if d.get("ride_record")
+        for f in d["fields"] if "ride_signal" in f
+    ]  # fmt: skip
 
     def define(name: str, value: str, comment: str = "") -> str:
         tail = f" /* {comment} */" if comment else ""
@@ -577,15 +588,30 @@ def generate_server_c(node: str, content: dict[str, Any], data: dict[str, Any],
             h.append(define(f"{base}_BYTE", f"{f['byte']}u"))
             if "mask" in f:
                 h.append(define(f"{base}_MASK", _hex(f["mask"], 2), f["description"].rstrip(".")))
+            elif "ride_signal" in f:
+                rs = f["ride_signal"]
+                width = 2 * f["length"]
+                h.append(define(f"{base}_LENGTH", f"{f['length']}u", f["description"].rstrip(".")))
+                h.append(
+                    define(f"{base}_MAX", _hex(rs["raw_max"], width), "largest valid raw value")
+                )
+                h.append(define(f"{base}_NA", _hex(field_max(f), width), "NOT_AVAILABLE (D-098)"))
+                h.append(define(f"{base}_RANGE_MIN", _c_float(rs["range_min"]), rs["signal"]))
+                h.append(define(f"{base}_RESOLUTION", _c_float(rs["resolution"])))
             else:
                 h.append(define(f"{base}_LENGTH", f"{f['length']}u", f["description"].rstrip(".")))
                 # An enum field (one with `values`) is a state, not a counter: no saturation note.
                 is_enum = f["name"] in (d.get("values") or {})
+                note = (
+                    "header field, exempt from NOT_AVAILABLE (D-098)"
+                    if d.get("ride_record")
+                    else "counters saturate here"
+                )
                 h.append(
                     define(
                         f"{base}_MAX",
                         _hex(field_max(f), 2 * f["length"]),
-                        "" if is_enum else "counters saturate here",
+                        "" if is_enum else note,
                     )
                 )
         for fname, values in (d.get("values") or {}).items():
@@ -599,6 +625,29 @@ def generate_server_c(node: str, content: dict[str, Any], data: dict[str, Any],
             h.append(define(f"VEHICLE_SAMPLE_STATE_{name}", f"{v}u"))
         h.append(define("VEHICLE_SAMPLE_AGE_MAX_MS", _hex(VEHICLE_SAMPLE_AGE_MAX_MS, 4)))
         h.append("")
+    if ride_fields:
+        h += [
+            "/* Ride-summary records (D-098), generated from derived/cl250_derived.yaml. A field is",
+            " * raw = round-half-even((value - RANGE_MIN) / RESOLUTION), unsigned big-endian. *_MAX is",
+            " * the largest VALID raw value, *_NA (all ones) means NOT_AVAILABLE: these fields never",
+            " * saturate. The header (LAYOUT_VERSION, RIDE_COUNTER, flags) is exempt from *_NA. */",
+            define("RIDE_RECORD_LAYOUT_VERSION", f"{RIDE_RECORD_LAYOUT_VERSION}u"),
+            define("RIDE_FIELD_COUNT", f"{len(ride_fields)}u", "rows of platform_uds_ride_fields[]"),
+            "",
+            "typedef struct {",
+            "    uint8_t did_idx;     /* platform_uds_did_index_t of the record */",
+            "    uint8_t byte;        /* first byte of the field in the record */",
+            "    uint8_t length;      /* 1, 2 or 4 bytes, big-endian */",
+            "    uint16_t signal;     /* VEHICLE_CL250_DERIVED_<SIGNAL> index */",
+            "    float range_min;",
+            "    float resolution;",
+            "    uint32_t raw_max;    /* largest valid raw value */",
+            "    uint32_t na;         /* NOT_AVAILABLE: all ones of the width */",
+            "} platform_uds_ride_field_t;",
+            "",
+            f"extern const platform_uds_ride_field_t platform_uds_ride_fields[{p}_RIDE_FIELD_COUNT];",
+            "",
+        ]  # fmt: skip
     h.append(define("DTC_COUNT", f"{len(dtcs)}u"))
     for t in dtcs:
         h.append(define(f"DTC_{t['name']}", _hex(t["dtc"], 6), t["code"]))
@@ -639,6 +688,8 @@ def generate_server_c(node: str, content: dict[str, Any], data: dict[str, Any],
     c = [BANNER.format(source="uds/dids.yaml"), '#include "platform_uds.h"']
     if uses_vehicle:
         c.append('#include "vehicle_cl250.h"')
+    if ride_fields:
+        c.append('#include "vehicle_cl250_derived.h"')
     c += ["", f"const platform_uds_did_t platform_uds_dids[{p}_DID_COUNT] = {{"]
     for d in dids:
         enc = f"{p}_ENC_{d['encoding'].upper()}"
@@ -651,6 +702,19 @@ def generate_server_c(node: str, content: dict[str, Any], data: dict[str, Any],
             f"    {{ {p}_DID_{d['name']}, {did_length(d, vehicle)}u, (uint8_t){enc}, {vidx} }},"
         )
     c += ["};", ""]
+    if ride_fields:
+        c.append(
+            f"const platform_uds_ride_field_t platform_uds_ride_fields[{p}_RIDE_FIELD_COUNT] = {{"
+        )
+        for d, f in ride_fields:
+            base = f"{p}_{d['name']}_{f['name']}"
+            sig = f["ride_signal"]["signal"].upper()
+            c.append(
+                f"    {{ (uint8_t){p}_IDX_{d['name']}, {base}_BYTE, {base}_LENGTH, "
+                f"VEHICLE_CL250_DERIVED_{sig}, {base}_RANGE_MIN, {base}_RESOLUTION, "
+                f"{base}_MAX, {base}_NA }},"
+            )
+        c += ["};", ""]
     if dtcs:
         c.append(f"const uint32_t platform_uds_dtcs[{p}_DTC_COUNT] = {{")
         c += [f"    {p}_DTC_{t['name']}," for t in dtcs]
@@ -786,4 +850,54 @@ def generate_uds_py(iso: dict[str, Any], data: dict[str, Any], vehicle: dict[str
             lines.append(f'            "{t["name"]}": (0x{t["dtc"]:06X}, "{t["code"]}"),')
         lines += ["        },", "    },"]
     lines += ["}", ""]
+    lines += _ride_records_py(data)
     return "\n".join(lines)
+
+
+def _ride_records_py(data: dict[str, Any]) -> list[str]:
+    """Data-only layout of the generated ride-summary records (D-098); the raw encoder
+    (value -> raw, NOT_AVAILABLE for a missing or out-of-range value) lives in vehicle-server."""
+    lines = [
+        "# Ride-summary records (D-098): record -> did, length, header positions and the signal",
+        "# fields. raw = round((value - range_min) / resolution), unsigned big-endian; `na` (all",
+        "# ones) is NOT_AVAILABLE, `raw_max` the largest valid raw value. Data only.",
+        f"RIDE_RECORD_LAYOUT_VERSION = {RIDE_RECORD_LAYOUT_VERSION}",
+        "RIDE_RECORDS = {",
+    ]
+    for d in data["nodes"]["RT_CORE"].get("dids") or []:
+        if not d.get("ride_record"):
+            continue
+        lines += [
+            f'    "{d["name"]}": {{',
+            f'        "did": 0x{d["did"]:04X},',
+            f'        "length": {d["length"]},',
+            f'        "layout_version": {RIDE_RECORD_LAYOUT_VERSION},',
+            '        "header": {',
+        ]
+        for f in d["fields"]:
+            if "ride_signal" in f:
+                continue
+            if "mask" in f:
+                pos = f'{{"byte": {f["byte"]}, "mask": 0x{f["mask"]:02X}}}'
+            else:
+                pos = f'{{"byte": {f["byte"]}, "length": {f["length"]}}}'
+            lines.append(f'            "{f["name"]}": {pos},')
+        lines += ["        },", '        "fields": {']
+        for f in d["fields"]:
+            rs = f.get("ride_signal")
+            if rs is None:
+                continue
+            lines += [
+                f'            "{f["name"]}": {{',
+                f'                "signal": "{rs["signal"]}",',
+                f'                "byte": {f["byte"]},',
+                f'                "length": {f["length"]},',
+                f'                "range_min": {rs["range_min"]!r},',
+                f'                "resolution": {rs["resolution"]!r},',
+                f'                "raw_max": {rs["raw_max"]},',
+                f'                "na": 0x{field_max(f):0{2 * f["length"]}X},',
+                "            },",
+            ]
+        lines += ["        },", "    },"]
+    lines += ["}", ""]
+    return lines
