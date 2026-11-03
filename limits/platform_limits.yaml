@@ -35,9 +35,12 @@ cornering:
     status: provisional
     rule: >-
       rt-core sends it with FRICTION_COEFF_STATE=DEFAULT when mu is not observable.
-      safety-node: DEFAULT -> max(clamp_min, min(received, default)); INVALID, RESERVED or
-      unknown -> ignore the received value and use the default;
+      safety-node: DEFAULT -> max(clamp_min, min(received, default));
       ESTIMATED/CLAMPED -> clamp the received value to [clamp_min, clamp_max] itself.
+      Not usable (INVALID; the 2-bit state has no other value; a raw value outside the
+      DBC range; E2E not valid; timeout; never received) -> min(the last result of a
+      usable 0x022, default), or the default with none since boot (D-101 item 5: a lost
+      low mu never raises mu_eff).
       The result is always finite and within [clamp_min, clamp_max]. In the D-042
       fallback (own lean estimate) safety-node uses min(that result, this default).
     rationale: Low, wet-asphalt-like value (typical literature range, not measured).
