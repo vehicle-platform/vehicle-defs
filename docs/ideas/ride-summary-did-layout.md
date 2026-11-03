@@ -1,6 +1,6 @@
 # Ride-summary DID layout (C3 part 2b) — proposal, awaiting the user
 
-Status: **proposal**, nothing implemented. 2026-10-26, Claude. Decisions it builds on: D-070 item 4 (class-B ride summaries are rt-core UDS DIDs 0xFD40-0xFD5F), D-087 item 2 (a ride = one D-075 stop epoch), D-055/D-067 (the existing `record` DID encoding). On approval it becomes a decision (D-0xx) and a `/signal-change`.
+Status: **approved 2026-11-03 as D-098** (with the review fixes of checks 3, 4 and 8); D-098 is authoritative where this note differs. 2026-10-26, Claude. Decisions it builds on: D-070 item 4 (class-B ride summaries are rt-core UDS DIDs 0xFD40-0xFD5F), D-087 item 2 (a ride = one D-075 stop epoch), D-055/D-067 (the existing `record` DID encoding). On approval it becomes a decision (D-0xx) and a `/signal-change`.
 
 ## Problem
 
