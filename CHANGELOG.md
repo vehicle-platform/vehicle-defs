@@ -4,9 +4,13 @@ All notable changes to vehicle-defs. Semver (see CLAUDE.md): new message/signal 
 
 ## [Unreleased]
 
+## [0.22.0] — 2026-11-03
+
 MINOR, additive: the class-B ride-summary records become generated rt-core UDS DIDs (D-098). No DBC signal, ID, layout, scale, VSS path, existing DID (explicit `platform_uds_did_index_t` values and 0xFD02/0xFD03 unchanged), poll, BLE, `tester_policy`, D-020 golden copy or frame-gate change.
 
 - **Ride-summary DIDs 0xFD40-0xFD4E except 0xFD42 (D-098, MINOR, additive; QM, platform bus only):** codegen builds each record from `derived/cl250_derived.yaml` (the scalar class-B signals of that `record`, in YAML order; histogram and per-gear signals are left out, and `RIDE_OPERATING_POINTS` 0xFD42 is not served in v1) as an ordinary `record` DID appended after the explicit RT_CORE DIDs: a 4-byte header (`LAYOUT_VERSION` = 1, `RIDE_COUNTER` stop-epoch counter of the closed ride, `RIDE_CLOSED` flag, reserved bits), then big-endian unsigned fields `raw = round_half_even((value - range.min) / resolution)` of 1, 2 or 4 bytes (the smallest width whose all-ones value is above the largest valid raw value). The all-ones value is NOT_AVAILABLE, never a saturated value. Record sizes: 18, 12, 14, 8, 22, 12, 14, 8, 21 bytes (0xFD40, 41, 43-49) and 16, 14, 20, 14, 12 bytes for the windows 0xFD4A-0xFD4E. New in `gen/c/rt_core/platform_uds.h/.c`: the DIDs in the DID table, `DID_*`/`*_LENGTH` defines and index enum; per signal field `<REC>_<F>_BYTE/_LENGTH/_MAX` (largest valid raw value)/`_NA`/`_RANGE_MIN`/`_RESOLUTION`; `PLATFORM_UDS_RIDE_RECORD_LAYOUT_VERSION`; and the const table `platform_uds_ride_fields[PLATFORM_UDS_RIDE_FIELD_COUNT]` (record index, byte, length, derived-signal index, range_min, resolution, raw_max, na) for a generic writer. New in `gen/python/vehicle_defs/uds.py`: the DIDs in `SERVERS` and a data-only `RIDE_RECORDS` layout (no encoder). Consumers: **vehicle-rt-core** (serves them), **vehicle-server** (raw encoder and golden records), **vehicle-analyzer** / **vehicle-hil-bench** later.
+
+- Docs: D-098 (ride-summary DID layout: last closed ride, per-field NOT_AVAILABLE, closed-ride counter in the header, half-even rounding) and D-099 (a 2D fix does not count for `/track` and `ride_distance_gps`; amends D-095 item 2).
 
 ## [0.21.0] — 2026-10-31
 
