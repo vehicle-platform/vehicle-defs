@@ -312,7 +312,7 @@ extern const platform_uds_did_t platform_uds_dids[PLATFORM_UDS_DID_COUNT];
 #define PLATFORM_UDS_RIDE_THERMAL_RESERVED_BYTE (3u)
 #define PLATFORM_UDS_RIDE_THERMAL_RESERVED_MASK (0xFEu) /* Reserved, zero */
 #define PLATFORM_UDS_RIDE_THERMAL_RIDE_WARMUP_TIME_BYTE (4u)
-#define PLATFORM_UDS_RIDE_THERMAL_RIDE_WARMUP_TIME_LENGTH (2u) /* Time from start to operating coolant temperature */
+#define PLATFORM_UDS_RIDE_THERMAL_RIDE_WARMUP_TIME_LENGTH (2u) /* Time from start to operating coolant temperature. Rule (D-103, provisional): from the first ENGINE_SPEED above 0 to the first COOLANT_TEMP >= derived_operating_coolant_degc; invalid if the ride starts warm or never warms up */
 #define PLATFORM_UDS_RIDE_THERMAL_RIDE_WARMUP_TIME_MAX (0x0E10u) /* largest valid raw value */
 #define PLATFORM_UDS_RIDE_THERMAL_RIDE_WARMUP_TIME_NA (0xFFFFu) /* NOT_AVAILABLE (D-098) */
 #define PLATFORM_UDS_RIDE_THERMAL_RIDE_WARMUP_TIME_RANGE_MIN (0.0f) /* ride_warmup_time */
@@ -330,13 +330,13 @@ extern const platform_uds_did_t platform_uds_dids[PLATFORM_UDS_DID_COUNT];
 #define PLATFORM_UDS_RIDE_THERMAL_RIDE_HEAT_SOAK_MAX_RANGE_MIN (-20.0f) /* ride_heat_soak_max */
 #define PLATFORM_UDS_RIDE_THERMAL_RIDE_HEAT_SOAK_MAX_RESOLUTION (0.5f)
 #define PLATFORM_UDS_RIDE_THERMAL_RIDE_THERMAL_CYCLE_COUNT_BYTE (9u)
-#define PLATFORM_UDS_RIDE_THERMAL_RIDE_THERMAL_CYCLE_COUNT_LENGTH (1u) /* Cold-to-hot cycles of the coolant in the ride */
+#define PLATFORM_UDS_RIDE_THERMAL_RIDE_THERMAL_CYCLE_COUNT_LENGTH (1u) /* Cold-to-hot cycles of the coolant in the ride. Rule (D-103, provisional): one cycle = COOLANT_TEMP from below derived_cold_coolant_degc to at least derived_operating_coolant_degc (hysteresis between them) */
 #define PLATFORM_UDS_RIDE_THERMAL_RIDE_THERMAL_CYCLE_COUNT_MAX (0x14u) /* largest valid raw value */
 #define PLATFORM_UDS_RIDE_THERMAL_RIDE_THERMAL_CYCLE_COUNT_NA (0xFFu) /* NOT_AVAILABLE (D-098) */
 #define PLATFORM_UDS_RIDE_THERMAL_RIDE_THERMAL_CYCLE_COUNT_RANGE_MIN (0.0f) /* ride_thermal_cycle_count */
 #define PLATFORM_UDS_RIDE_THERMAL_RIDE_THERMAL_CYCLE_COUNT_RESOLUTION (1.0f)
 #define PLATFORM_UDS_RIDE_THERMAL_RIDE_FAN_ON_TEMPERATURE_BYTE (10u)
-#define PLATFORM_UDS_RIDE_THERMAL_RIDE_FAN_ON_TEMPERATURE_LENGTH (1u) /* Coolant temperature at the voltage step of the cooling fan switching on */
+#define PLATFORM_UDS_RIDE_THERMAL_RIDE_FAN_ON_TEMPERATURE_LENGTH (1u) /* Coolant temperature at the voltage step of the cooling fan switching on. Rule (D-103, provisional): the coolant temperature at the first BATTERY_VOLTAGE drop of at least ride_fan_on_temperature_voltage_step_v between two samples at steady RPM with COOLANT_TEMP above ride_fan_on_temperature_coolant_min_degc */
 #define PLATFORM_UDS_RIDE_THERMAL_RIDE_FAN_ON_TEMPERATURE_MAX (0x8Cu) /* largest valid raw value */
 #define PLATFORM_UDS_RIDE_THERMAL_RIDE_FAN_ON_TEMPERATURE_NA (0xFFu) /* NOT_AVAILABLE (D-098) */
 #define PLATFORM_UDS_RIDE_THERMAL_RIDE_FAN_ON_TEMPERATURE_RANGE_MIN (60.0f) /* ride_fan_on_temperature */
@@ -424,7 +424,7 @@ extern const platform_uds_did_t platform_uds_dids[PLATFORM_UDS_DID_COUNT];
 #define PLATFORM_UDS_RIDE_ENGINE_STRESS_RIDE_IDLE_RPM_DRIFT_RANGE_MIN (-500.0f) /* ride_idle_rpm_drift */
 #define PLATFORM_UDS_RIDE_ENGINE_STRESS_RIDE_IDLE_RPM_DRIFT_RESOLUTION (1.0f)
 #define PLATFORM_UDS_RIDE_ENGINE_STRESS_THROTTLE_TORQUE_LAG_BYTE (20u)
-#define PLATFORM_UDS_RIDE_ENGINE_STRESS_THROTTLE_TORQUE_LAG_LENGTH (2u) /* Lag between a throttle step and the actual torque response (cross-correlation) */
+#define PLATFORM_UDS_RIDE_ENGINE_STRESS_THROTTLE_TORQUE_LAG_LENGTH (2u) /* Lag between a throttle step and the actual torque response (cross-correlation). Rule (D-103, provisional): a step = THROTTLE_POS up by throttle_torque_lag_step_min_pct within throttle_torque_lag_step_window_ms; the lag maximises the cross-correlation over 0..throttle_torque_lag_search_max_ms; the ride value is the median over the steps */
 #define PLATFORM_UDS_RIDE_ENGINE_STRESS_THROTTLE_TORQUE_LAG_MAX (0x01F4u) /* largest valid raw value */
 #define PLATFORM_UDS_RIDE_ENGINE_STRESS_THROTTLE_TORQUE_LAG_NA (0xFFFFu) /* NOT_AVAILABLE (D-098) */
 #define PLATFORM_UDS_RIDE_ENGINE_STRESS_THROTTLE_TORQUE_LAG_RANGE_MIN (0.0f) /* throttle_torque_lag */
@@ -476,13 +476,13 @@ extern const platform_uds_did_t platform_uds_dids[PLATFORM_UDS_DID_COUNT];
 #define PLATFORM_UDS_RIDE_CALIBRATION_RESERVED_BYTE (3u)
 #define PLATFORM_UDS_RIDE_CALIBRATION_RESERVED_MASK (0xFEu) /* Reserved, zero */
 #define PLATFORM_UDS_RIDE_CALIBRATION_SPEEDOMETER_ERROR_BYTE (4u)
-#define PLATFORM_UDS_RIDE_CALIBRATION_SPEEDOMETER_ERROR_LENGTH (2u) /* Mean ECU speed error against the GNSS speed at steady speed with a good fix */
+#define PLATFORM_UDS_RIDE_CALIBRATION_SPEEDOMETER_ERROR_LENGTH (2u) /* Mean ECU speed error against the GNSS speed at steady speed with a good fix. Rule (D-103, provisional): steady speed as in ride_final_drive_ratio, a 3D fix and gps_speed_accuracy <= derived_gnss_speed_accuracy_max_mps */
 #define PLATFORM_UDS_RIDE_CALIBRATION_SPEEDOMETER_ERROR_MAX (0x0190u) /* largest valid raw value */
 #define PLATFORM_UDS_RIDE_CALIBRATION_SPEEDOMETER_ERROR_NA (0xFFFFu) /* NOT_AVAILABLE (D-098) */
 #define PLATFORM_UDS_RIDE_CALIBRATION_SPEEDOMETER_ERROR_RANGE_MIN (-20.0f) /* speedometer_error */
 #define PLATFORM_UDS_RIDE_CALIBRATION_SPEEDOMETER_ERROR_RESOLUTION (0.1f)
 #define PLATFORM_UDS_RIDE_CALIBRATION_EFFECTIVE_TYRE_RADIUS_BYTE (6u)
-#define PLATFORM_UDS_RIDE_CALIBRATION_EFFECTIVE_TYRE_RADIUS_LENGTH (2u) /* Effective rear tyre radius from the GNSS speed and the engine-side ratio at steady speed */
+#define PLATFORM_UDS_RIDE_CALIBRATION_EFFECTIVE_TYRE_RADIUS_LENGTH (2u) /* Effective rear tyre radius from the GNSS speed and the engine-side ratio at steady speed. Rule (D-103, provisional): the same samples as speedometer_error */
 #define PLATFORM_UDS_RIDE_CALIBRATION_EFFECTIVE_TYRE_RADIUS_MAX (0x05DCu) /* largest valid raw value */
 #define PLATFORM_UDS_RIDE_CALIBRATION_EFFECTIVE_TYRE_RADIUS_NA (0xFFFFu) /* NOT_AVAILABLE (D-098) */
 #define PLATFORM_UDS_RIDE_CALIBRATION_EFFECTIVE_TYRE_RADIUS_RANGE_MIN (0.25f) /* effective_tyre_radius */
@@ -511,13 +511,13 @@ extern const platform_uds_did_t platform_uds_dids[PLATFORM_UDS_DID_COUNT];
 #define PLATFORM_UDS_RIDE_RIDER_STYLE_RESERVED_BYTE (3u)
 #define PLATFORM_UDS_RIDE_RIDER_STYLE_RESERVED_MASK (0xFEu) /* Reserved, zero */
 #define PLATFORM_UDS_RIDE_RIDER_STYLE_RIDE_AGGRESSIVENESS_SCORE_BYTE (4u)
-#define PLATFORM_UDS_RIDE_RIDER_STYLE_RIDE_AGGRESSIVENESS_SCORE_LENGTH (2u) /* Rider aggressiveness score from throttle rate, jerk, braking and shift features */
+#define PLATFORM_UDS_RIDE_RIDER_STYLE_RIDE_AGGRESSIVENESS_SCORE_LENGTH (2u) /* Rider aggressiveness score from throttle rate, jerk, braking and shift features. Rule (D-103, provisional): 100 x the mean, over the features with data, of clamp(feature / ref, 0, 1) with equal weights: p95 throttle opening rate, p95 |jerk|, the largest braking-event peak, p95 RPM before an upshift */
 #define PLATFORM_UDS_RIDE_RIDER_STYLE_RIDE_AGGRESSIVENESS_SCORE_MAX (0x03E8u) /* largest valid raw value */
 #define PLATFORM_UDS_RIDE_RIDER_STYLE_RIDE_AGGRESSIVENESS_SCORE_NA (0xFFFFu) /* NOT_AVAILABLE (D-098) */
 #define PLATFORM_UDS_RIDE_RIDER_STYLE_RIDE_AGGRESSIVENESS_SCORE_RANGE_MIN (0.0f) /* ride_aggressiveness_score */
 #define PLATFORM_UDS_RIDE_RIDER_STYLE_RIDE_AGGRESSIVENESS_SCORE_RESOLUTION (0.1f)
 #define PLATFORM_UDS_RIDE_RIDER_STYLE_RIDE_CORNERING_AGGRESSIVENESS_BYTE (6u)
-#define PLATFORM_UDS_RIDE_RIDER_STYLE_RIDE_CORNERING_AGGRESSIVENESS_LENGTH (2u) /* Rider aggressiveness score from the lateral acceleration and the lean angle */
+#define PLATFORM_UDS_RIDE_RIDER_STYLE_RIDE_CORNERING_AGGRESSIVENESS_LENGTH (2u) /* Rider aggressiveness score from the lateral acceleration and the lean angle. Rule (D-103, provisional): 100 x the mean of clamp(p95 |lateral accel| / lat ref, 0, 1) and clamp(p95 |lean| / lean ref, 0, 1) */
 #define PLATFORM_UDS_RIDE_RIDER_STYLE_RIDE_CORNERING_AGGRESSIVENESS_MAX (0x03E8u) /* largest valid raw value */
 #define PLATFORM_UDS_RIDE_RIDER_STYLE_RIDE_CORNERING_AGGRESSIVENESS_NA (0xFFFFu) /* NOT_AVAILABLE (D-098) */
 #define PLATFORM_UDS_RIDE_RIDER_STYLE_RIDE_CORNERING_AGGRESSIVENESS_RANGE_MIN (0.0f) /* ride_cornering_aggressiveness */
@@ -540,7 +540,7 @@ extern const platform_uds_did_t platform_uds_dids[PLATFORM_UDS_DID_COUNT];
 #define PLATFORM_UDS_RIDE_ECU_HEALTH_ECU_SOFTWARE_CHANGE_RANGE_MIN (0.0f) /* ecu_software_change */
 #define PLATFORM_UDS_RIDE_ECU_HEALTH_ECU_SOFTWARE_CHANGE_RESOLUTION (1.0f)
 #define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_CAN_ERROR_COUNT_BYTE (5u)
-#define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_CAN_ERROR_COUNT_LENGTH (4u) /* Vehicle-bus transmit and receive errors in the ride */
+#define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_CAN_ERROR_COUNT_LENGTH (4u) /* Vehicle-bus transmit and receive errors in the ride. Rule (D-103): TEC and REC are levels, so the count is the sum of their positive increments between consecutive samples (a lower bound; a saturated 255 adds nothing) */
 #define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_CAN_ERROR_COUNT_MAX (0x0000FFFFu) /* largest valid raw value */
 #define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_CAN_ERROR_COUNT_NA (0xFFFFFFFFu) /* NOT_AVAILABLE (D-098) */
 #define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_CAN_ERROR_COUNT_RANGE_MIN (0.0f) /* ride_can_error_count */
@@ -552,7 +552,7 @@ extern const platform_uds_did_t platform_uds_dids[PLATFORM_UDS_DID_COUNT];
 #define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_BUS_OFF_COUNT_RANGE_MIN (0.0f) /* ride_bus_off_count */
 #define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_BUS_OFF_COUNT_RESOLUTION (1.0f)
 #define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_UNANSWERED_DID_COUNT_BYTE (11u)
-#define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_UNANSWERED_DID_COUNT_LENGTH (2u) /* Polled DIDs that never answered in the ride */
+#define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_UNANSWERED_DID_COUNT_LENGTH (2u) /* Polled DIDs that never answered in the ride. Rule (D-103): the BLE field counts timed-out requests since boot, so the ride value is its last minus first value in the ride (a decrease = reboot: restart from the new value), saturating at the range maximum */
 #define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_UNANSWERED_DID_COUNT_MAX (0x00FFu) /* largest valid raw value */
 #define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_UNANSWERED_DID_COUNT_NA (0xFFFFu) /* NOT_AVAILABLE (D-098) */
 #define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_UNANSWERED_DID_COUNT_RANGE_MIN (0.0f) /* ride_unanswered_did_count */
@@ -564,7 +564,7 @@ extern const platform_uds_did_t platform_uds_dids[PLATFORM_UDS_DID_COUNT];
 #define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_TESTER_RTT_MAX_RANGE_MIN (0.0f) /* ride_tester_rtt_max */
 #define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_TESTER_RTT_MAX_RESOLUTION (1.0f)
 #define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_TESTER_NRC78_COUNT_BYTE (15u)
-#define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_TESTER_NRC78_COUNT_LENGTH (4u) /* NRC 0x78 (response pending) answers in the ride */
+#define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_TESTER_NRC78_COUNT_LENGTH (4u) /* NRC 0x78 (response pending) answers in the ride. Rule (D-103): rttNrc78Count is a since-boot counter per rotating rttDid, so the ride value sums over the DIDs the last minus first value of each (a decrease = reboot: restart that DID) */
 #define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_TESTER_NRC78_COUNT_MAX (0x0000FFFFu) /* largest valid raw value */
 #define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_TESTER_NRC78_COUNT_NA (0xFFFFFFFFu) /* NOT_AVAILABLE (D-098) */
 #define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_TESTER_NRC78_COUNT_RANGE_MIN (0.0f) /* ride_tester_nrc78_count */

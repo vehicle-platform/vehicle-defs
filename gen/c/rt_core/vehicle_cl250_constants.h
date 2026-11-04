@@ -29,5 +29,50 @@
 #define VEHICLE_CL250_FUEL_DENSITY_KG_PER_L (0.745f) /* provisional [kg/L] */
 #define VEHICLE_CL250_STOICHIOMETRIC_AFR (14.7f) /* provisional */
 #define VEHICLE_CL250_WINDOW_COLD_SOAK_MAX_DELTA_DEGC (5.0f) /* provisional [degC] */
+#define VEHICLE_CL250_DERIVED_OPERATING_COOLANT_DEGC (80.0f) /* provisional [degC] */
+#define VEHICLE_CL250_DERIVED_COLD_COOLANT_DEGC (50.0f) /* provisional [degC] */
+#define VEHICLE_CL250_DERIVED_IDLE_RPM_MIN (1000.0f) /* provisional [rpm] */
+#define VEHICLE_CL250_DERIVED_IDLE_RPM_MAX (1800.0f) /* provisional [rpm] */
+#define VEHICLE_CL250_DERIVED_MOVING_SPEED_MIN_KMH (3.0f) /* provisional [km/h] */
+#define VEHICLE_CL250_DERIVED_THROTTLE_CLOSED_MAX_PCT (2.0f) /* provisional [%] */
+#define VEHICLE_CL250_DERIVED_THROTTLE_LOAD_MIN_PCT (10.0f) /* provisional [%] */
+#define VEHICLE_CL250_DERIVED_GEAR_RATIO_TOLERANCE (0.06f) /* provisional */
+#define VEHICLE_CL250_DERIVED_STEADY_SPEED_SPREAD_KMH (4.0f) /* provisional [km/h] */
+#define VEHICLE_CL250_DERIVED_STEADY_MIN_DURATION_MS (10000u) /* provisional [ms] */
+#define VEHICLE_CL250_DERIVED_GNSS_SPEED_ACCURACY_MAX_MPS (0.3f) /* provisional [m/s] */
+#define VEHICLE_CL250_DERIVED_CALIBRATION_SPEED_MIN_KMH (30.0f) /* provisional [km/h] */
+#define VEHICLE_CL250_SHIFT_EVENT_RPM_STEP_MIN_RPM (500.0f) /* provisional [rpm] */
+#define VEHICLE_CL250_SHIFT_EVENT_WINDOW_MS (500u) /* provisional [ms] */
+#define VEHICLE_CL250_SHIFT_EVENT_SPEED_CHANGE_MAX_KMH (3.0f) /* provisional [km/h] */
+#define VEHICLE_CL250_LAUNCH_EVENT_END_SPEED_KMH (10.0f) /* provisional [km/h] */
+#define VEHICLE_CL250_BRAKING_EVENT_DECEL_MIN_MPS2 (3.0f) /* provisional [m/s2] */
+#define VEHICLE_CL250_BRAKING_EVENT_MIN_DURATION_MS (300u) /* provisional [ms] */
+#define VEHICLE_CL250_WHEEL_SLIP_ACCEL_MIN_MPS2 (1.5f) /* provisional [m/s2] */
+#define VEHICLE_CL250_WHEEL_SLIP_SPEED_MIN_KMH (10.0f) /* provisional [km/h] */
+#define VEHICLE_CL250_PITCH_EVENT_RATE_MIN_DPS (30.0f) /* provisional [deg/s] */
+#define VEHICLE_CL250_ROAD_ROUGHNESS_BAND_LOW_HZ (5.0f) /* provisional [Hz] */
+#define VEHICLE_CL250_ROAD_ROUGHNESS_BAND_HIGH_HZ (20.0f) /* provisional [Hz] */
+#define VEHICLE_CL250_IDLE_MAP_RESIDUAL_EXPECTED_KPA (35.0f) /* provisional [kPa] */
+#define VEHICLE_CL250_HEAT_SOAK_DELTA_SPEED_MAX_KMH (10.0f) /* provisional [km/h] */
+#define VEHICLE_CL250_CHARGING_PLATEAU_RPM_MIN (3000.0f) /* provisional [rpm] */
+#define VEHICLE_CL250_COLD_ENGINE_ABUSE_RPM_MAX (6000.0f) /* provisional [rpm] */
+#define VEHICLE_CL250_COLD_ENGINE_ABUSE_LOAD_MAX_PCT (70.0f) /* provisional [%] */
+#define VEHICLE_CL250_OVER_REV_RPM_MIN (9500.0f) /* provisional [rpm] */
+#define VEHICLE_CL250_LUGGING_RPM_MAX (3000.0f) /* provisional [rpm] */
+#define VEHICLE_CL250_LUGGING_LOAD_MIN_PCT (80.0f) /* provisional [%] */
+#define VEHICLE_CL250_ENGINE_BRAKING_PHASE_FUEL_RATE_MAX_LPH (0.1f) /* provisional [L/h] */
+#define VEHICLE_CL250_REFUEL_EVENT_STEP_MIN_PCT (10.0f) /* provisional [%] */
+#define VEHICLE_CL250_FUEL_LEVEL_FILTERED_ACCEL_MAX_MPS2 (0.5f) /* provisional [m/s2] */
+#define VEHICLE_CL250_RIDE_FAN_ON_TEMPERATURE_VOLTAGE_STEP_V (0.15f) /* provisional [V] */
+#define VEHICLE_CL250_RIDE_FAN_ON_TEMPERATURE_COOLANT_MIN_DEGC (90.0f) /* provisional [degC] */
+#define VEHICLE_CL250_THROTTLE_TORQUE_LAG_STEP_MIN_PCT (20.0f) /* provisional [%] */
+#define VEHICLE_CL250_THROTTLE_TORQUE_LAG_STEP_WINDOW_MS (200u) /* provisional [ms] */
+#define VEHICLE_CL250_THROTTLE_TORQUE_LAG_SEARCH_MAX_MS (1000u) /* provisional [ms] */
+#define VEHICLE_CL250_RIDE_AGGRESSIVENESS_SCORE_THROTTLE_RATE_REF_PCT_S (200.0f) /* provisional [%/s] */
+#define VEHICLE_CL250_RIDE_AGGRESSIVENESS_SCORE_JERK_REF_MPS3 (10.0f) /* provisional [m/s3] */
+#define VEHICLE_CL250_RIDE_AGGRESSIVENESS_SCORE_DECEL_REF_MPS2 (6.0f) /* provisional [m/s2] */
+#define VEHICLE_CL250_RIDE_AGGRESSIVENESS_SCORE_SHIFT_RPM_REF (7000.0f) /* provisional [rpm] */
+#define VEHICLE_CL250_RIDE_CORNERING_AGGRESSIVENESS_LAT_ACCEL_REF_MPS2 (6.0f) /* provisional [m/s2] */
+#define VEHICLE_CL250_RIDE_CORNERING_AGGRESSIVENESS_LEAN_REF_DEG (40.0f) /* provisional [deg] */
 
 #endif /* VEHICLE_CL250_CONSTANTS_H */

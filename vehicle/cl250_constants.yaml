@@ -124,3 +124,235 @@ constants:
     unit: degC
     status: provisional
     source: D-079 (provisional); coolant within this of ambient at key-on = cold soak, else a warm restart
+
+  # ---- derived-signal thresholds and definition parameters (D-103) ----
+  # Claude's recommendations (user, 2026-11-05: "use your recommended values, keep them
+  # changeable, optimise them later with deep research"). All provisional: none is from the
+  # CL250 manual or a measurement yet. Each `source` says why the value was picked and what
+  # replaces it. QM only (D-070 item 5): no safety decision reads them. Shared names start
+  # with `derived_`, single-signal names with the signal name.
+  derived_operating_coolant_degc:
+    value: 80.0
+    unit: degC
+    status: provisional
+    source: "D-103 recommendation: W3_WARM_IDLE already uses 80 degC; a liquid-cooled single's thermostat opens at about 80-85 degC (generic); replace by the coolant plateau of the first rides"
+  derived_cold_coolant_degc:
+    value: 50.0
+    unit: degC
+    status: provisional
+    source: "D-103 recommendation: the cold level of a thermal cycle, 30 K below derived_operating_coolant_degc as hysteresis; replace after the first cold starts"
+  derived_idle_rpm_min:
+    value: 1000.0
+    unit: rpm
+    status: provisional
+    source: "D-103 recommendation: the same band as W3_WARM_IDLE (provisional there), around the ~1400 rpm idle of ideas/cl250-technical-baseline.md (CONFIRM); replace by the warm-idle band measured at V1"
+  derived_idle_rpm_max:
+    value: 1800.0
+    unit: rpm
+    status: provisional
+    source: "D-103 recommendation: the same band as W3_WARM_IDLE (provisional there), around the ~1400 rpm idle of ideas/cl250-technical-baseline.md (CONFIRM); replace by the warm-idle band measured at V1"
+  derived_moving_speed_min_kmh:
+    value: 3.0
+    unit: km/h
+    status: provisional
+    source: "D-103 recommendation: three steps of the ECU speed resolution (1 km/h); below = at rest"
+  derived_throttle_closed_max_pct:
+    value: 2.0
+    unit: "%"
+    status: provisional
+    source: "D-103 recommendation: TPS noise floor at a closed throttle (generic); replace by the closed-throttle spread seen at V1"
+  derived_throttle_load_min_pct:
+    value: 10.0
+    unit: "%"
+    status: provisional
+    source: "D-103 recommendation: throttle clearly open = driven (clutch slip, launch); generic"
+  derived_gear_ratio_tolerance:
+    value: 0.06
+    unit: ""
+    status: provisional
+    source: "D-103 recommendation: half the smallest gear step (gear_ratio_5 / gear_ratio_6 = 1.123, half of 12.3 %); a measured ratio farther than this from every gear = not engaged"
+  derived_steady_speed_spread_kmh:
+    value: 4.0
+    unit: km/h
+    status: provisional
+    source: "D-103 recommendation: the W4_CRUISE stability band (+-2 km/h)"
+  derived_steady_min_duration_ms:
+    value: 10000
+    unit: ms
+    status: provisional
+    source: "D-103 recommendation: the W4_CRUISE minimum duration"
+  derived_gnss_speed_accuracy_max_mps:
+    value: 0.3
+    unit: m/s
+    status: provisional
+    source: "D-103 recommendation: a good 3D fix of a u-blox class receiver reports 0.05-0.2 m/s speed accuracy; above this the GNSS speed is not a reference"
+  derived_calibration_speed_min_kmh:
+    value: 30.0
+    unit: km/h
+    status: provisional
+    source: "D-103 recommendation: the 1 km/h ECU speed resolution is 3.3 % at 30 km/h, below that it dominates a speed or radius calibration"
+  shift_event_rpm_step_min_rpm:
+    value: 500.0
+    unit: rpm
+    status: provisional
+    source: "D-103 recommendation: the smallest gear step (12.3 %) at 4000 rpm is about 490 rpm; smaller RPM changes are throttle, not a shift"
+  shift_event_window_ms:
+    value: 500
+    unit: ms
+    status: provisional
+    source: "D-103 recommendation: a typical clutch-and-lever shift lasts 200-500 ms (generic); replace after the first rides"
+  shift_event_speed_change_max_kmh:
+    value: 3.0
+    unit: km/h
+    status: provisional
+    source: "D-103 recommendation: speed stays continuous through a shift; three ECU speed steps"
+  launch_event_end_speed_kmh:
+    value: 10.0
+    unit: km/h
+    status: provisional
+    source: "D-103 recommendation: by 10 km/h a launch in gear 1 has the clutch engaged (generic)"
+  braking_event_decel_min_mps2:
+    value: 3.0
+    unit: m/s2
+    status: provisional
+    source: "D-103 recommendation: about 0.3 g, above engine braking and normal deceleration (generic motorcycle braking literature: normal 2-4, strong above 5 m/s2)"
+  braking_event_min_duration_ms:
+    value: 300
+    unit: ms
+    status: provisional
+    source: "D-103 recommendation: rejects single-sample accel spikes (3 vehicle_accel periods)"
+  wheel_slip_accel_min_mps2:
+    value: 1.5
+    unit: m/s2
+    status: provisional
+    source: "D-103 recommendation: wheel slip only counts under clear acceleration or braking"
+  wheel_slip_speed_min_kmh:
+    value: 10.0
+    unit: km/h
+    status: provisional
+    source: "D-103 recommendation: the relative speed difference is noise below 10 km/h"
+  pitch_event_rate_min_dps:
+    value: 30.0
+    unit: deg/s
+    status: provisional
+    source: "D-103 recommendation: suspension dive/squat stays well below; wheelie and stoppie starts exceed it (generic); replace from IMU data"
+  road_roughness_band_low_hz:
+    value: 5.0
+    unit: Hz
+    status: provisional
+    source: "D-103 recommendation: above the 1-3 Hz sprung-mass body modes"
+  road_roughness_band_high_hz:
+    value: 20.0
+    unit: Hz
+    status: provisional
+    source: "D-103 recommendation: below the 50 Hz Nyquist limit of the 10 ms IMU sample and the engine's first order at idle (about 23 Hz at 1400 rpm)"
+  idle_map_residual_expected_kpa:
+    value: 35.0
+    unit: kPa
+    status: provisional
+    source: "D-103 recommendation: typical warm-idle MAP of a small single, 30-40 kPa (generic); replace by the W3_WARM_IDLE median of the first rides"
+  heat_soak_delta_speed_max_kmh:
+    value: 10.0
+    unit: km/h
+    status: provisional
+    source: "D-103 recommendation: below 10 km/h ram air no longer cools the intake (generic)"
+  charging_plateau_rpm_min:
+    value: 3000.0
+    unit: rpm
+    status: provisional
+    source: "D-103 recommendation: a permanent-magnet alternator reaches the regulator set point above about 2500-3000 rpm (generic; ideas/cl250-technical-baseline.md section 2 gives the 14.0-15.0 V plateau and the 340 W rating at 5000 rpm, CONFIRM); replace by the plateau start seen at V1"
+  cold_engine_abuse_rpm_max:
+    value: 6000.0
+    unit: rpm
+    status: provisional
+    source: "D-103 recommendation: just below the 6250 rpm torque peak (vehicle-work-plan.md section 2)"
+  cold_engine_abuse_load_max_pct:
+    value: 70.0
+    unit: "%"
+    status: provisional
+    source: "D-103 recommendation: generic cold-engine guidance; high load before operating temperature"
+  over_rev_rpm_min:
+    value: 9500.0
+    unit: rpm
+    status: provisional
+    source: "D-103 recommendation: 1000 rpm above the 8500 rpm peak-power point (vehicle-work-plan.md section 2); the CL250 limiter is not in defs: replace by the highest RPM seen at the limiter"
+  lugging_rpm_max:
+    value: 3000.0
+    unit: rpm
+    status: provisional
+    source: "D-103 recommendation: less than half the 6250 rpm torque peak (generic for a single)"
+  lugging_load_min_pct:
+    value: 80.0
+    unit: "%"
+    status: provisional
+    source: "D-103 recommendation: near-full load at low RPM in gear 2 or above (generic)"
+  engine_braking_phase_fuel_rate_max_lph:
+    value: 0.1
+    unit: L/h
+    status: provisional
+    source: "D-103 recommendation: fuel cut = fuel rate near zero (generic; warm idle uses far more)"
+  refuel_event_step_min_pct:
+    value: 10.0
+    unit: "%"
+    status: provisional
+    source: "D-103 recommendation: 1.2 L of the 12 L tank, above sender slosh at rest"
+  fuel_level_filtered_accel_max_mps2:
+    value: 0.5
+    unit: m/s2
+    status: provisional
+    source: "D-103 recommendation: samples taken above this acceleration are slosh and left out of the average"
+  ride_fan_on_temperature_voltage_step_v:
+    value: 0.15
+    unit: V
+    status: provisional
+    source: "D-103 recommendation: a 5-8 A fan load drops the battery voltage by about 0.1-0.3 V at idle (generic); replace by the step seen at the first fan start"
+  ride_fan_on_temperature_coolant_min_degc:
+    value: 90.0
+    unit: degC
+    status: provisional
+    source: "D-103 recommendation: fan steps are searched only above this coolant temperature (generic thermoswitch range 95-105 degC)"
+  throttle_torque_lag_step_min_pct:
+    value: 20.0
+    unit: "%"
+    status: provisional
+    source: "D-103 recommendation: a throttle step = at least 20 % within throttle_torque_lag_step_window_ms"
+  throttle_torque_lag_step_window_ms:
+    value: 200
+    unit: ms
+    status: provisional
+    source: "D-103 recommendation: two THROTTLE_POS poll periods"
+  throttle_torque_lag_search_max_ms:
+    value: 1000
+    unit: ms
+    status: provisional
+    source: "D-103 recommendation: the cross-correlation lag is searched from 0 to this"
+  ride_aggressiveness_score_throttle_rate_ref_pct_s:
+    value: 200.0
+    unit: "%/s"
+    status: provisional
+    source: "D-103 recommendation: the p95 throttle opening rate that scores full (generic); equal weights, see the signal description"
+  ride_aggressiveness_score_jerk_ref_mps3:
+    value: 10.0
+    unit: m/s3
+    status: provisional
+    source: "D-103 recommendation: the p95 absolute jerk that scores full (generic comfort literature: above 2-3 m/s3 is felt as harsh)"
+  ride_aggressiveness_score_decel_ref_mps2:
+    value: 6.0
+    unit: m/s2
+    status: provisional
+    source: "D-103 recommendation: the braking-event peak that scores full (strong braking, about 0.6 g)"
+  ride_aggressiveness_score_shift_rpm_ref:
+    value: 7000.0
+    unit: rpm
+    status: provisional
+    source: "D-103 recommendation: the p95 RPM before an upshift that scores full (between the 6250 rpm torque and 8500 rpm power peaks)"
+  ride_cornering_aggressiveness_lat_accel_ref_mps2:
+    value: 6.0
+    unit: m/s2
+    status: provisional
+    source: "D-103 recommendation: the p95 lateral acceleration that scores full (about 0.6 g, sporty road riding)"
+  ride_cornering_aggressiveness_lean_ref_deg:
+    value: 40.0
+    unit: deg
+    status: provisional
+    source: "D-103 recommendation: the p95 lean angle that scores full (a road bike on road tyres, generic)"
