@@ -177,6 +177,8 @@ What the tester does on its own, with no setting to change (conn README, Q-018, 
 | V2 | T0 static set | VWP §7 (sleep current, cranking, idle, warm-up from cold) | §7 checks below |
 | V3 | T1 low speed, closed lot, 0-30 km/h (VWP §7.3) | CAN speed against the gear-ratio formula (VWP §2.3); ignition cut mid-session | Deviation explained (speedometer error, VWP §2.3); after the cut the phone keeps the session and the report shows the gap |
 
+Gates B0, V0 and V1 can be checked from a recorded session: `uv run vehicle-server bringup <session_id> --gate V0` (or `GET /sessions/{id}/bringup?gate=V0`, also shown in vehicle-analyzer's Recorded sessions view) prints one line per "Pass when" criterion. "At rest" (B0) and the throttle blip (V1) stay `manual`: the command shows the values, you judge them.
+
 Recommended first contact with the bike: the §7.1 listen-only capture, before V0. Its image never transmits, so it is the lowest-risk first connection and it answers Q-001 before the tester polls.
 
 Road tests (T2, T3) come only after V3 passes, and the rules in §8 apply. T4 is out of scope for this build.
@@ -231,6 +233,8 @@ uv run vehicle-server report <session_id>
 `tester_stats` in the report:
 - `step_gap_max_ms`, `step_gap_over_count`: since-boot maximum gap between two poller steps and the count of gaps above `client_step_max_ms` (10 ms). A count above 0 means the D-053 assumption does not hold for conn; compare with the G0.1 serial report to find the slow module.
 - `rtt["0xXXXX"]`: per DID `min_ms`, `max_ms`, `avg_ms`, `count`, `nrc78_count`, from the last record seen for that DID. One step is included in every sample. Requests answered after 0x78, and requests sent within `response_timeout_max_ms` (2 s) after a timeout, give no sample. Compare `max_ms` with `assumed_round_trip_ms` (20 ms); a larger value changes the D-029 budget (A-4).
+
+`vehicle-server bringup <session_id> --gate V0` (or `V1`) shows both items as warnings next to the gate checks.
 
 ### 7.3 GPS bring-up and the step gap with GPS notify (D-060, D-062, D-063)
 
