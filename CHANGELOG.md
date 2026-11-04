@@ -4,6 +4,10 @@ All notable changes to vehicle-defs. Semver (see CLAUDE.md): new message/signal 
 
 ## [Unreleased]
 
+MINOR, additive: two rt-core DTCs for the M7 view of the M4 mailbox (D-093 amendment 3, ISSUES E-28 (3)). No DBC signal, ID, layout, scale, VSS path, DID, poll, BLE, mailbox layout (`PLATFORM_MAILBOX_LAYOUT_ID` unchanged), `tester_policy`, D-020 golden copy or frame-gate change.
+
+- **Mailbox DTCs (D-093 amendment 3, MINOR, additive):** `uds/dids.yaml` RT_CORE `dtcs` gains `SAFETY_MAILBOX_LAYOUT_MISMATCH` U0300-00 (0xC30000; the M4 layout word differs for longer than the grace time) and `SAFETY_MAILBOX_SLOT_FROZEN` U3000-87 (0xF00087; an M4 -> M7 slot without a new frame within its E2E timeout while the layouts match), appended after the existing three, so the existing `PLATFORM_UDS_DTC_IDX_*` values are unchanged. One root cause = one DTC; `write_dropped` alone never sets one. New in `gen/c/rt_core/platform_uds.h/.c`: `PLATFORM_UDS_DTC_SAFETY_MAILBOX_*` defines, two index enum values, `PLATFORM_UDS_DTC_COUNT` 3 -> 5, two `platform_uds_dtcs[]` entries; `gen/python/vehicle_defs/uds.py` `SERVERS` lists them. Consumers: **vehicle-rt-core** (reports them from `mailbox_health()` after its bump, safety-reviewer); vehicle-server / vehicle-analyzer only show names from `SERVERS` at their next bump.
+
 ## [0.22.0] — 2026-11-03
 
 MINOR, additive: the class-B ride-summary records become generated rt-core UDS DIDs (D-098). No DBC signal, ID, layout, scale, VSS path, existing DID (explicit `platform_uds_did_index_t` values and 0xFD02/0xFD03 unchanged), poll, BLE, `tester_policy`, D-020 golden copy or frame-gate change.

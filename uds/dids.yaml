@@ -200,6 +200,19 @@ nodes:
         name: VEHICLE_BUS_OFF_LATCHED
         code: U0001-88
         description: rt-core's vehicle CAN port latched after its bus-off limit since boot and stays off the vehicle bus until reboot (D-030, D-054, D-055). Fails while the latch holds; clearing the DTC does not release the latch.
+      # D-093 item 5 + amendment 3: the M7 reports the M4 mailbox state (the M4 cannot,
+      # its heartbeat is no longer forwarded). One root cause = one DTC: a layout mismatch
+      # also freezes the M4 slots (amendment 2), so only this DTC fails then.
+      # SAE J2012 U0300 (internal control module software incompatibility).
+      - dtc: 0xC30000
+        name: SAFETY_MAILBOX_LAYOUT_MISMATCH
+        code: U0300-00
+        description: "The M4 safety partition's mailbox layout word differs from rt-core's PLATFORM_MAILBOX_LAYOUT_ID for longer than the mailbox grace time (the two images are built from different defs tags, D-093). Level-triggered: fails while the mismatch lasts, passes once the words match."
+      # SAE J2012 U3000 (control module) with failure type 0x87 (missing message).
+      - dtc: 0xF00087
+        name: SAFETY_MAILBOX_SLOT_FROZEN
+        code: U3000-87
+        description: "With matching layout words, at least one M4 -> M7 mailbox slot had no new frame within its E2E timeout (a stuck write_seq: M4 stopped, reset or blocked; D-093 item 5). Never set by the write_dropped counter alone and never while SAFETY_MAILBOX_LAYOUT_MISMATCH fails. Level-triggered."
     routines: []
   SAFETY:
     dids: []
