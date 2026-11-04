@@ -4,6 +4,10 @@ All notable changes to vehicle-defs. Semver (see CLAUDE.md): new message/signal 
 
 ## [Unreleased]
 
+## [0.23.0] — 2026-11-05
+
+MINOR, additive: D-103 provisional derived-signal thresholds and the D-093 amendment 3 mailbox DTCs; both entries below.
+
 MINOR, additive: provisional thresholds and definition rules for 33 derived signals (D-103). No DBC signal, ID, layout, scale, VSS path, DID, ride-record layout, poll, BLE, mailbox layout, `tester_policy`, D-020 golden copy or frame-gate change; rt-core's derived input table (`vehicle_cl250_derived.c/h`) is unchanged.
 
 - **Derived thresholds (D-103, MINOR, additive; QM):** 45 new constants in `vehicle/cl250_constants.yaml`, all `status: provisional` with a "D-103 recommendation" `source` (shared `derived_*` values: operating/cold coolant, idle band, moving speed, closed/open throttle, gear-ratio tolerance, steady speed, GNSS accuracy, calibration speed; single-signal values named after their signal). 25 class-A signals (clutch/neutral states, shift/launch/braking/pitch events, wheel slip, road roughness, idle MAP residual, heat soak, charging plateau, cranking dip, cold-engine abuse, over-rev, lugging, idle RPM std/drift, engine braking, refuel, filtered fuel level) and 8 class-B signals (warm-up time, thermal cycles, fan-on temperature, throttle-torque lag, final drive ratio, speedometer error, tyre radius, both aggressiveness scores) list them as `const.*` inputs and state their rule in `description`; `ride_can_error_count`, `ride_unanswered_did_count` and `ride_tester_nrc78_count` get definition rules. New in `gen/c/rt_core/vehicle_cl250_constants.h` (45 defines) and `gen/python/vehicle_defs/vehicle_constants.py`; `vehicle_derived.py` inputs/descriptions and `platform_uds.h` comments follow. Consumers: **vehicle-server** implements the signals against them (next bump), **vehicle-analyzer** shows them (coverage view), **vehicle-rt-core** later.
