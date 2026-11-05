@@ -69,4 +69,5 @@ CONSTANTS = {
     "ride_aggressiveness_score_shift_rpm_ref": (7000.0, "rpm", "provisional"),
     "ride_cornering_aggressiveness_lat_accel_ref_mps2": (6.0, "m/s2", "provisional"),
     "ride_cornering_aggressiveness_lean_ref_deg": (40.0, "deg", "provisional"),
+    "intake_flow_residual_ve_reference_pct": (85.0, "%", "provisional"),
 }

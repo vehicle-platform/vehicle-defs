@@ -356,3 +356,8 @@ constants:
     unit: deg
     status: provisional
     source: "D-103 recommendation: the p95 lean angle that scores full (a road bike on road tyres, generic)"
+  intake_flow_residual_ve_reference_pct:
+    value: 85.0
+    unit: "%"
+    status: provisional
+    source: "D-103 recommendation: a typical mid-load volumetric efficiency of a small two-valve-per-cylinder single (generic 80-90 %); replace by the volumetric_efficiency median of the first warm rides"

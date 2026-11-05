@@ -181,7 +181,7 @@ sensors:
     phase0: ble.telemetry.canBusOffCount
     rt_core: uds.RT_CORE_HEALTH.VEHICLE_BUS_OFFS
   unanswered_did_count:
-    description: Polled DIDs that have not answered in this session (D-068 item 2).
+    description: UDS DID requests that timed out without any response since boot (the BLE unansweredDidCount counter, saturating; D-068 item 2, D-103 item 3).
     unit: count
     sample_period_ms: 100
     stale_after_ms: 300
@@ -519,6 +519,7 @@ signals:
       - const.gear_ratio_4
       - const.gear_ratio_5
       - const.gear_ratio_6
+      - derived.gearbox_ratio_measured
     event: true
     output: [log]
   braking_event:
@@ -546,12 +547,13 @@ signals:
       - const.wheel_slip_accel_min_mps2
       - const.wheel_slip_speed_min_kmh
       - const.derived_gnss_speed_accuracy_max_mps
+      - derived.vehicle_accel
     period_ms: 100
     stale_after_ms: 300
     output: [log]
   speedometer_error:
     class: B
-    description: "Mean ECU speed error against the GNSS speed at steady speed with a good fix. Rule (D-103, provisional): steady speed as in ride_final_drive_ratio, a 3D fix and gps_speed_accuracy <= derived_gnss_speed_accuracy_max_mps."
+    description: "Mean ECU speed error against the GNSS speed at steady speed with a good fix. Rule (D-103, provisional): steady speed = VEHICLE_SPEED spread within derived_steady_speed_spread_kmh for derived_steady_min_duration_ms above derived_calibration_speed_min_kmh (no gear condition); only samples with a 3D fix and gps_speed_accuracy <= derived_gnss_speed_accuracy_max_mps; error = mean of (ECU - GNSS) / GNSS x 100."
     catalog: Speedometer error / effective tyre radius
     unit: "%"
     range: [-20.0, 20.0]
@@ -569,7 +571,7 @@ signals:
     output: [log, ride_summary]
   effective_tyre_radius:
     class: B
-    description: "Effective rear tyre radius from the GNSS speed and the engine-side ratio at steady speed. Rule (D-103, provisional): the same samples as speedometer_error."
+    description: "Effective rear tyre radius from the GNSS speed and the engine-side ratio at steady speed. Rule (D-103, provisional): the samples of speedometer_error that also have a valid gear_estimate n; per sample radius = GNSS speed / (2 pi x ENGINE_SPEED / 60 / (primary_reduction_ratio x gear_ratio_n x secondary_reduction_ratio)); the ride value is the median."
     catalog: Speedometer error / effective tyre radius
     unit: m
     range: [0.25, 0.40]
@@ -579,11 +581,20 @@ signals:
       - sensor.gps_ground_speed
       - sensor.gps_speed_accuracy
       - sensor.gps_fix_type
-      - const.rear_wheel_radius_dynamic_m
       - const.derived_steady_speed_spread_kmh
       - const.derived_steady_min_duration_ms
       - const.derived_calibration_speed_min_kmh
       - const.derived_gnss_speed_accuracy_max_mps
+      - did.ENGINE_SPEED
+      - derived.gear_estimate
+      - const.primary_reduction_ratio
+      - const.secondary_reduction_ratio
+      - const.gear_ratio_1
+      - const.gear_ratio_2
+      - const.gear_ratio_3
+      - const.gear_ratio_4
+      - const.gear_ratio_5
+      - const.gear_ratio_6
     record: RIDE_CALIBRATION
     output: [log, ride_summary]
 
@@ -881,7 +892,7 @@ signals:
     output: [log]
   volumetric_efficiency:
     class: A
-    description: Approximate volumetric efficiency by the speed-density method.
+    description: "Approximate volumetric efficiency by the speed-density method. Rule (D-103): VE = MAF_RATE / (rho x engine_displacement_cm3 x ENGINE_SPEED / 120) x 100, with rho = INTAKE_MAP / (R_air x INTAKE_AIR_TEMP) (ideal gas, dry air, R_air = 287.05 J/(kg K), a physical constant, not a threshold); unit conversions as needed."
     catalog: Volumetric efficiency
     unit: "%"
     range: [0.0, 150.0]
@@ -891,6 +902,7 @@ signals:
       - did.ENGINE_SPEED
       - did.INTAKE_AIR_TEMP
       - const.engine_displacement_cm3
+      - did.MAF_RATE
     period_ms: 110
     stale_after_ms: 15000
     output: [log]
@@ -943,7 +955,7 @@ signals:
     output: [log]
   intake_flow_residual:
     class: A
-    description: Measured air mass flow against the speed-density estimate, relative.
+    description: "Measured air mass flow against the speed-density estimate, relative. Rule (D-103, provisional): (MAF_RATE - expected) / expected x 100 with expected = intake_flow_residual_ve_reference_pct / 100 x rho x engine_displacement_cm3 x ENGINE_SPEED / 120 (rho as in volumetric_efficiency)."
     catalog: Throttle and intake plausibility residuals
     unit: "%"
     range: [-100.0, 100.0]
@@ -954,6 +966,7 @@ signals:
       - did.ENGINE_SPEED
       - did.INTAKE_AIR_TEMP
       - const.engine_displacement_cm3
+      - const.intake_flow_residual_ve_reference_pct
     period_ms: 110
     stale_after_ms: 15000
     output: [log]
@@ -1068,7 +1081,7 @@ signals:
     output: [log]
   battery_rest_voltage:
     class: A
-    description: Key-on battery voltage before the crank.
+    description: "Key-on battery voltage before the crank. Rule (D-103): the BATTERY_VOLTAGE sample fresh at the last ENGINE_SPEED = 0 sample before a start (ENGINE_SPEED from 0 to above 0); one event per start."
     catalog: Battery rest voltage
     unit: V
     range: [0.0, 16.0]
@@ -1316,7 +1329,7 @@ signals:
     unit: s
     range: [0.0, 3600.0]
     resolution: 1.0
-    inputs: [did.COOLANT_TEMP, did.RUN_TIME_SINCE_START, const.derived_operating_coolant_degc]
+    inputs: [did.COOLANT_TEMP, did.RUN_TIME_SINCE_START, const.derived_operating_coolant_degc, did.ENGINE_SPEED]
     record: RIDE_THERMAL
     output: [log, ride_summary]
   ride_coolant_rate_max:
@@ -1375,12 +1388,12 @@ signals:
     output: [log, ride_summary]
   ride_fan_on_temperature:
     class: B
-    description: "Coolant temperature at the voltage step of the cooling fan switching on. Rule (D-103, provisional): the coolant temperature at the first BATTERY_VOLTAGE drop of at least ride_fan_on_temperature_voltage_step_v between two samples at steady RPM with COOLANT_TEMP above ride_fan_on_temperature_coolant_min_degc."
+    description: "Coolant temperature at the voltage step of the cooling fan switching on. Rule (D-103, provisional): the COOLANT_TEMP at the first BATTERY_VOLTAGE drop of at least ride_fan_on_temperature_voltage_step_v between two consecutive samples while at rest (VEHICLE_SPEED <= derived_moving_speed_min_kmh) with ENGINE_SPEED in the idle band and COOLANT_TEMP above ride_fan_on_temperature_coolant_min_degc."
     catalog: Cooling fan switch-on temperature
     unit: degC
     range: [60.0, 130.0]
     resolution: 0.5
-    inputs: [did.COOLANT_TEMP, did.BATTERY_VOLTAGE, const.ride_fan_on_temperature_voltage_step_v, const.ride_fan_on_temperature_coolant_min_degc]
+    inputs: [did.COOLANT_TEMP, did.BATTERY_VOLTAGE, const.ride_fan_on_temperature_voltage_step_v, const.ride_fan_on_temperature_coolant_min_degc, did.ENGINE_SPEED, did.VEHICLE_SPEED, const.derived_moving_speed_min_kmh, const.derived_idle_rpm_min, const.derived_idle_rpm_max]
     record: RIDE_THERMAL
     output: [log, ride_summary]
   ride_start_coolant_temp:
@@ -1490,7 +1503,7 @@ signals:
     unit: ms
     range: [0.0, 5000.0]
     resolution: 10.0
-    inputs: [did.THROTTLE_POS, did.ACTUAL_TORQUE_PCT, did.ENGINE_SPEED, const.throttle_torque_lag_step_min_pct, const.throttle_torque_lag_step_window_ms, const.throttle_torque_lag_search_max_ms]
+    inputs: [did.THROTTLE_POS, did.ACTUAL_TORQUE_PCT, const.throttle_torque_lag_step_min_pct, const.throttle_torque_lag_step_window_ms, const.throttle_torque_lag_search_max_ms]
     record: RIDE_ENGINE_STRESS
     output: [log, ride_summary]
   ride_shift_count:
@@ -1515,7 +1528,7 @@ signals:
     output: [log, ride_summary]
   ride_final_drive_ratio:
     class: B
-    description: "Final-drive ratio per gear at steady cruise in this ride. Rule (D-103, provisional): steady cruise = VEHICLE_SPEED spread within derived_steady_speed_spread_kmh for derived_steady_min_duration_ms in one gear above derived_calibration_speed_min_kmh."
+    description: "Final-drive ratio per gear at steady cruise in this ride. Rule (D-103, provisional): steady cruise = VEHICLE_SPEED spread within derived_steady_speed_spread_kmh for derived_steady_min_duration_ms in one valid gear_estimate above derived_calibration_speed_min_kmh; per gear n, the median over those samples of gearbox_ratio_measured x secondary_reduction_ratio / gear_ratio_n (the measured ratio already assumes secondary_reduction_ratio and the dynamic radius)."
     catalog: Final-drive ratio per gear (this ride)
     unit: ratio
     range: [2.0, 3.5]
@@ -1529,6 +1542,13 @@ signals:
       - const.derived_steady_speed_spread_kmh
       - const.derived_steady_min_duration_ms
       - const.derived_calibration_speed_min_kmh
+      - const.gear_ratio_1
+      - const.gear_ratio_2
+      - const.gear_ratio_3
+      - const.gear_ratio_4
+      - const.gear_ratio_5
+      - const.gear_ratio_6
+      - const.primary_reduction_ratio
     per_gear: true
     record: RIDE_DRIVETRAIN
     output: [log, ride_summary]
@@ -1588,7 +1608,7 @@ signals:
     output: [log, ride_summary]
   ride_aggressiveness_score:
     class: B
-    description: "Rider aggressiveness score from throttle rate, jerk, braking and shift features. Rule (D-103, provisional): 100 x the mean, over the features with data, of clamp(feature / ref, 0, 1) with equal weights: p95 throttle opening rate, p95 |jerk|, the largest braking-event peak, p95 RPM before an upshift."
+    description: "Rider aggressiveness score from throttle rate, jerk, braking and shift features. Rule (D-103, provisional): 100 x the mean, over the features with data, of clamp(feature / ref, 0, 1) with equal weights: p95 throttle opening rate (positive THROTTLE_POS slope), p95 |vehicle_jerk|, the largest braking_event peak (absolute), and p95 ENGINE_SPEED at the start of the upshifts (shift_event rows whose ENGINE_SPEED falls; start = row time minus the event duration)."
     catalog: Rider aggressiveness score
     unit: ""
     range: [0.0, 100.0]
@@ -1598,11 +1618,11 @@ signals:
       - derived.vehicle_jerk
       - derived.braking_event
       - derived.shift_event
-      - derived.launch_event
       - const.ride_aggressiveness_score_throttle_rate_ref_pct_s
       - const.ride_aggressiveness_score_jerk_ref_mps3
       - const.ride_aggressiveness_score_decel_ref_mps2
       - const.ride_aggressiveness_score_shift_rpm_ref
+      - did.ENGINE_SPEED
     record: RIDE_RIDER_STYLE
     output: [log, ride_summary]
   ride_cornering_aggressiveness:
