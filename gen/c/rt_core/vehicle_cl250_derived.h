@@ -214,7 +214,7 @@ extern "C" {
 #define VEHICLE_CL250_DERIVED_INPUT_DID (0u) /* index into vehicle_cl250_dids[] */
 #define VEHICLE_CL250_DERIVED_INPUT_SENSOR (1u) /* VEHICLE_CL250_SENSOR_* */
 #define VEHICLE_CL250_DERIVED_INPUT_DERIVED (2u) /* VEHICLE_CL250_DERIVED_* */
-#define VEHICLE_CL250_DERIVED_INPUT_MAX (5u)
+#define VEHICLE_CL250_DERIVED_INPUT_MAX (6u)
 #define VEHICLE_CL250_DERIVED_AXIS_MAX (2u)
 
 /* vehicle_cl250_window_t.opens_on and vehicle_cl250_window_condition_t.op. */

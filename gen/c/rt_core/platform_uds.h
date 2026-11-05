@@ -336,7 +336,7 @@ extern const platform_uds_did_t platform_uds_dids[PLATFORM_UDS_DID_COUNT];
 #define PLATFORM_UDS_RIDE_THERMAL_RIDE_THERMAL_CYCLE_COUNT_RANGE_MIN (0.0f) /* ride_thermal_cycle_count */
 #define PLATFORM_UDS_RIDE_THERMAL_RIDE_THERMAL_CYCLE_COUNT_RESOLUTION (1.0f)
 #define PLATFORM_UDS_RIDE_THERMAL_RIDE_FAN_ON_TEMPERATURE_BYTE (10u)
-#define PLATFORM_UDS_RIDE_THERMAL_RIDE_FAN_ON_TEMPERATURE_LENGTH (1u) /* Coolant temperature at the voltage step of the cooling fan switching on. Rule (D-103, provisional): the coolant temperature at the first BATTERY_VOLTAGE drop of at least ride_fan_on_temperature_voltage_step_v between two samples at steady RPM with COOLANT_TEMP above ride_fan_on_temperature_coolant_min_degc */
+#define PLATFORM_UDS_RIDE_THERMAL_RIDE_FAN_ON_TEMPERATURE_LENGTH (1u) /* Coolant temperature at the voltage step of the cooling fan switching on. Rule (D-103, provisional): the COOLANT_TEMP at the first BATTERY_VOLTAGE drop of at least ride_fan_on_temperature_voltage_step_v between two consecutive samples while at rest (VEHICLE_SPEED <= derived_moving_speed_min_kmh) with ENGINE_SPEED in the idle band and COOLANT_TEMP above ride_fan_on_temperature_coolant_min_degc */
 #define PLATFORM_UDS_RIDE_THERMAL_RIDE_FAN_ON_TEMPERATURE_MAX (0x8Cu) /* largest valid raw value */
 #define PLATFORM_UDS_RIDE_THERMAL_RIDE_FAN_ON_TEMPERATURE_NA (0xFFu) /* NOT_AVAILABLE (D-098) */
 #define PLATFORM_UDS_RIDE_THERMAL_RIDE_FAN_ON_TEMPERATURE_RANGE_MIN (60.0f) /* ride_fan_on_temperature */
@@ -476,13 +476,13 @@ extern const platform_uds_did_t platform_uds_dids[PLATFORM_UDS_DID_COUNT];
 #define PLATFORM_UDS_RIDE_CALIBRATION_RESERVED_BYTE (3u)
 #define PLATFORM_UDS_RIDE_CALIBRATION_RESERVED_MASK (0xFEu) /* Reserved, zero */
 #define PLATFORM_UDS_RIDE_CALIBRATION_SPEEDOMETER_ERROR_BYTE (4u)
-#define PLATFORM_UDS_RIDE_CALIBRATION_SPEEDOMETER_ERROR_LENGTH (2u) /* Mean ECU speed error against the GNSS speed at steady speed with a good fix. Rule (D-103, provisional): steady speed as in ride_final_drive_ratio, a 3D fix and gps_speed_accuracy <= derived_gnss_speed_accuracy_max_mps */
+#define PLATFORM_UDS_RIDE_CALIBRATION_SPEEDOMETER_ERROR_LENGTH (2u) /* Mean ECU speed error against the GNSS speed at steady speed with a good fix. Rule (D-103, provisional): steady speed = VEHICLE_SPEED spread within derived_steady_speed_spread_kmh for derived_steady_min_duration_ms above derived_calibration_speed_min_kmh (no gear condition); only samples with a 3D fix and gps_speed_accuracy <= derived_gnss_speed_accuracy_max_mps; error = mean of (ECU - GNSS) / GNSS x 100 */
 #define PLATFORM_UDS_RIDE_CALIBRATION_SPEEDOMETER_ERROR_MAX (0x0190u) /* largest valid raw value */
 #define PLATFORM_UDS_RIDE_CALIBRATION_SPEEDOMETER_ERROR_NA (0xFFFFu) /* NOT_AVAILABLE (D-098) */
 #define PLATFORM_UDS_RIDE_CALIBRATION_SPEEDOMETER_ERROR_RANGE_MIN (-20.0f) /* speedometer_error */
 #define PLATFORM_UDS_RIDE_CALIBRATION_SPEEDOMETER_ERROR_RESOLUTION (0.1f)
 #define PLATFORM_UDS_RIDE_CALIBRATION_EFFECTIVE_TYRE_RADIUS_BYTE (6u)
-#define PLATFORM_UDS_RIDE_CALIBRATION_EFFECTIVE_TYRE_RADIUS_LENGTH (2u) /* Effective rear tyre radius from the GNSS speed and the engine-side ratio at steady speed. Rule (D-103, provisional): the same samples as speedometer_error */
+#define PLATFORM_UDS_RIDE_CALIBRATION_EFFECTIVE_TYRE_RADIUS_LENGTH (2u) /* Effective rear tyre radius from the GNSS speed and the engine-side ratio at steady speed. Rule (D-103, provisional): the samples of speedometer_error that also have a valid gear_estimate n; per sample radius = GNSS speed / (2 pi x ENGINE_SPEED / 60 / (primary_reduction_ratio x gear_ratio_n x secondary_reduction_ratio)); the ride value is the median */
 #define PLATFORM_UDS_RIDE_CALIBRATION_EFFECTIVE_TYRE_RADIUS_MAX (0x05DCu) /* largest valid raw value */
 #define PLATFORM_UDS_RIDE_CALIBRATION_EFFECTIVE_TYRE_RADIUS_NA (0xFFFFu) /* NOT_AVAILABLE (D-098) */
 #define PLATFORM_UDS_RIDE_CALIBRATION_EFFECTIVE_TYRE_RADIUS_RANGE_MIN (0.25f) /* effective_tyre_radius */
@@ -511,7 +511,7 @@ extern const platform_uds_did_t platform_uds_dids[PLATFORM_UDS_DID_COUNT];
 #define PLATFORM_UDS_RIDE_RIDER_STYLE_RESERVED_BYTE (3u)
 #define PLATFORM_UDS_RIDE_RIDER_STYLE_RESERVED_MASK (0xFEu) /* Reserved, zero */
 #define PLATFORM_UDS_RIDE_RIDER_STYLE_RIDE_AGGRESSIVENESS_SCORE_BYTE (4u)
-#define PLATFORM_UDS_RIDE_RIDER_STYLE_RIDE_AGGRESSIVENESS_SCORE_LENGTH (2u) /* Rider aggressiveness score from throttle rate, jerk, braking and shift features. Rule (D-103, provisional): 100 x the mean, over the features with data, of clamp(feature / ref, 0, 1) with equal weights: p95 throttle opening rate, p95 |jerk|, the largest braking-event peak, p95 RPM before an upshift */
+#define PLATFORM_UDS_RIDE_RIDER_STYLE_RIDE_AGGRESSIVENESS_SCORE_LENGTH (2u) /* Rider aggressiveness score from throttle rate, jerk, braking and shift features. Rule (D-103, provisional): 100 x the mean, over the features with data, of clamp(feature / ref, 0, 1) with equal weights: p95 throttle opening rate (positive THROTTLE_POS slope), p95 |vehicle_jerk|, the largest braking_event peak (absolute), and p95 ENGINE_SPEED at the start of the upshifts (shift_event rows whose ENGINE_SPEED falls; start = row time minus the event duration) */
 #define PLATFORM_UDS_RIDE_RIDER_STYLE_RIDE_AGGRESSIVENESS_SCORE_MAX (0x03E8u) /* largest valid raw value */
 #define PLATFORM_UDS_RIDE_RIDER_STYLE_RIDE_AGGRESSIVENESS_SCORE_NA (0xFFFFu) /* NOT_AVAILABLE (D-098) */
 #define PLATFORM_UDS_RIDE_RIDER_STYLE_RIDE_AGGRESSIVENESS_SCORE_RANGE_MIN (0.0f) /* ride_aggressiveness_score */
