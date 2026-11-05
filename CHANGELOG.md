@@ -4,6 +4,8 @@ All notable changes to vehicle-defs. Semver (see CLAUDE.md): new message/signal 
 
 ## [Unreleased]
 
+## [0.24.0] — 2026-11-05
+
 MINOR: D-103 wiring fixes found by the vehicle-server reference review (D-103 item 5) and the D-093 amendment 3 addendum (docs). No DBC signal, ID, layout, scale, VSS path, DID, ride-record layout, poll, BLE, mailbox layout, `tester_policy`, D-020 golden copy or frame-gate change; rt-core's derived input table changes only by the added/removed DID and derived inputs of the listed (not rt-core-implemented) signals, and `VEHICLE_CL250_DERIVED_INPUT_MAX` goes 5 -> 6 (`effective_tyre_radius`), i.e. +2 B of const flash per table row; rt-core takes it at its next bump (a recompile, no code change).
 
 - **Derived inputs (D-103 item 5):** `wheel_slip` + `derived.vehicle_accel`; `launch_event` + `derived.gearbox_ratio_measured`; `ride_warmup_time` + `did.ENGINE_SPEED`; `ride_aggressiveness_score` + `did.ENGINE_SPEED`, − `derived.launch_event`; `throttle_torque_lag` − `did.ENGINE_SPEED`; `ride_final_drive_ratio` + `const.gear_ratio_1..6`, `const.primary_reduction_ratio`; `ride_fan_on_temperature` + `did.ENGINE_SPEED`, `did.VEHICLE_SPEED`, moving and idle-band constants; `effective_tyre_radius` + `did.ENGINE_SPEED`, `derived.gear_estimate`, reductions, gear ratios, − `const.rear_wheel_radius_dynamic_m`; `volumetric_efficiency` + `did.MAF_RATE`; `intake_flow_residual` + new provisional constant `intake_flow_residual_ve_reference_pct` (85 %). Rule sentences rewritten for these and `speedometer_error` (no gear condition) and `battery_rest_voltage` (new rule); sensor `unanswered_did_count` description = the BLE timed-out-request counter.
