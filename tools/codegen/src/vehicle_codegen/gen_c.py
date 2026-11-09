@@ -6,6 +6,7 @@ recursion and no string/DBC parsing (platform invariant 5).
 
 from __future__ import annotations
 
+import math
 import re
 from typing import Any
 
@@ -358,6 +359,10 @@ def _hex(value: int, width: int) -> str:
 
 
 def _c_float(value: float) -> str:
+    # ISSUES C-9 (1): a NaN or infinite table limit would make every range check in the
+    # generated C accept (or reject) everything, so it never reaches gen/.
+    if not math.isfinite(float(value)):
+        raise ValueError(f"non-finite value {value!r} cannot be emitted as a C float limit")
     text = repr(float(value))
     return f"{text}f"
 

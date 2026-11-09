@@ -31,6 +31,9 @@ jobs:
       - name: Generated code is up to date
         run: make drift
 
+      - name: D-020 gate under clang warnings + MemorySanitizer (ISSUES C-9)
+        run: make clang-gate
+
       # The MISRA gate needs a fixed cppcheck: Ubuntu's apt cppcheck (2.13) misses findings
       # that 2.22 reports (15.6 on misra/canary.c), so 2.22.0 is built once and cached.
       - name: Restore cppcheck 2.22.0

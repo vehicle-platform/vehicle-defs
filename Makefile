@@ -9,7 +9,7 @@ CPPCHECK ?= cppcheck
 MISRA_FLAGS := --std=c99 --language=c --platform=unix32 --enable=style --addon=misra \
 	--inline-suppr --quiet --suppress=missingIncludeSystem
 
-.PHONY: all gen check parse lint test drift misra clean
+.PHONY: all gen check parse lint test drift misra clang-gate clean
 
 all: check
 
@@ -37,6 +37,21 @@ drift: gen
 		git status --short -- gen; \
 		echo "gen/ is out of date: run 'make gen' and commit"; exit 1; \
 	fi; echo "drift: gen/ up to date"
+
+## clang-gate: the D-020 gate under clang's uninitialized-use warnings and the equivalence
+## harness under MemorySanitizer (Linux only), because GCC and cppcheck miss a forgotten
+## assignment in the gate (ISSUES C-9 (2)); CI runs it
+CLANG ?= clang
+CLANG_WARN := -Wsometimes-uninitialized -Wconditional-uninitialized
+clang-gate:
+	@for f in gen/c/*/vehicle_cl250.c; do \
+		$(CLANG) -std=c99 -Wall -Wextra -Werror $(CLANG_WARN) -I $$(dirname $$f) -c $$f -o /dev/null || exit 1; \
+	done; echo "clang-gate: warnings OK"
+	GATE_CC=$(CLANG) GATE_EXTRA_CFLAGS="$(CLANG_WARN)" $(CODEGEN) pytest -q tools/codegen/tests/test_gate_equivalence.py
+	@if [ "$$(uname -s)" = Linux ]; then \
+		GATE_CC=$(CLANG) GATE_EXTRA_CFLAGS="$(CLANG_WARN) -fsanitize=memory -fno-omit-frame-pointer -g" \
+			$(CODEGEN) pytest -q tools/codegen/tests/test_gate_equivalence.py -k single_exit; \
+	else echo "clang-gate: MemorySanitizer runs on Linux only, skipped here"; fi
 
 ## misra: cppcheck style + MISRA C:2012 on each gen/c node, blocking (D-046; misra/README.md)
 # The canary proves that the addon runs. A directory scan only sees headers that some .c

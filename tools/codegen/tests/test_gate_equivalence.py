@@ -12,7 +12,9 @@ find(), or what is written to `*out` (bit for bit, NaN included).
 """
 
 import ctypes
+import os
 import re
+import shlex
 import shutil
 import subprocess
 
@@ -20,9 +22,14 @@ import pytest
 
 from vehicle_codegen import config
 
-CC = shutil.which("gcc") or shutil.which("cc")
+# ISSUES C-9 (2): CI also runs the harness with clang (GATE_CC) and MemorySanitizer
+# (GATE_EXTRA_CFLAGS), because GCC and cppcheck miss a forgotten assignment in the gate.
+CC = os.environ.get("GATE_CC") or shutil.which("gcc") or shutil.which("cc")
 pytestmark = pytest.mark.skipif(CC is None, reason="no C compiler")
-FLAGS = ["-std=c99", "-Wall", "-Wextra", "-Werror", "-pedantic", "-Wshadow", "-Wconversion"]
+FLAGS = [
+    "-std=c99", "-Wall", "-Wextra", "-Werror", "-pedantic", "-Wshadow", "-Wconversion",
+    *shlex.split(os.environ.get("GATE_EXTRA_CFLAGS", "")),
+]  # fmt: skip
 GATE_DIR = config.GEN_DIR / "c" / "rt_core"  # conn and hil_sim carry the same file
 
 

@@ -55,6 +55,10 @@ def node_id(db: Database, node_name: str) -> int | None:
     return None
 
 
+# Widest signal the generated single-precision encode converts exactly (float mantissa).
+USE_FLOAT_MAX_BITS = 24
+
+
 def check_platform_dbc(db: Database) -> list[str]:
     errors: list[str] = []
     for name in ("GenMsgCycleTime", "E2E_Protected", "E2E_DataID", "NodeId"):
@@ -114,6 +118,13 @@ def check_platform_dbc(db: Database) -> list[str]:
         for sig in msg.signals:
             if not SIGNAL_NAME_RE.match(sig.name):
                 errors.append(f"{where}: signal {sig.name} must be SNAKE_CASE")
+            if sig.length > USE_FLOAT_MAX_BITS:
+                # ISSUES C-9 (4): the generated *_encode() (use_float) converts a float to the
+                # raw type without a range check; above 24 bits that conversion can overflow.
+                errors.append(
+                    f"{where}: signal {sig.name} is {sig.length} bits; the float encode "
+                    f"supports at most {USE_FLOAT_MAX_BITS}"
+                )
 
         protected = is_e2e_protected(msg, db)
         if rng.e2e_mandatory and not protected:
