@@ -159,3 +159,12 @@ CM_ BO_ 2024 "VERIFIED - log 3";
     assert any("Diag11" in e and "diagnostic ID" in e for e in errs)
     assert any("Broadcast" in e and "VERIFIED" in e for e in errs)
     assert not any("Broadcast" in e and "diagnostic" in e for e in errs)
+
+
+def test_signal_wider_than_the_float_encode_is_rejected(platform_text):
+    # ISSUES C-9 (4): the use_float encode has no range check above 24 bits. A fresh parse,
+    # never the session fixture, is widened after the strict parse.
+    db = parse_dbc(platform_text)
+    db.get_message_by_name("VehicleSpeed").get_signal_by_name("VEHICLE_SPEED").length = 25
+    errs = check_platform_dbc(db)
+    assert any("VEHICLE_SPEED is 25 bits" in e for e in errs)
