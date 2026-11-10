@@ -82,4 +82,5 @@ CONSTANTS = {
     "coast_down_min_segment_ms": (3000, "ms", "provisional"),
     "coast_down_min_samples": (30, "count", "provisional"),
     "coast_down_min_speed_spread_kmh": (20.0, "km/h", "provisional"),
+    "throttle_torque_lag_min_samples": (4, "count", "provisional"),
 }
