@@ -1578,7 +1578,8 @@ signals:
     output: [log, ride_summary]
   coast_down_cda:
     class: B
-    description: Drag area (CdA) from the speed decay of a coast-down with the clutch in or in neutral.
+    description: >-
+      Drag area (CdA) from the deceleration of a coast-down with the clutch in or in neutral. Rule (D-105, provisional): a coast tick is a vehicle_accel grid tick where neutral_coasting_state = neutral or clutch_state = disengaged and VEHICLE_SPEED is within coast_down_speed_min_kmh .. coast_down_speed_max_kmh, after the coast has lasted coast_down_min_segment_ms without a break. The IMU offset of the ride is the median, over its moving ticks (VEHICLE_SPEED > derived_moving_speed_min_kmh), of imu_accel_x - vehicle_accel - g * sin(atan(road_grade / 100)), imu_accel_x being the mean of its samples in the tick period. Per coast tick y = -(vehicle_wet_mass_kg + rider_mass_default_kg) * (imu_accel_x - offset) and x = 0.5 * air_density * v^2 (v in m/s); an ordinary least-squares fit y = F_roll + CdA * x over the ride's coast ticks gives coast_down_rolling_resistance = F_roll and coast_down_cda = CdA. The IMU reading contains g * sin(grade), so the grade cancels. NA with fewer than coast_down_min_samples coast ticks, a VEHICLE_SPEED spread of the coast ticks below coast_down_min_speed_spread_kmh, no offset (no moving tick with fresh IMU and road_grade samples), or a result outside the range.
     catalog: Coast-down drag
     unit: m2
     range: [0.1, 1.0]
@@ -1589,12 +1590,22 @@ signals:
       - derived.clutch_state
       - derived.neutral_coasting_state
       - derived.air_density
+      - derived.road_grade
+      - sensor.imu_accel_x
       - const.vehicle_wet_mass_kg
+      - const.rider_mass_default_kg
+      - const.derived_moving_speed_min_kmh
+      - const.coast_down_speed_min_kmh
+      - const.coast_down_speed_max_kmh
+      - const.coast_down_min_segment_ms
+      - const.coast_down_min_samples
+      - const.coast_down_min_speed_spread_kmh
     record: RIDE_DRIVETRAIN
     output: [log, ride_summary]
   coast_down_rolling_resistance:
     class: B
-    description: Rolling resistance force from the speed decay of a coast-down (F = a + b * v^2 fit).
+    description: >-
+      Rolling resistance force from the deceleration of a coast-down (F = F_roll + CdA * 0.5 * rho * v^2 fit). Rule (D-105, provisional): a coast tick is a vehicle_accel grid tick where neutral_coasting_state = neutral or clutch_state = disengaged and VEHICLE_SPEED is within coast_down_speed_min_kmh .. coast_down_speed_max_kmh, after the coast has lasted coast_down_min_segment_ms without a break. The IMU offset of the ride is the median, over its moving ticks (VEHICLE_SPEED > derived_moving_speed_min_kmh), of imu_accel_x - vehicle_accel - g * sin(atan(road_grade / 100)), imu_accel_x being the mean of its samples in the tick period. Per coast tick y = -(vehicle_wet_mass_kg + rider_mass_default_kg) * (imu_accel_x - offset) and x = 0.5 * air_density * v^2 (v in m/s); an ordinary least-squares fit y = F_roll + CdA * x over the ride's coast ticks gives coast_down_rolling_resistance = F_roll and coast_down_cda = CdA. The IMU reading contains g * sin(grade), so the grade cancels. NA with fewer than coast_down_min_samples coast ticks, a VEHICLE_SPEED spread of the coast ticks below coast_down_min_speed_spread_kmh, no offset (no moving tick with fresh IMU and road_grade samples), or a result outside the range.
     catalog: Coast-down drag
     unit: N
     range: [0.0, 200.0]
@@ -1605,7 +1616,16 @@ signals:
       - derived.clutch_state
       - derived.neutral_coasting_state
       - derived.air_density
+      - derived.road_grade
+      - sensor.imu_accel_x
       - const.vehicle_wet_mass_kg
+      - const.rider_mass_default_kg
+      - const.derived_moving_speed_min_kmh
+      - const.coast_down_speed_min_kmh
+      - const.coast_down_speed_max_kmh
+      - const.coast_down_min_segment_ms
+      - const.coast_down_min_samples
+      - const.coast_down_min_speed_spread_kmh
     record: RIDE_DRIVETRAIN
     output: [log, ride_summary]
   ride_distance_gps:

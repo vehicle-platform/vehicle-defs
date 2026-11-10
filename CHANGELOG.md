@@ -4,9 +4,17 @@ All notable changes to vehicle-defs. Semver (see CLAUDE.md): new message/signal 
 
 ## [Unreleased]
 
-## [0.28.0] — 2026-11-10
+## [0.28.0] — 2026-11-11
 
-MINOR, additive: the `data_quality_mask` bit layout (D-104, ISSUES E-30 (3)). No DBC signal, ID, layout, scale, VSS path, DID, poll, BLE, mailbox layout, `tester_policy` or gate change; rt-core's derived input table, golden vectors and ride-record layouts are unchanged (`const.*` inputs are not in the table, D-103 item 2).
+MINOR: the coast-down method (D-105) and the `data_quality_mask` bit layout (D-104, part 1 below).
+
+Part 2: the coast-down method (D-105, ISSUES E-30 (2)). No DBC signal, ID, scale, VSS path, DID, poll, BLE, mailbox layout, ride-record layout, `tester_policy` or gate change.
+
+- `coast_down_cda`, `coast_down_rolling_resistance`: the D-105 rule in their descriptions (IMU longitudinal acceleration, so the grade cancels; per-ride IMU offset from the median of imu_accel_x - vehicle_accel - g sin(grade); one least-squares fit of -m f_x = F_roll + CdA 0.5 rho v^2 over the coast ticks); new inputs `derived.road_grade`, `sensor.imu_accel_x` and seven `const.*`.
+- **Six provisional constants (D-105):** `rider_mass_default_kg` 80, `coast_down_speed_min_kmh` 20, `coast_down_speed_max_kmh` 100, `coast_down_min_segment_ms` 3000, `coast_down_min_samples` 30, `coast_down_min_speed_spread_kmh` 20.
+- **`VEHICLE_CL250_DERIVED_INPUT_MAX` 6 -> 7** (gen/c rt_core): the coast-down signals have seven non-constant inputs; rt-core's const input table gets one more slot per row. Both signals stay not ready on rt-core (no IMU input there yet), so its computed set and the golden vectors do not change.
+
+Part 1, additive: the `data_quality_mask` bit layout (D-104, ISSUES E-30 (3)). No DBC signal, ID, layout, scale, VSS path, DID, poll, BLE, mailbox layout, `tester_policy` or gate change; rt-core's derived input table, golden vectors and ride-record layouts are unchanged (`const.*` inputs are not in the table, D-103 item 2).
 
 - Derived signals may carry `bits:` (bit -> name; codegen checks unit enum, no `values`, range 0..2^(highest bit + 1) - 1, and that `poll_<N>ms` bits name each tester poll period once). gen/c `vehicle_cl250_derived.h`: `VEHICLE_CL250_DERIVED_BIT_DATA_QUALITY_MASK_<POLL_110MS ... POLL_10000MS | BUS_OFF | TESTER_STALL>` (1u ... 128u); Python `SIGNALS["data_quality_mask"]["bits"]`.
 - `data_quality_mask`: the D-104 rule in its description, new input `const.data_quality_tester_stall_gap_ms`.
