@@ -1204,7 +1204,9 @@ signals:
       invalidate it. Rule (D-104): bit poll_<N>ms is set when any polled DID with
       poll_period_ms N is older than its stale_after_ms, was never received, or got a
       negative response to its last request; a DID the tester stopped (D-068) or skipped
-      does not count (unanswered_did_count reports those). bus_off is set when
+      does not count (unanswered_did_count reports those). A consumer that sees only the
+      BLE records takes a stopped DID as a verified false DID whose last answer is NRC
+      0x31 with no positive answer earlier in the session (D-068 item 2). bus_off is set when
       can_bus_off_count is greater than at the previous sample (0 before the first);
       tester_stall when tester_step_gap_max is greater than
       data_quality_tester_stall_gap_ms. A stale or missing health input sets its bit
