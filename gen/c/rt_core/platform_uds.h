@@ -564,7 +564,7 @@ extern const platform_uds_did_t platform_uds_dids[PLATFORM_UDS_DID_COUNT];
 #define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_TESTER_RTT_MAX_RANGE_MIN (0.0f) /* ride_tester_rtt_max */
 #define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_TESTER_RTT_MAX_RESOLUTION (1.0f)
 #define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_TESTER_NRC78_COUNT_BYTE (15u)
-#define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_TESTER_NRC78_COUNT_LENGTH (4u) /* NRC 0x78 (response pending) answers in the ride. Rule (D-103): rttNrc78Count is a since-boot counter per rotating rttDid, so the ride value sums over the DIDs the last minus first value of each (a decrease = reboot: restart that DID) */
+#define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_TESTER_NRC78_COUNT_LENGTH (4u) /* NRC 0x78 (response pending) answers in the ride. Rule (D-103): tester_nrc78_count is a since-boot counter per rotating tester_rtt_did (the DID of the same packet), so the ride value sums over the DIDs the last minus first value of each (a decrease = reboot: restart that DID; a sample with tester_rtt_did 0 has no record and is skipped) */
 #define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_TESTER_NRC78_COUNT_MAX (0x0000FFFFu) /* largest valid raw value */
 #define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_TESTER_NRC78_COUNT_NA (0xFFFFFFFFu) /* NOT_AVAILABLE (D-098) */
 #define PLATFORM_UDS_RIDE_ECU_HEALTH_RIDE_TESTER_NRC78_COUNT_RANGE_MIN (0.0f) /* ride_tester_nrc78_count */

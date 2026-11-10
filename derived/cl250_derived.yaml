@@ -210,6 +210,13 @@ sensors:
     stale_after_ms: 300
     phase0: ble.telemetry.stepGapMaxMs
     rt_core: uds.RT_CORE_HEALTH.STEP_GAP_MAX_MS
+  tester_rtt_did:
+    description: DID of the packet's rotating round-trip record that the tester counters rttMinMs .. rttNrc78Count belong to (D-058 item 1); 0 = no record.
+    unit: ""
+    sample_period_ms: 100
+    stale_after_ms: 300
+    phase0: ble.telemetry.rttDid
+    rt_core: null
 
 ride_summary_records:
   RIDE_USAGE:
@@ -1706,12 +1713,12 @@ signals:
     output: [log, ride_summary]
   ride_tester_nrc78_count:
     class: B
-    description: "NRC 0x78 (response pending) answers in the ride. Rule (D-103): rttNrc78Count is a since-boot counter per rotating rttDid, so the ride value sums over the DIDs the last minus first value of each (a decrease = reboot: restart that DID)."
+    description: "NRC 0x78 (response pending) answers in the ride. Rule (D-103): tester_nrc78_count is a since-boot counter per rotating tester_rtt_did (the DID of the same packet), so the ride value sums over the DIDs the last minus first value of each (a decrease = reboot: restart that DID; a sample with tester_rtt_did 0 has no record and is skipped)."
     catalog: ECU/bus health per ride
     unit: count
     range: [0.0, 65535.0]
     resolution: 1.0
-    inputs: [sensor.tester_nrc78_count]
+    inputs: [sensor.tester_nrc78_count, sensor.tester_rtt_did]
     record: RIDE_ECU_HEALTH
     output: [log, ride_summary]
   ride_tester_step_gap_max:

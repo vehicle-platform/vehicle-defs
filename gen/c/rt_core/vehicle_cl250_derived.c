@@ -25,6 +25,7 @@ const uint16_t vehicle_cl250_sensor_stale_after_ms[VEHICLE_CL250_SENSOR_COUNT] =
     300u, /* tester_rtt_max */
     300u, /* tester_nrc78_count */
     300u, /* tester_step_gap_max */
+    300u, /* tester_rtt_did */
 };
 
 const vehicle_cl250_derived_t vehicle_cl250_derived[VEHICLE_CL250_DERIVED_COUNT] = {
@@ -912,8 +913,8 @@ const vehicle_cl250_derived_t vehicle_cl250_derived[VEHICLE_CL250_DERIVED_COUNT]
         VEHICLE_CL250_DERIVED_CLASS_RIDE, false, false, false,
         0u, 0u, 0u, VEHICLE_CL250_RIDE_ECU_HEALTH_DID, 1u,
         0.0f, 65535.0f, 1.0f,
-        1u, 0u,
-        { { VEHICLE_CL250_DERIVED_INPUT_SENSOR, VEHICLE_CL250_SENSOR_TESTER_NRC78_COUNT }, { 0u, 0u }, { 0u, 0u }, { 0u, 0u }, { 0u, 0u }, { 0u, 0u } },
+        2u, 0u,
+        { { VEHICLE_CL250_DERIVED_INPUT_SENSOR, VEHICLE_CL250_SENSOR_TESTER_NRC78_COUNT }, { VEHICLE_CL250_DERIVED_INPUT_SENSOR, VEHICLE_CL250_SENSOR_TESTER_RTT_DID }, { 0u, 0u }, { 0u, 0u }, { 0u, 0u }, { 0u, 0u } },
         { { 0u, 0u, 0.0f, 0.0f }, { 0u, 0u, 0.0f, 0.0f } }
     },
     { /* ride_tester_step_gap_max [ms] */
