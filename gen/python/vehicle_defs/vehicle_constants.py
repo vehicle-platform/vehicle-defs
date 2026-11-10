@@ -76,4 +76,10 @@ CONSTANTS = {
     "j1349_reference_temperature_c": (25.0, "degC", "provisional"),
     "dry_air_gas_constant_j_per_kg_k": (287.05, "J/(kg K)", "calculated"),
     "data_quality_tester_stall_gap_ms": (500, "ms", "provisional"),
+    "rider_mass_default_kg": (80.0, "kg", "provisional"),
+    "coast_down_speed_min_kmh": (20.0, "km/h", "provisional"),
+    "coast_down_speed_max_kmh": (100.0, "km/h", "provisional"),
+    "coast_down_min_segment_ms": (3000, "ms", "provisional"),
+    "coast_down_min_samples": (30, "count", "provisional"),
+    "coast_down_min_speed_spread_kmh": (20.0, "km/h", "provisional"),
 }

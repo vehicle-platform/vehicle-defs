@@ -855,6 +855,14 @@ Both modes share the scenario format and the evaluation/report. Before hardware 
 - Not chosen: 16 bits with spare poll-group bits (wider range, +1 byte per log sample, golden vectors regenerated, for vehicles that do not exist yet); one bit per DID (40 DIDs do not fit).
 - Why: the existing range stays, the bit positions are no longer hand-written in the server, rt-core or the analyzer, and the per-vehicle poll table stays the single source (D-078).
 
+**D-105 — Coast-down method: IMU longitudinal acceleration with a per-ride offset, one least-squares fit per ride** (2026-11-11, user: the grade can be taken from the IMU; chose the recommended automatic offset; ISSUES E-30 (2), D-070, D-103, D-029)
+1. **Model:** during a coast (clutch disengaged or neutral) m * dv/dt = -F_roll - 0.5 * rho * CdA * v^2 - m * g * sin(grade), and the IMU longitudinal axis reads f_x = dv/dt + g * sin(grade), so -m * f_x = F_roll + CdA * (0.5 * rho * v^2): the grade cancels and needs no separate estimate.
+2. **IMU offset per ride:** the zero-g offset and the mounting pitch (MPU-6500 up to +-60 mg, about 150 N on 252 kg, more than the rolling resistance) are removed by the median, over the ride's moving ticks, of imu_accel_x - vehicle_accel - g * sin(atan(road_grade / 100)) (road_grade from the barometric altitude). No user calibration; a remounted IMU corrects itself at the next ride.
+3. **Samples and fit:** coast ticks on the vehicle_accel grid with VEHICLE_SPEED 20..100 km/h after 3 s of unbroken coast; one ordinary least-squares fit per ride; NA below 30 ticks, below a 20 km/h speed spread, without an offset, or out of range. Mass = vehicle_wet_mass_kg + the new `rider_mass_default_kg` 80 (the D-029 rider). Six new provisional constants (`rider_mass_default_kg`, `coast_down_speed_min_kmh`, `coast_down_speed_max_kmh`, `coast_down_min_segment_ms`, `coast_down_min_samples`, `coast_down_min_speed_spread_kmh`), rule text in both signal descriptions.
+4. **rt-core:** the two signals stay NOT_READY until rt-core has an IMU input (`imu_accel_x` has `rt_core: null`); the fit itself needs only five running sums, the offset median a bounded histogram. The vehicle-server reference computes them from Phase 0 data. `VEHICLE_CL250_DERIVED_INPUT_MAX` 6 -> 7 (one more slot in the const input table).
+- Not chosen: a fixed calibration constant measured on level ground (needs a user measurement, wrong after a remount); a per-segment fit with a median (needs a wide speed range in every segment, fewer results); a fixed Crr with a CdA-only fit (rolling resistance would no longer be measured); speed-derived deceleration with a flat-road assumption (grade bias).
+- Why: the IMU removes the grade without a model, the per-ride offset removes the sensor and mounting error without a user step, and the provisional numbers are replaced from G1 coast data.
+
 ## Open questions (awaiting decision)
 
 | ID | Question | When to resolve | Note |
