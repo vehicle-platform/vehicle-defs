@@ -25,6 +25,8 @@ The **single source of truth for signals** in the motorcycle platform. The CAN m
 /limits/platform_limits.yaml → k_yellow/k_red, µ/mass fallbacks, rt-core speed rules, per-node scope (provisional, D-029, D-048)
 /vehicle/cl250_constants.yaml → CL250 constants for the derived signals, status + source per value (D-070)
 /derived/cl250_derived.yaml → derived signal definitions + non-DID sensor inputs + ride-summary DIDs 0xFD40–0xFD5F; no formulas (D-070)
+/faults/catalog.yaml → vehicle-independent fault catalog, FMEA style, sourced entries (D-084); no source = CONFIRM, not displayable
+/vehicle/cl250_faults.yaml → catalog entries that apply to the CL250; their signals must exist in defs (D-084, D-078)
 /mailbox/h755_mailbox.yaml → STM32H755 M7↔M4 mailbox: region, slot order, HSEM IDs; frame IDs/lengths come from platform.dbc (D-072 item 4c, D-093)
 /tools/codegen/       → Python: cantools + vss-tools; generates node-filtered C, Python, Dart, VSS JSON
 /gen/                 → GENERATED output (no manual edits; `make gen` + commit before tagging): `c/<node>`, `python/vehicle_defs`, `dart/vehicle_defs` (BLE schema), `vss`

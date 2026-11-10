@@ -5,4 +5,5 @@
 # limits (platform_limits.yaml), ble (BLE packet schema, D-061),
 # vehicle_constants (CL250 constants for the derived signals, D-070),
 # vehicle_derived (derived signal definitions, D-070),
-# mailbox (STM32H755 M7<->M4 mailbox layout, D-093).
+# mailbox (STM32H755 M7<->M4 mailbox layout, D-093),
+# faults (fault catalog and CL250 applicability, D-084).

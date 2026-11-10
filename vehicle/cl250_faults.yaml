@@ -1,0 +1,6 @@
+# CL250 fault applicability (D-084 item 2, D-078): the faults/catalog.yaml entries that apply
+# to this vehicle. Every symptom and `needs` signal of an applied entry must exist in the
+# CL250 defs (polled DIDs in uds/vehicle_cl250.yaml, derived signals and sensors in
+# derived/cl250_derived.yaml); codegen refuses otherwise.
+schema_version: 1
+applies: [CHG-001, CHG-002, CHG-003, CHG-004, CHG-005, BAT-001, BAT-002, BAT-003, BAT-004, BAT-005, COL-001, COL-002, COL-003, COL-004, COL-005, COL-006]
