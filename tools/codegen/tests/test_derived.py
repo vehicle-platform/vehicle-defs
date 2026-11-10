@@ -382,3 +382,21 @@ def test_generated_c_names_every_enum_value(doc, refs):
     assert gen_python.generate_derived_py(doc).count("'values': {") == len(
         [s for s in doc["signals"].values() if "values" in s]
     )
+
+
+def test_timing_macros_equal_the_table_data(doc, refs):
+    """Static sizing in rt-core uses these compile-time copies; they must equal the tables."""
+    h = gen_c.generate_derived_c(doc, refs["constants"])["vehicle_cl250_derived.h"]
+    for n in derived.rt_core_signals(doc):
+        sig = doc["signals"][n]
+        for key, macro in (("period_ms", "PERIOD_MS"), ("window_ms", "WINDOW_MS")):
+            line = f"#define VEHICLE_CL250_{macro}_{n.upper()} ("
+            assert (line in h) == (key in sig), n
+            if key in sig:
+                assert f"{line}{sig[key]}u)" in h
+    for key, w in doc["windows"].items():
+        line = f"#define VEHICLE_CL250_MAX_DURATION_MS_{key} ("
+        assert (line in h) == ("max_duration_ms" in w)
+    vh = gen_c.generate_vehicle_c(refs["vehicle"], doc)["vehicle_cl250.h"]
+    for d in refs["vehicle"]["dids"]:
+        assert f"#define VEHICLE_CL250_POLL_MS_{d['name']} ({d['poll_period_ms']}u)" in vh
