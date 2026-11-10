@@ -4,6 +4,13 @@ All notable changes to vehicle-defs. Semver (see CLAUDE.md): new message/signal 
 
 ## [Unreleased]
 
+## [0.26.0] — 2026-11-10
+
+MINOR: declared inputs that no rule reads are removed (ISSUES E-30 (8); D-095 item 1: a declared input that the reference or rt-core never reads is a bug, corrected in defs without inventing a rule). No description, value, DBC signal, ID, layout, scale, VSS path, DID, ride-record layout, poll, BLE, mailbox layout, `tester_policy`, D-020 golden copy or frame-gate change; `VEHICLE_CL250_DERIVED_INPUT_MAX` stays 6.
+
+- `fuel_level_filtered`: `did.VEHICLE_SPEED`. `clutch_state`: `const.derived_throttle_closed_max_pct`. `clutch_slip_ratio`: `did.THROTTLE_POS`. `cold_engine_abuse`: `did.ENGINE_OIL_TEMP`. `launch_event`: `did.ENGINE_SPEED`, `did.THROTTLE_POS`, `derived.gear_estimate`, `const.gear_ratio_2..6`. `ride_warmup_time`: `did.RUN_TIME_SINCE_START`. `ride_final_drive_ratio`: `did.THROTTLE_POS`, `const.primary_reduction_ratio`.
+- **Outputs can move:** both the vehicle-server reference and rt-core start a class-A signal's grid at the latest first sample of its declared inputs and need every declared input present, so a signal no longer waits for an input it never reads. Consumers: **vehicle-server** drops its `KNOWN_UNUSED` audit entries and the "declared, not used" notes and regenerates the golden vectors; **vehicle-rt-core** recompiles (its derived input table `vehicle_cl250_derived.c` changes) and takes the regenerated vectors.
+
 ## [0.25.0] — 2026-11-10
 
 MINOR, additive: four derived-signal constants and the codes of three enum signals that the consumers hand-wrote until now (ISSUES E-30 (7), (10)); values unchanged, so no derived output changes. No DBC signal, ID, layout, scale, VSS path, DID, ride-record layout, poll, BLE, mailbox layout, `tester_policy`, D-020 golden copy or frame-gate change; rt-core's derived input table (`vehicle_cl250_derived.c`) is unchanged (constants are not table inputs); `vehicle_cl250_derived.h` only gains the enum-code defines.
