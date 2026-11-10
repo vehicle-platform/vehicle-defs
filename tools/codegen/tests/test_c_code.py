@@ -356,6 +356,7 @@ class ScanEntry(ctypes.Structure):
         ("bitmap_offset", ctypes.c_uint8),
         ("after", ctypes.c_uint8),
         ("after_id", ctypes.c_uint8),
+        ("sensitive", ctypes.c_bool),
     ]
 
 
@@ -369,6 +370,7 @@ def test_discovery_table_matches_yaml_and_passes_the_gate(lib, vehicle):
         req = bytes(row.request[: row.size])
         assert list(req) == e["request"], e["name"]
         assert row.bitmap_offset == (len(req) if e.get("bitmap") else 0), e["name"]
+        assert row.sensitive == bool(e.get("sensitive")), e["name"]
         after = e.get("after")
         assert row.after == (index[after["name"]] if after else 0xFF), e["name"]
         assert row.after_id == (after["id"] if after else 0), e["name"]

@@ -137,7 +137,9 @@ discovery_scan:
     - {name: OBD_PIDS_E1_FF, request: [0x01, 0xE0], bitmap: true, after: {name: OBD_PIDS_C1_E0, id: 0xE0}}
     # OBD mode 0x09: supported infotypes, then the ones with a fixed meaning on CAN.
     - {name: OBD_INFOTYPES_01_20, request: [0x09, 0x00], bitmap: true}
-    - {name: OBD_VIN, request: [0x09, 0x02], after: {name: OBD_INFOTYPES_01_20, id: 0x02}}
+    # sensitive (D-033, ISSUES E-15 (1)): the answer identifies the vehicle; the probe prints
+    # the WMI only and never the full answer.
+    - {name: OBD_VIN, request: [0x09, 0x02], after: {name: OBD_INFOTYPES_01_20, id: 0x02}, sensitive: true}
     - {name: OBD_CALID, request: [0x09, 0x04], after: {name: OBD_INFOTYPES_01_20, id: 0x04}}
     - {name: OBD_CVN, request: [0x09, 0x06], after: {name: OBD_INFOTYPES_01_20, id: 0x06}}
     - {name: OBD_IPT, request: [0x09, 0x08], after: {name: OBD_INFOTYPES_01_20, id: 0x08}}
