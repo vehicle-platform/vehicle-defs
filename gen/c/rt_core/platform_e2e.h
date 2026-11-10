@@ -12,6 +12,21 @@
 extern "C" {
 #endif
 
+/* Standard-ID ranges of the platform bus whose messages must be E2E-protected
+ * (ARCHITECTURE section 4, codegen config ID_RANGES): a sender can refuse to put an
+ * unprotected frame there (ISSUES E-14 (5)). */
+#define PLATFORM_E2E_RANGE_SAFETY_FIRST_ID (0x010u)
+#define PLATFORM_E2E_RANGE_SAFETY_LAST_ID (0x07Fu)
+#define PLATFORM_E2E_RANGE_HEARTBEAT_FIRST_ID (0x080u)
+#define PLATFORM_E2E_RANGE_HEARTBEAT_LAST_ID (0x08Fu)
+/* True for a standard ID in any E2E-mandatory range; extended IDs are outside the plan. */
+static inline bool platform_e2e_id_mandatory(uint32_t id, bool extended)
+{
+    return (!extended) &&
+           (((id >= PLATFORM_E2E_RANGE_SAFETY_FIRST_ID) && (id <= PLATFORM_E2E_RANGE_SAFETY_LAST_ID)) ||
+           ((id >= PLATFORM_E2E_RANGE_HEARTBEAT_FIRST_ID) && (id <= PLATFORM_E2E_RANGE_HEARTBEAT_LAST_ID)));
+}
+
 /* EkfLean 0x020, cycle 20 ms, sender RT_CORE */
 #define PLATFORM_EKF_LEAN_E2E_DATA_ID (0x1020u)
 #define PLATFORM_EKF_LEAN_E2E_TIMEOUT_MS (60u)

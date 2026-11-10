@@ -117,3 +117,51 @@ def test_wrong_crc_keeps_receiver_unsynced():
     assert e2e.check(DATA_ID, 1, T, bytes(bad), rx, 0) == S.WRONG_CRC
     assert rx.synced is False
     assert e2e.check_timeout(rx, T, 0) == S.NO_NEW_DATA
+
+
+def test_e2e_id_ranges_are_exported_for_every_c_target():
+    """ISSUES E-14 (5): senders read the E2E-mandatory platform ID ranges from gen/."""
+    from vehicle_codegen import config, gen_c
+    from vehicle_codegen.dbc_checks import load_dbc
+
+    db = load_dbc(config.PLATFORM_DBC)
+    mandatory = [r for r in config.ID_RANGES if r.e2e_mandatory]
+    assert {r.name for r in mandatory} == {"safety", "heartbeat"}
+    for target in config.C_TARGETS:
+        h = gen_c.generate_e2e_c(db, target)["platform_e2e.h"]
+        for r in mandatory:
+            name = r.name.upper()
+            assert f"#define PLATFORM_E2E_RANGE_{name}_FIRST_ID (0x{r.first:03X}u)" in h
+            assert f"#define PLATFORM_E2E_RANGE_{name}_LAST_ID (0x{r.last:03X}u)" in h
+
+
+def test_e2e_id_mandatory_predicate_matches_the_ranges(tmp_path):
+    """The generated platform_e2e_id_mandatory() agrees with ID_RANGES at every 11-bit ID."""
+    import shutil
+    import subprocess
+
+    from vehicle_codegen import config
+
+    cc = shutil.which("gcc") or shutil.which("cc")
+    if cc is None:
+        import pytest
+
+        pytest.skip("no C compiler")
+    gen = config.GEN_DIR / "c" / "rt_core"
+    src = tmp_path / "pred.c"
+    src.write_text(
+        '#include <stdio.h>\n#include "platform_e2e.h"\n'
+        "int main(void) { for (unsigned id = 0u; id < 0x800u; id++) {"
+        ' printf("%u%u", platform_e2e_id_mandatory(id, false) ? 1u : 0u,'
+        " platform_e2e_id_mandatory(id, true) ? 1u : 0u); } return 0; }\n"
+    )
+    exe = tmp_path / "pred"
+    subprocess.run(
+        [cc, "-std=c99", "-Wall", "-Wextra", "-Werror", "-I", str(gen), str(src), "-o", str(exe)],
+        check=True,
+    )
+    out = subprocess.run([str(exe)], capture_output=True, text=True, check=True).stdout
+    for frame_id in range(0x800):
+        want = any(r.e2e_mandatory and r.contains(frame_id) for r in config.ID_RANGES)
+        assert out[2 * frame_id] == ("1" if want else "0"), hex(frame_id)
+        assert out[2 * frame_id + 1] == "0"  # an extended ID is never in the plan's ranges
