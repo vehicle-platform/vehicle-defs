@@ -407,6 +407,977 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                                  'https://www.rideapart.com/features/253816/motorcycle-cooling-systems-doctor-moto/ '
                                  '(generic); search summary only, not opened',
                           'confidence': 'low'}],
+             'displayable': False},
+ 'IGN-001': {'id': 'IGN-001',
+             'subsystem': 'ignition',
+             'root_cause': 'Crankshaft position (CKP) sensor or its wiring gives no signal',
+             'symptoms': [{'signal': 'did.ENGINE_SPEED',
+                           'direction': 'absent',
+                           'condition': 'cranking, RPM stays at 0 while the starter turns '
+                                        '(engine cranks but does not start)'}],
+             'needs': ['did.ENGINE_SPEED'],
+             'rating': {'severity': 8, 'occurrence': 4, 'detectability': 3},
+             'detectable_now': True,
+             'advise_stop': True,
+             'rider_text': 'The engine does not see its crank position, so it will not start '
+                           'or may cut out. Do not rely on it; stop safely and have it '
+                           'inspected.',
+             'action': 'Check CKP sensor connector and harness for chafing, corrosion and oil; '
+                       'compare sensor resistance and gap with the service manual; read any '
+                       'stored DTC with the Honda diagnostic tool.',
+             'sources': [{'ref': 'Crankshaft/camshaft position sensors, symptoms and testing — '
+                                 "Danny's Engine Portal, n.d., "
+                                 'https://dannysengineportal.com/crankshaft-camshaft-position-sensors/',
+                          'confidence': 'low'},
+                         {'ref': "Troubleshooting 'Engine does not start or is hard to start' "
+                                 '(lists faulty CKP sensor, ignition coil, spark plug, fuel '
+                                 "pump) — Honda CRF250R owner's manual (other model, text read "
+                                 'from the PDF), bike-parts.fr, '
+                                 'https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CRF250RJ_EN/2500_2500/0152.pdf',
+                          'confidence': 'medium'}],
+             'displayable': True},
+ 'IGN-002': {'id': 'IGN-002',
+             'subsystem': 'ignition',
+             'root_cause': 'Intermittent CKP sensor or connector fault (heat or vibration '
+                           'sensitive), engine cuts out and restarts after cooling',
+             'symptoms': [{'signal': 'did.ENGINE_SPEED',
+                           'direction': 'unstable',
+                           'condition': 'warm_idle or cruise, RPM suddenly drops to zero then '
+                                        'recovers, or engine stalls hot and restarts after '
+                                        'cooling'}],
+             'needs': ['did.ENGINE_SPEED'],
+             'rating': {'severity': 8, 'occurrence': 4, 'detectability': 5},
+             'detectable_now': True,
+             'advise_stop': True,
+             'rider_text': 'The engine may suddenly cut out, which is dangerous in traffic or '
+                           'in a corner. Stop safely and have it inspected before riding '
+                           'again.',
+             'action': 'Log RPM while heating and wiggling the harness; inspect CKP connector '
+                       'pins and wiring; replace sensor if the signal drops out. Faults may '
+                       'not set a DTC.',
+             'sources': [{'ref': "Crankshaft/camshaft position sensors — Danny's Engine "
+                                 'Portal, n.d., '
+                                 'https://dannysengineportal.com/crankshaft-camshaft-position-sensors/ '
+                                 '(states a sensor may work cold but fail hot; intermittent '
+                                 'failures may not set a code; wiring problems very common)',
+                          'confidence': 'low'},
+                         {'ref': 'Crankshaft position sensor: how it works, symptoms — '
+                                 'Samarins, n.d., '
+                                 'https://samarins.com/glossary/crank_sensor.html '
+                                 '(car-focused: random stall then restart, RPM drop to zero on '
+                                 'scan tool)',
+                          'confidence': 'low'}],
+             'displayable': False},
+ 'IGN-003': {'id': 'IGN-003',
+             'subsystem': 'ignition',
+             'root_cause': 'Weak or failing ignition coil (single coil, so a failure means '
+                           'misfire on every cycle)',
+             'symptoms': [{'signal': 'derived.idle_rpm_std',
+                           'direction': 'up',
+                           'condition': 'warm_idle, uneven idle from inconsistent spark'},
+                          {'signal': 'did.ENGINE_SPEED',
+                           'direction': 'unstable',
+                           'condition': 'cruise under load, stutter or power loss that worsens '
+                                        'under load'}],
+             'needs': ['derived.idle_rpm_std', 'did.ENGINE_SPEED'],
+             'rating': {'severity': 7, 'occurrence': 4, 'detectability': 4},
+             'detectable_now': True,
+             'advise_stop': False,
+             'rider_text': 'The engine may stumble, lose power or be hard to start because the '
+                           'spark is weak. Do not keep riding on it; have the ignition coil '
+                           'and spark plug checked soon.',
+             'action': 'Check coil primary/secondary resistance against the service manual, '
+                       'inspect plug cap and wire, replace spark plug and coil as needed. On a '
+                       'single-cylinder engine a dead coil also means no start (inference from '
+                       'the CRF250R troubleshooting list).',
+             'sources': [{'ref': '9 symptoms of a bad ignition coil — Identifix, n.d., '
+                                 'https://www.identifix.com/blogs/9-symptoms-of-a-bad-ignition-coil/ '
+                                 '(car-focused: misfire worse under load, rough idle, hard '
+                                 'start)',
+                          'confidence': 'low'},
+                         {'ref': "Troubleshooting 'Engine does not start or is hard to start' "
+                                 "— Honda CRF250R owner's manual (other model), "
+                                 'https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CRF250RJ_EN/2500_2500/0152.pdf '
+                                 '(lists faulty ignition coil, broken or shorted spark plug '
+                                 'wire)',
+                          'confidence': 'medium'}],
+             'displayable': True},
+ 'IGN-004': {'id': 'IGN-004',
+             'subsystem': 'ignition',
+             'root_cause': 'Fouled, worn or wrong-gap spark plug (or wrong heat range)',
+             'symptoms': [{'signal': 'derived.idle_rpm_std',
+                           'direction': 'up',
+                           'condition': 'warm_idle, rough idle from intermittent misfire'},
+                          {'signal': 'did.ENGINE_SPEED',
+                           'direction': 'unstable',
+                           'condition': 'cranking, longer cranking before it fires (inference: '
+                                        'shows as slow RPM rise)'}],
+             'needs': ['derived.idle_rpm_std', 'did.ENGINE_SPEED'],
+             'rating': {'severity': 4, 'occurrence': 6, 'detectability': 4},
+             'detectable_now': True,
+             'advise_stop': False,
+             'rider_text': 'A worn or dirty spark plug can make starting hard and the idle '
+                           'rough. Have the plug checked and replaced if needed.',
+             'action': 'Inspect plug condition, heat range and gap against the service manual; '
+                       'replace; check for oil or rich-mixture cause of fouling.',
+             'sources': [{'ref': "Troubleshooting 'Engine does not start or is hard to start' "
+                                 "— Honda CRF250R owner's manual (other model), "
+                                 'https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CRF250RJ_EN/2500_2500/0152.pdf '
+                                 '(lists fouled spark plug, incorrect plug heat range and gap, '
+                                 'dirty air cleaner)',
+                          'confidence': 'medium'},
+                         {'ref': '9 symptoms of a bad ignition coil — Identifix, n.d., '
+                                 'https://www.identifix.com/blogs/9-symptoms-of-a-bad-ignition-coil/ '
+                                 '(hard start and rough idle from weak spark)',
+                          'confidence': 'low'}],
+             'displayable': True},
+ 'IGN-005': {'id': 'IGN-005',
+             'subsystem': 'ignition',
+             'root_cause': 'Loose or corroded ignition-system connector or ground (inference), '
+                           'voltage drop while cranking or riding',
+             'symptoms': [{'signal': 'derived.cranking_dip',
+                           'direction': 'up',
+                           'condition': 'cranking, deeper battery-voltage dip than normal '
+                                        '(inference)'},
+                          {'signal': 'did.BATTERY_VOLTAGE',
+                           'direction': 'unstable',
+                           'condition': 'cruise, voltage flicker coinciding with RPM glitches '
+                                        '(inference)'}],
+             'needs': ['derived.cranking_dip', 'did.BATTERY_VOLTAGE'],
+             'rating': {'severity': 8, 'occurrence': 4, 'detectability': 5},
+             'detectable_now': True,
+             'advise_stop': True,
+             'rider_text': 'A loose electrical connection can make the engine cut out without '
+                           'warning. Stop safely and have the wiring inspected.',
+             'action': 'Check battery terminals, main fuse and ignition-system connectors (the '
+                       'CRF250R list names loose or disconnected ignition system wires); clean '
+                       'and tighten.',
+             'sources': [{'ref': "Troubleshooting 'Engine does not start or is hard to start' "
+                                 "— Honda CRF250R owner's manual (other model), "
+                                 'https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CRF250RJ_EN/2500_2500/0152.pdf '
+                                 '(lists loose or disconnected battery terminals, loose '
+                                 'ignition system wires, blown main fuse)',
+                          'confidence': 'medium'}],
+             'displayable': True},
+ 'FUE-001': {'id': 'FUE-001',
+             'subsystem': 'fuel_air',
+             'root_cause': 'Intake (vacuum) leak, cracked intake boot or loose '
+                           'throttle-body/manifold joint',
+             'symptoms': [{'signal': 'did.LONG_TERM_FUEL_TRIM_B1',
+                           'direction': 'up',
+                           'condition': 'warm_idle, positive trim that falls toward zero at '
+                                        'higher RPM'},
+                          {'signal': 'did.INTAKE_MAP',
+                           'direction': 'up',
+                           'condition': 'warm_idle, intake vacuum lower than normal (MAP '
+                                        'closer to ambient)'},
+                          {'signal': 'derived.idle_rpm_std',
+                           'direction': 'up',
+                           'condition': 'warm_idle, rough or hunting idle'}],
+             'needs': ['did.LONG_TERM_FUEL_TRIM_B1', 'did.INTAKE_MAP', 'derived.idle_rpm_std'],
+             'rating': {'severity': 5, 'occurrence': 4, 'detectability': 5},
+             'detectable_now': True,
+             'advise_stop': False,
+             'rider_text': 'The engine may idle roughly, hesitate or run lean. Have the intake '
+                           'hoses and joints checked soon; a lean engine can run hot.',
+             'action': 'Inspect intake boot, throttle-body and manifold seals and vacuum '
+                       'lines; smoke test; recheck trims after repair.',
+             'sources': [{'ref': 'Code P0171 System Too Lean — Samarins, n.d., '
+                                 'https://www.samarins.com/diagnose/p0171.html (vacuum leak: '
+                                 'high trim at idle that drops at higher RPM; low fuel '
+                                 'pressure: trim rises at higher RPM)',
+                          'confidence': 'low'},
+                         {'ref': 'MAP sensors — AA1Car, n.d., '
+                                 'https://www.aa1car.com/library/map_sensors.htm (a vacuum '
+                                 'leak reduces intake vacuum so MAP indicates higher load)',
+                          'confidence': 'low'}],
+             'displayable': False},
+ 'FUE-002': {'id': 'FUE-002',
+             'subsystem': 'fuel_air',
+             'root_cause': 'Weak fuel pump, clogged pump filter or low fuel pressure '
+                           '(inference: fuel-pressure sensor not available)',
+             'symptoms': [{'signal': 'did.LONG_TERM_FUEL_TRIM_B1',
+                           'direction': 'up',
+                           'condition': 'cruise, trim rises with load/RPM while idle trim '
+                                        'stays near zero'},
+                          {'signal': 'did.ENGINE_SPEED',
+                           'direction': 'unstable',
+                           'condition': 'cruise under load, surging or power loss'}],
+             'needs': ['did.LONG_TERM_FUEL_TRIM_B1', 'did.ENGINE_SPEED'],
+             'rating': {'severity': 8, 'occurrence': 3, 'detectability': 5},
+             'detectable_now': True,
+             'advise_stop': True,
+             'rider_text': 'The engine may lose power or stall while riding because fuel '
+                           'delivery is weak. Stop safely and have the fuel system inspected.',
+             'action': 'Check fuel pressure and flow, pump filter and wiring against the '
+                       'service manual; hot-start behaviour is a further clue. Fuel pressure '
+                       'itself is a planned/unavailable sensor.',
+             'sources': [{'ref': 'Code P0171 System Too Lean — Samarins, n.d., '
+                                 'https://www.samarins.com/diagnose/p0171.html (low fuel '
+                                 'pressure listed as cause; trim rises at higher RPM)',
+                          'confidence': 'low'},
+                         {'ref': 'Common EFI problems — Fitech EFI, n.d., '
+                                 'https://fitechefi.com/common-efi-problems/ (weak pump, '
+                                 'clogged filter, hard starts especially when hot; vendor '
+                                 'page)',
+                          'confidence': 'low'},
+                         {'ref': "Troubleshooting 'Engine does not start or is hard to start' "
+                                 "— Honda CRF250R owner's manual (other model), "
+                                 'https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CRF250RJ_EN/2500_2500/0152.pdf '
+                                 '(lists faulty fuel pump, clogged fuel pump filter)',
+                          'confidence': 'medium'}],
+             'displayable': True},
+ 'FUE-003': {'id': 'FUE-003',
+             'subsystem': 'fuel_air',
+             'root_cause': 'Leaking fuel injector (internal drip into cylinder, or external '
+                           'seal leak)',
+             'symptoms': [{'signal': 'did.SHORT_TERM_FUEL_TRIM_B1',
+                           'direction': 'down',
+                           'condition': 'warm_idle, negative trim as ECU removes fuel '
+                                        '(inference)'},
+                          {'signal': 'derived.idle_rpm_std',
+                           'direction': 'up',
+                           'condition': 'after_stop, hard or rough hot restart after a short '
+                                        'stop'}],
+             'needs': ['did.SHORT_TERM_FUEL_TRIM_B1', 'derived.idle_rpm_std'],
+             'rating': {'severity': 9, 'occurrence': 2, 'detectability': 4},
+             'detectable_now': True,
+             'advise_stop': True,
+             'rider_text': 'Fuel may be leaking, which is a fire and engine-damage risk. Stop '
+                           'safely, do not restart if you smell fuel, and have it inspected.',
+             'action': 'Check injector and fuel rail for wetness and fuel smell; check the oil '
+                       'for a fuel smell or rising level; replace injector seals or injector.',
+             'sources': [{'ref': 'Leaking fuel injectors — InjectorRx, n.d., '
+                                 'https://www.injectorrx.com/leaking-fuel-injectors/ (page '
+                                 'text is only a symptom list: fuel odor, hard starting when '
+                                 'hot, oil dilution, hydrolock risk; vendor)',
+                          'confidence': 'low'},
+                         {'ref': 'Causes and implications of fuel dilution in engine oil — '
+                                 'Dubizzle, n.d., '
+                                 'https://www.dubizzle.com/blog/cars/fuel-dilution-engine-oil/ '
+                                 '(malfunctioning injectors can over-fuel and unburnt fuel '
+                                 'reaches the oil)',
+                          'confidence': 'low'}],
+             'displayable': False},
+ 'FUE-004': {'id': 'FUE-004',
+             'subsystem': 'fuel_air',
+             'root_cause': 'Clogged or sticking fuel injector (lean on the single cylinder)',
+             'symptoms': [{'signal': 'did.LONG_TERM_FUEL_TRIM_B1',
+                           'direction': 'up',
+                           'condition': 'warm_idle and cruise, positive trim at all RPM'},
+                          {'signal': 'derived.idle_rpm_std',
+                           'direction': 'up',
+                           'condition': 'warm_idle, rough idle and misfire'}],
+             'needs': ['did.LONG_TERM_FUEL_TRIM_B1', 'derived.idle_rpm_std'],
+             'rating': {'severity': 6, 'occurrence': 4, 'detectability': 5},
+             'detectable_now': True,
+             'advise_stop': False,
+             'rider_text': 'The engine may idle roughly or hesitate. Have the injector and '
+                           'fuel quality checked soon.',
+             'action': 'Listen for the injector click, check injector resistance and spray '
+                       'pattern, use fresh fuel, clean or replace the injector.',
+             'sources': [{'ref': 'Common EFI problems — Fitech EFI, n.d., '
+                                 'https://fitechefi.com/common-efi-problems/ (clogged '
+                                 'injectors cause rough idle, misfires and hesitation; a '
+                                 'silent injector is dead or stuck closed; vendor page)',
+                          'confidence': 'low'}],
+             'displayable': False},
+ 'FUE-005': {'id': 'FUE-005',
+             'subsystem': 'fuel_air',
+             'root_cause': 'MAP sensor, vacuum port or wiring fault (reading wrong or erratic)',
+             'symptoms': [{'signal': 'did.INTAKE_MAP',
+                           'direction': 'unstable',
+                           'condition': 'warm_idle, reading erratic or not near the expected '
+                                        'low idle pressure (inference on thresholds); at '
+                                        'key_on it should read ambient pressure'},
+                          {'signal': 'derived.volumetric_efficiency',
+                           'direction': 'unstable',
+                           'condition': 'cruise, implausible values (inference)'}],
+             'needs': ['did.INTAKE_MAP', 'derived.volumetric_efficiency'],
+             'rating': {'severity': 6, 'occurrence': 3, 'detectability': 4},
+             'detectable_now': True,
+             'advise_stop': False,
+             'rider_text': 'The engine may idle roughly, surge or lose power because it '
+                           'misjudges engine load. Have the sensor checked soon.',
+             'action': 'Compare MAP at key-on engine-off with ambient pressure, check the '
+                       'vacuum hose and connector, replace the sensor if it stays implausible.',
+             'sources': [{'ref': 'MAP sensors — AA1Car, n.d., '
+                                 'https://www.aa1car.com/library/map_sensors.htm (a good MAP '
+                                 'sensor reads barometric pressure key on engine off; failure '
+                                 'gives surging, rough idle, lost power, rich plug fouling)',
+                          'confidence': 'low'}],
+             'displayable': False},
+ 'FUE-006': {'id': 'FUE-006',
+             'subsystem': 'fuel_air',
+             'root_cause': 'Throttle position sensor (TPS) fault or wiring',
+             'symptoms': [{'signal': 'did.THROTTLE_POS',
+                           'direction': 'unstable',
+                           'condition': 'cruise, jumps or dropouts while the grip is held '
+                                        'steady'},
+                          {'signal': 'derived.idle_rpm_std',
+                           'direction': 'up',
+                           'condition': 'warm_idle, irregular idle'}],
+             'needs': ['did.THROTTLE_POS', 'derived.idle_rpm_std'],
+             'rating': {'severity': 6, 'occurrence': 3, 'detectability': 4},
+             'detectable_now': True,
+             'advise_stop': False,
+             'rider_text': 'The engine may hesitate, idle badly or stall because it misreads '
+                           'the throttle. Have the sensor checked soon.',
+             'action': 'Sweep the throttle slowly while logging THROTTLE_POS and look for '
+                       'jumps; check connector and 5 V reference; replace the sensor if '
+                       'erratic.',
+             'sources': [{'ref': 'Symptoms of a bad throttle position sensor — Apollo Offroad, '
+                                 'n.d., '
+                                 'https://apollooffroad.com/blogs/default-blog/blog-symptoms-of-a-bad-throttle-position-sensor '
+                                 '(hesitation, idle irregularities or stalling; car-focused)',
+                          'confidence': 'low'}],
+             'displayable': False},
+ 'FUE-007': {'id': 'FUE-007',
+             'subsystem': 'fuel_air',
+             'root_cause': 'Intake air temperature (IAT) sensor or wiring fault (reads wrong '
+                           'temperature)',
+             'symptoms': [{'signal': 'did.INTAKE_AIR_TEMP',
+                           'direction': 'down',
+                           'condition': 'key_on after a long soak, reads well below '
+                                        'did.AMBIENT_AIR_TEMP (implausible; the opposite '
+                                        'direction is also possible)'},
+                          {'signal': 'did.SHORT_TERM_FUEL_TRIM_B1',
+                           'direction': 'down',
+                           'condition': 'warm_idle, trim shifts when the ECU mis-estimates air '
+                                        'density (inference; direction depends on the '
+                                        'failure)'}],
+             'needs': ['did.INTAKE_AIR_TEMP',
+                       'did.AMBIENT_AIR_TEMP',
+                       'did.SHORT_TERM_FUEL_TRIM_B1'],
+             'rating': {'severity': 4, 'occurrence': 3, 'detectability': 4},
+             'detectable_now': True,
+             'advise_stop': False,
+             'rider_text': 'Fuel economy and cold starting may suffer because the engine '
+                           'misjudges the air temperature. Have the sensor checked at the next '
+                           'service.',
+             'action': 'Compare IAT with ambient on a cold engine; check connector and '
+                       'resistance against the service manual.',
+             'sources': [{'ref': 'Air temperature sensors — AA1Car, n.d., '
+                                 'https://www.aa1car.com/library/air_temp_sensors.htm (a '
+                                 'sensor reading colder than real gives a rich mixture, warmer '
+                                 'gives lean; wrong air-density estimate)',
+                          'confidence': 'low'}],
+             'displayable': False},
+ 'LUB-001': {'id': 'LUB-001',
+             'subsystem': 'lubrication',
+             'root_cause': 'Low engine oil level (consumption or leak)',
+             'symptoms': [{'signal': 'derived.coolant_rate',
+                           'direction': 'up',
+                           'condition': 'warm_idle, faster heating from extra friction '
+                                        '(inference, weak indicator)'}],
+             'needs': ['derived.coolant_rate'],
+             'rating': {'severity': 9, 'occurrence': 4, 'detectability': 8},
+             'detectable_now': False,
+             'advise_stop': True,
+             'rider_text': 'Low oil can quickly destroy the engine. Stop safely, check the oil '
+                           'level on level ground and have any leak inspected.',
+             'action': 'Check oil level in the sight glass or dipstick before every ride; look '
+                       'for leaks; top up only to the mark.',
+             'sources': [{'ref': 'Engine oil: check the level daily; running with insufficient '
+                                 'oil pressure may cause serious engine damage — Honda '
+                                 "motorcycle owner's manual (other model), ManualsDir, "
+                                 'https://www.manualsdir.com/manuals/96997/honda-motorcycle.html?page=41',
+                          'confidence': 'medium'}],
+             'displayable': True},
+ 'LUB-002': {'id': 'LUB-002',
+             'subsystem': 'lubrication',
+             'root_cause': 'Low oil pressure (worn pump, blocked pickup or strainer, leak, '
+                           'wrong viscosity)',
+             'symptoms': [{'signal': 'did.COOLANT_TEMP',
+                           'direction': 'up',
+                           'condition': 'cruise, rising above normal band (inference, late and '
+                                        'indirect)'}],
+             'needs': ['did.COOLANT_TEMP'],
+             'rating': {'severity': 10, 'occurrence': 2, 'detectability': 9},
+             'detectable_now': False,
+             'advise_stop': True,
+             'rider_text': 'If the oil-pressure light comes on, stop the engine safely at once '
+                           'and have it inspected. Continuing can destroy the engine.',
+             'action': 'Check oil level, then a mechanical pressure test against the service '
+                       'manual; inspect strainer and pump.',
+             'sources': [{'ref': 'Engine oil and low oil pressure indicator: shut the engine '
+                                 "down if the light stays on — Honda motorcycle owner's manual "
+                                 '(other model), ManualsDir, '
+                                 'https://www.manualsdir.com/manuals/96997/honda-motorcycle.html?page=41',
+                          'confidence': 'medium'}],
+             'displayable': True},
+ 'LUB-003': {'id': 'LUB-003',
+             'subsystem': 'lubrication',
+             'root_cause': 'Oil degradation or fuel dilution (short trips, rich running, '
+                           'leaking injector, overdue change)',
+             'symptoms': [{'signal': 'did.SHORT_TERM_FUEL_TRIM_B1',
+                           'direction': 'down',
+                           'condition': 'warm_idle, persistently negative trim as a possible '
+                                        'upstream cause of fuel dilution (inference)'}],
+             'needs': ['did.SHORT_TERM_FUEL_TRIM_B1'],
+             'rating': {'severity': 6, 'occurrence': 5, 'detectability': 8},
+             'detectable_now': False,
+             'advise_stop': False,
+             'rider_text': 'Old or fuel-thinned oil wears the engine faster. Change the oil at '
+                           'the interval in the manual or sooner if you mostly ride short '
+                           'trips.',
+             'action': 'Change oil and filter on schedule; if the oil smells of fuel or the '
+                       'level rises, check the injector and mixture.',
+             'sources': [{'ref': 'Causes and implications of fuel dilution in engine oil — '
+                                 'Dubizzle, n.d., '
+                                 'https://www.dubizzle.com/blog/cars/fuel-dilution-engine-oil/ '
+                                 '(fuel lowers viscosity and flash point, more wear; short '
+                                 'trips and leaking injectors cause it; car-focused)',
+                          'confidence': 'low'}],
+             'displayable': False},
+ 'LUB-004': {'id': 'LUB-004',
+             'subsystem': 'lubrication',
+             'root_cause': 'Oil overfilled (inference: foaming and drag)',
+             'symptoms': [{'signal': 'derived.cranking_dip',
+                           'direction': 'up',
+                           'condition': 'cranking, more crank drag and a deeper voltage dip '
+                                        '(inference)'}],
+             'needs': ['derived.cranking_dip'],
+             'rating': {'severity': 5, 'occurrence': 3, 'detectability': 8},
+             'detectable_now': False,
+             'advise_stop': False,
+             'rider_text': 'Too much oil can hurt the engine and starting. Have the level '
+                           'checked and corrected.',
+             'action': 'Check the level between the marks on level ground; drain the excess.',
+             'sources': [{'ref': 'Engine oil level check, do not overfill — Honda motorcycle '
+                                 "owner's manual (other model), ManualsDir, "
+                                 'https://www.manualsdir.com/manuals/96997/honda-motorcycle.html?page=41',
+                          'confidence': 'medium'},
+                         {'ref': "Troubleshooting list (item 'engine oil level too high' "
+                                 "appears in the check sequence) — Honda CRF250R owner's "
+                                 'manual (other model), '
+                                 'https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CRF250RJ_EN/2500_2500/0152.pdf',
+                          'confidence': 'low'}],
+             'displayable': True},
+ 'CLU-001': {'id': 'CLU-001',
+             'subsystem': 'clutch_gearbox',
+             'root_cause': 'Clutch slip from worn friction plates, fatigued springs or wrong '
+                           'oil (friction modifiers)',
+             'symptoms': [{'signal': 'derived.clutch_slip_ratio',
+                           'direction': 'up',
+                           'condition': 'ratio rises under high throttle in higher gears while '
+                                        'clutch lever is released (inference from Haynes '
+                                        'symptom text)'},
+                          {'signal': 'did.ENGINE_SPEED',
+                           'direction': 'up',
+                           'condition': 'revs climb without proportional speed gain under '
+                                        'load'},
+                          {'signal': 'did.VEHICLE_SPEED',
+                           'direction': 'down',
+                           'condition': 'speed rises less than engine speed implies under '
+                                        'throttle'},
+                          {'signal': 'did.THROTTLE_POS',
+                           'direction': 'up',
+                           'condition': 'throttle opened during the event'}],
+             'needs': ['derived.clutch_slip_ratio',
+                       'did.ENGINE_SPEED',
+                       'did.VEHICLE_SPEED',
+                       'did.THROTTLE_POS'],
+             'rating': {'severity': 5, 'occurrence': 5, 'detectability': 4},
+             'detectable_now': True,
+             'advise_stop': False,
+             'rider_text': 'The engine is revving but the bike is not speeding up as it '
+                           'should, which suggests the clutch is slipping. Avoid hard '
+                           'acceleration and have the clutch checked soon.',
+             'action': 'Check clutch lever free play first, then inspect plates and springs '
+                       'and engine oil type at a workshop.',
+             'sources': [{'ref': 'Top 6 Motorcycle Clutch Problems That Affect Riding '
+                                 'Performance - Haynes, 2026, '
+                                 'https://us.haynes.com/blogs/tips-tutorials/top-6-motorcycle-clutch-problems-that-affect-riding-performance',
+                          'confidence': 'medium'}],
+             'displayable': True},
+ 'CLU-002': {'id': 'CLU-002',
+             'subsystem': 'clutch_gearbox',
+             'root_cause': 'Clutch drag from too little lever free play, stretched or kinked '
+                           'cable, warped plates or worn springs',
+             'symptoms': [{'signal': 'derived.clutch_state',
+                           'direction': 'unstable',
+                           'condition': 'state reads engaged-like or inconsistent while lever '
+                                        'is pulled (inference)'},
+                          {'signal': 'did.VEHICLE_SPEED',
+                           'direction': 'up',
+                           'condition': 'bike creeps or speed stays above zero in gear with '
+                                        'lever pulled at standstill'},
+                          {'signal': 'did.ENGINE_SPEED',
+                           'direction': 'unstable',
+                           'condition': 'engine speed dips or stalls when stopping in gear '
+                                        '(inference)'}],
+             'needs': ['derived.clutch_state', 'did.VEHICLE_SPEED', 'did.ENGINE_SPEED'],
+             'rating': {'severity': 4, 'occurrence': 5, 'detectability': 6},
+             'detectable_now': True,
+             'advise_stop': False,
+             'rider_text': 'The clutch may not be fully releasing, so the bike can creep or '
+                           'shift roughly. Have the clutch free play and cable checked soon.',
+             'action': 'Check and adjust lever free play and inspect the cable for fraying or '
+                       'kinks before opening the clutch.',
+             'sources': [{'ref': 'Top 6 Motorcycle Clutch Problems That Affect Riding '
+                                 'Performance - Haynes, 2026, '
+                                 'https://us.haynes.com/blogs/tips-tutorials/top-6-motorcycle-clutch-problems-that-affect-riding-performance',
+                          'confidence': 'medium'},
+                         {'ref': "Owner's Manual, Clutch System / Clutch Freeplay p.103 (file "
+                                 'owner_VT750C2BA) - Honda, 2020, '
+                                 'https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_VT750C2BA/2500_2500/0110.pdf',
+                          'confidence': 'medium'}],
+             'displayable': True},
+ 'CLU-003': {'id': 'CLU-003',
+             'subsystem': 'clutch_gearbox',
+             'root_cause': 'Incorrect clutch lever free play or stretched cable causing '
+                           'premature clutch wear or poor engagement',
+             'symptoms': [{'signal': 'derived.clutch_slip_ratio',
+                           'direction': 'up',
+                           'condition': 'slip grows gradually over weeks of use (inference; '
+                                        'trend only)'},
+                          {'signal': 'did.ENGINE_SPEED',
+                           'direction': 'unstable',
+                           'condition': 'engagement points vary between shifts (inference)'}],
+             'needs': ['derived.clutch_slip_ratio', 'did.ENGINE_SPEED'],
+             'rating': {'severity': 3, 'occurrence': 6, 'detectability': 7},
+             'detectable_now': False,
+             'advise_stop': False,
+             'rider_text': 'The clutch lever adjustment may be off, which can wear the clutch '
+                           'early. Have the free play checked at the next service.',
+             'action': 'Check free play with the Honda procedure at each service interval.',
+             'sources': [{'ref': "Owner's Manual, Clutch System / Clutch Freeplay p.103 (file "
+                                 'owner_VT750C2BA) - Honda, 2020, '
+                                 'https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_VT750C2BA/2500_2500/0110.pdf',
+                          'confidence': 'medium'}],
+             'displayable': True},
+ 'CLU-004': {'id': 'CLU-004',
+             'subsystem': 'clutch_gearbox',
+             'root_cause': 'Gear jumping out of mesh from worn gear dogs, bent or worn shift '
+                           'fork, or worn shift quadrant/detent',
+             'symptoms': [{'signal': 'derived.gearbox_ratio_measured',
+                           'direction': 'unstable',
+                           'condition': 'measured ratio steps toward neutral value or changes '
+                                        'without a rider shift (inference)'},
+                          {'signal': 'derived.gear_estimate',
+                           'direction': 'unstable',
+                           'condition': 'estimated gear changes while throttle held and clutch '
+                                        'not operated'},
+                          {'signal': 'did.ENGINE_SPEED',
+                           'direction': 'up',
+                           'condition': 'engine speed jumps up sharply with no speed change'},
+                          {'signal': 'derived.clutch_state',
+                           'direction': 'absent',
+                           'condition': 'no clutch lever action recorded around the event'}],
+             'needs': ['derived.gearbox_ratio_measured',
+                       'derived.gear_estimate',
+                       'did.ENGINE_SPEED',
+                       'derived.clutch_state'],
+             'rating': {'severity': 8, 'occurrence': 3, 'detectability': 5},
+             'detectable_now': True,
+             'advise_stop': True,
+             'rider_text': 'The gear may be slipping out of mesh on its own, which can cut '
+                           'drive suddenly. Stop safely and have the gearbox inspected before '
+                           'riding further.',
+             'action': 'Workshop inspection of shift mechanism, detent and gear dogs; split '
+                       'cases may be needed to confirm.',
+             'sources': [{'ref': 'BSA Royal Star Jumping Out of Gear - Motorcycle Classics '
+                                 '(Fellenstein), 2015, '
+                                 'https://www.motorcycleclassics.com/classic-motorcycle-repair/jumping-out-of-gear-zm0z15ndzhur/',
+                          'confidence': 'low'}],
+             'displayable': False},
+ 'CLU-005': {'id': 'CLU-005',
+             'subsystem': 'clutch_gearbox',
+             'root_cause': 'Clutch cable too tight (slip, heat) or too loose (grinding, hard '
+                           'gear changes) from stretch or poor adjustment',
+             'symptoms': [{'signal': 'derived.clutch_slip_ratio',
+                           'direction': 'up',
+                           'condition': 'slip under load when cable is too tight (inference)'},
+                          {'signal': 'derived.gear_estimate',
+                           'direction': 'unstable',
+                           'condition': 'gear estimate lags or flickers during shifts when '
+                                        'cable is too loose (inference)'}],
+             'needs': ['derived.clutch_slip_ratio', 'derived.gear_estimate'],
+             'rating': {'severity': 4, 'occurrence': 5, 'detectability': 6},
+             'detectable_now': True,
+             'advise_stop': False,
+             'rider_text': 'Gear changes may be harsh or the clutch may slip because of cable '
+                           'slack. Have the clutch cable checked soon.',
+             'action': 'Adjust or replace the clutch cable and re-check free play.',
+             'sources': [{'ref': 'Top 6 Motorcycle Clutch Problems That Affect Riding '
+                                 'Performance - Haynes, 2026, '
+                                 'https://us.haynes.com/blogs/tips-tutorials/top-6-motorcycle-clutch-problems-that-affect-riding-performance',
+                          'confidence': 'medium'}],
+             'displayable': True},
+ 'FDR-001': {'id': 'FDR-001',
+             'subsystem': 'final_drive',
+             'root_cause': 'Excessive chain slack from wear/stretch or missed adjustment',
+             'symptoms': [{'signal': 'sensor.imu_accel_x',
+                           'direction': 'unstable',
+                           'condition': 'longitudinal jerk spikes at throttle on/off '
+                                        'transitions (inference)'},
+                          {'signal': 'did.THROTTLE_POS',
+                           'direction': 'unstable',
+                           'condition': 'throttle step changes coincide with the jerks'},
+                          {'signal': 'derived.vehicle_accel',
+                           'direction': 'unstable',
+                           'condition': 'acceleration shows lash steps at load reversal '
+                                        '(inference)'}],
+             'needs': ['sensor.imu_accel_x', 'did.THROTTLE_POS', 'derived.vehicle_accel'],
+             'rating': {'severity': 6, 'occurrence': 6, 'detectability': 6},
+             'detectable_now': True,
+             'advise_stop': False,
+             'rider_text': 'The chain may be too slack, which can cause jerky drive and damage '
+                           'the bike. Have the chain slack checked and adjusted soon.',
+             'action': 'Measure slack at several points per the CL250 manual and adjust or '
+                       'replace the chain and sprockets.',
+             'sources': [{'ref': "Owner's Manual, Drive Chain Inspection p.151 and Adjustment "
+                                 'p.153 (file owner_CB1000RC_RAC_EN) - Honda, 2020, '
+                                 'https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CB1000RC_RAC_EN/2500_2500/0160.pdf',
+                          'confidence': 'medium'}],
+             'displayable': True},
+ 'FDR-002': {'id': 'FDR-002',
+             'subsystem': 'final_drive',
+             'root_cause': 'Chain worn beyond limit (stretch), shown by the wear label red '
+                           'zone after proper adjustment',
+             'symptoms': [{'signal': 'derived.coast_down_rolling_resistance',
+                           'direction': 'up',
+                           'condition': 'rolling resistance rises over weeks without tyre '
+                                        'change (inference)'},
+                          {'signal': 'derived.vehicle_accel',
+                           'direction': 'unstable',
+                           'condition': 'lash and noise-like variation under load '
+                                        '(inference)'}],
+             'needs': ['derived.coast_down_rolling_resistance', 'derived.vehicle_accel'],
+             'rating': {'severity': 7, 'occurrence': 6, 'detectability': 8},
+             'detectable_now': False,
+             'advise_stop': False,
+             'rider_text': 'The chain may be worn out. Have the chain and sprockets inspected '
+                           'soon and avoid hard acceleration until then.',
+             'action': 'Check the chain wear label after adjusting; replace chain and both '
+                       'sprockets as a set if worn.',
+             'sources': [{'ref': "Owner's Manual, Drive Chain Wear Inspection p.153 (file "
+                                 'owner_CB1000RC_RAC_EN) - Honda, 2020, '
+                                 'https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CB1000RC_RAC_EN/2500_2500/0160.pdf',
+                          'confidence': 'medium'}],
+             'displayable': True},
+ 'FDR-003': {'id': 'FDR-003',
+             'subsystem': 'final_drive',
+             'root_cause': 'Poor lubrication leaving dry or rusted links, kinked or binding '
+                           'links, damaged O-rings',
+             'symptoms': [{'signal': 'derived.coast_down_rolling_resistance',
+                           'direction': 'up',
+                           'condition': 'higher drag in coast-down than baseline (inference)'},
+                          {'signal': 'sensor.imu_accel_x',
+                           'direction': 'unstable',
+                           'condition': 'periodic longitudinal vibration at chain-rotation '
+                                        'frequency (inference)'}],
+             'needs': ['derived.coast_down_rolling_resistance', 'sensor.imu_accel_x'],
+             'rating': {'severity': 5, 'occurrence': 7, 'detectability': 7},
+             'detectable_now': False,
+             'advise_stop': False,
+             'rider_text': 'The chain may be dry or stiff. Have it cleaned and lubricated '
+                           'soon.',
+             'action': 'Clean and lubricate with chain lube, check slack stays constant along '
+                       'the chain.',
+             'sources': [{'ref': "Owner's Manual, Drive Chain Inspection p.151 (file "
+                                 'owner_CB1000RC_RAC_EN) - Honda, 2020, '
+                                 'https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CB1000RC_RAC_EN/2500_2500/0158.pdf',
+                          'confidence': 'medium'},
+                         {'ref': "Owner's Manual, Drive Chain Lubrication (file "
+                                 'owner_CRF250RD_EN) - Honda, 2020, '
+                                 'https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CRF250RD_EN/2500_2500/0100.pdf',
+                          'confidence': 'medium'}],
+             'displayable': True},
+ 'FDR-004': {'id': 'FDR-004',
+             'subsystem': 'final_drive',
+             'root_cause': 'Kinked or binding chain links making slack vary along the chain',
+             'symptoms': [{'signal': 'sensor.imu_accel_x',
+                           'direction': 'unstable',
+                           'condition': 'once-per-chain-revolution jolt in longitudinal '
+                                        'acceleration (inference)'},
+                          {'signal': 'did.VEHICLE_SPEED',
+                           'direction': 'unstable',
+                           'condition': 'slight speed ripple at steady throttle (inference)'}],
+             'needs': ['sensor.imu_accel_x', 'did.VEHICLE_SPEED'],
+             'rating': {'severity': 5, 'occurrence': 5, 'detectability': 7},
+             'detectable_now': False,
+             'advise_stop': False,
+             'rider_text': 'The chain may have stiff links. Have it inspected and lubricated '
+                           'soon.',
+             'action': 'Check slack at several points, lubricate, replace the chain if binding '
+                       'stays.',
+             'sources': [{'ref': "Owner's Manual, Drive Chain Inspection p.151 (file "
+                                 'owner_CB1000RC_RAC_EN) - Honda, 2020, '
+                                 'https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CB1000RC_RAC_EN/2500_2500/0158.pdf',
+                          'confidence': 'medium'}],
+             'displayable': True},
+ 'FDR-005': {'id': 'FDR-005',
+             'subsystem': 'final_drive',
+             'root_cause': 'Worn sprocket teeth or chain rollers causing rough drive '
+                           '(sprockets worn with the chain)',
+             'symptoms': [{'signal': 'sensor.imu_accel_x',
+                           'direction': 'unstable',
+                           'condition': 'tooth-pass vibration grows in longitudinal '
+                                        'acceleration (inference)'},
+                          {'signal': 'derived.gearbox_ratio_measured',
+                           'direction': 'unstable',
+                           'condition': 'measured ratio noisier at steady speed (inference)'}],
+             'needs': ['sensor.imu_accel_x', 'derived.gearbox_ratio_measured'],
+             'rating': {'severity': 6, 'occurrence': 5, 'detectability': 8},
+             'detectable_now': False,
+             'advise_stop': False,
+             'rider_text': 'The sprockets or chain rollers may be worn. Have the final drive '
+                           'inspected soon.',
+             'action': 'Inspect sprocket teeth and chain rollers; replace sprockets and chain '
+                       'together.',
+             'sources': [{'ref': "Owner's Manual, Drive Chain Rollers (file owner_CRF250RD_EN) "
+                                 '- Honda, 2020, '
+                                 'https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CRF250RD_EN/2500_2500/0100.pdf',
+                          'confidence': 'low'}],
+             'displayable': False},
+ 'BRK-001': {'id': 'BRK-001',
+             'subsystem': 'brakes_abs',
+             'root_cause': 'Brake pads worn to the limit (cutout reached); fluid reservoir '
+                           'level drops as pads wear',
+             'symptoms': [{'signal': 'derived.vehicle_accel',
+                           'direction': 'down',
+                           'condition': 'braking deceleration weaker than baseline for similar '
+                                        'lever input (inference)'}],
+             'needs': ['derived.vehicle_accel'],
+             'rating': {'severity': 9, 'occurrence': 5, 'detectability': 8},
+             'detectable_now': False,
+             'advise_stop': True,
+             'rider_text': 'The brake pads may be worn out and braking may be weak. Stop '
+                           'safely and have the brakes inspected before riding further.',
+             'action': 'Replace pads as a set; check fluid level and discs.',
+             'sources': [{'ref': "Owner's Manual, Brake Pad Wear p.137 (file "
+                                 'owner_CB1000RC_RAC_EN, CB1000R ABS) - Honda, 2020, '
+                                 'https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CB1000RC_RAC_EN/2500_2500/0144.pdf',
+                          'confidence': 'medium'},
+                         {'ref': "Owner's Manual, Brakes fluid level p.136 (file "
+                                 'owner_CB1000RC_RAC_EN) - Honda, 2020, '
+                                 'https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CB1000RC_RAC_EN/2500_2500/0143.pdf',
+                          'confidence': 'medium'}],
+             'displayable': True},
+ 'BRK-002': {'id': 'BRK-002',
+             'subsystem': 'brakes_abs',
+             'root_cause': 'Brake fluid low from leak (hoses, fittings, seals) or unexplained '
+                           'level drop',
+             'symptoms': [{'signal': 'derived.vehicle_accel',
+                           'direction': 'down',
+                           'condition': 'braking deceleration drops or lever feels spongy then '
+                                        'weak (inference)'}],
+             'needs': ['derived.vehicle_accel'],
+             'rating': {'severity': 10, 'occurrence': 3, 'detectability': 8},
+             'detectable_now': False,
+             'advise_stop': True,
+             'rider_text': 'Brake fluid may be low or leaking, and the brakes could fail. Stop '
+                           'safely, do not continue, and have the brakes inspected.',
+             'action': 'Inspect hoses, fittings and calipers for leaks; refill and bleed only '
+                       'after the leak is fixed.',
+             'sources': [{'ref': "Owner's Manual, Brakes p.136 (file owner_CB1000RC_RAC_EN) - "
+                                 'Honda, 2020, '
+                                 'https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CB1000RC_RAC_EN/2500_2500/0143.pdf',
+                          'confidence': 'medium'}],
+             'displayable': True},
+ 'BRK-003': {'id': 'BRK-003',
+             'subsystem': 'brakes_abs',
+             'root_cause': 'Air in the brake lines (after service or leak) giving soft lever '
+                           'and weaker braking',
+             'symptoms': [{'signal': 'derived.vehicle_accel',
+                           'direction': 'down',
+                           'condition': 'deceleration lower for the same lever travel '
+                                        '(inference)'}],
+             'needs': ['derived.vehicle_accel'],
+             'rating': {'severity': 9, 'occurrence': 3, 'detectability': 9},
+             'detectable_now': False,
+             'advise_stop': True,
+             'rider_text': 'The brake lever may feel soft, which means braking could be weak. '
+                           'Stop safely and have the brakes inspected and bled.',
+             'action': 'Bleed the brake system and check for leaks.',
+             'sources': [{'ref': 'Troubleshooting Motorcycle Brake Systems: Guide To Slowing '
+                                 'Down - Ultimate Motorcycling, 2021, '
+                                 'https://ultimatemotorcycling.com/2021/09/24/troubleshooting-motorcycle-brake-systems-guide-to-slowing-down/',
+                          'confidence': 'low'}],
+             'displayable': False},
+ 'BRK-004': {'id': 'BRK-004',
+             'subsystem': 'brakes_abs',
+             'root_cause': 'Warped or unevenly worn disc (thickness variation, hot spots from '
+                           'overheating)',
+             'symptoms': [{'signal': 'sensor.imu_accel_x',
+                           'direction': 'unstable',
+                           'condition': 'pulsating longitudinal acceleration during braking '
+                                        '(inference)'},
+                          {'signal': 'derived.vehicle_accel',
+                           'direction': 'unstable',
+                           'condition': 'deceleration oscillates at wheel-rotation rate '
+                                        '(inference)'}],
+             'needs': ['sensor.imu_accel_x', 'derived.vehicle_accel'],
+             'rating': {'severity': 7, 'occurrence': 4, 'detectability': 5},
+             'detectable_now': True,
+             'advise_stop': True,
+             'rider_text': 'The brakes may pulse, which suggests a warped disc or a sticking '
+                           'brake part. Stop safely and have the brakes inspected.',
+             'action': 'Measure disc thickness and runout and check calipers before replacing '
+                       'discs.',
+             'sources': [{'ref': 'Troubleshooting Motorcycle Brake Systems: Guide To Slowing '
+                                 'Down - Ultimate Motorcycling, 2021, '
+                                 'https://ultimatemotorcycling.com/2021/09/24/troubleshooting-motorcycle-brake-systems-guide-to-slowing-down/',
+                          'confidence': 'low'}],
+             'displayable': False},
+ 'BRK-005': {'id': 'BRK-005',
+             'subsystem': 'brakes_abs',
+             'root_cause': 'Sticking caliper piston or seized slider keeping the pad against '
+                           'the disc',
+             'symptoms': [{'signal': 'derived.coast_down_rolling_resistance',
+                           'direction': 'up',
+                           'condition': 'coast-down drag higher than baseline (inference)'},
+                          {'signal': 'derived.vehicle_accel',
+                           'direction': 'down',
+                           'condition': 'acceleration lower than expected for throttle '
+                                        'position at steady state (inference)'},
+                          {'signal': 'did.THROTTLE_POS',
+                           'direction': 'up',
+                           'condition': 'more throttle needed to hold speed'}],
+             'needs': ['derived.coast_down_rolling_resistance',
+                       'derived.vehicle_accel',
+                       'did.THROTTLE_POS'],
+             'rating': {'severity': 7, 'occurrence': 4, 'detectability': 6},
+             'detectable_now': True,
+             'advise_stop': True,
+             'rider_text': 'A brake may be dragging, which can overheat it and reduce braking. '
+                           'Stop safely and have the brakes inspected.',
+             'action': 'Clean and lubricate slides, check piston retraction and replace seals '
+                       'if corroded.',
+             'sources': [{'ref': 'Troubleshooting Motorcycle Brake Systems: Guide To Slowing '
+                                 'Down - Ultimate Motorcycling, 2021, '
+                                 'https://ultimatemotorcycling.com/2021/09/24/troubleshooting-motorcycle-brake-systems-guide-to-slowing-down/',
+                          'confidence': 'low'}],
+             'displayable': False},
+ 'BRK-006': {'id': 'BRK-006',
+             'subsystem': 'brakes_abs',
+             'root_cause': 'ABS fault (wheel speed sensor, pulser ring, wrong tyre size, or '
+                           'ABS unit) so ABS is inoperative; indicator stays on or blinks',
+             'symptoms': [{'signal': 'did.VEHICLE_SPEED',
+                           'direction': 'unstable',
+                           'condition': 'ECU speed and sensor.gps_ground_speed disagree at '
+                                        'steady speed (inference)'},
+                          {'signal': 'sensor.gps_ground_speed',
+                           'direction': 'unstable',
+                           'condition': 'GPS speed used as reference against ECU speed'}],
+             'needs': ['did.VEHICLE_SPEED', 'sensor.gps_ground_speed'],
+             'rating': {'severity': 8, 'occurrence': 3, 'detectability': 9},
+             'detectable_now': False,
+             'advise_stop': True,
+             'rider_text': 'The ABS warning means anti-lock braking is not working. Stop '
+                           'safely and have the ABS inspected before riding further.',
+             'action': 'Read ABS indicator state and codes with the dealer tool; check sensor, '
+                       'pulser ring and tyre size.',
+             'sources': [{'ref': "Owner's Manual, Braking / ABS Indicator Light p.81 (file "
+                                 'owner_GL1800E_EN) - Honda, n.d., '
+                                 'https://www.moto-pecas-honda.com/thumbs/pdf_url/img/owner_manuals/owner_GL1800E_EN/2500_2500/0087.pdf',
+                          'confidence': 'medium'}],
+             'displayable': True},
+ 'TYR-001': {'id': 'TYR-001',
+             'subsystem': 'wheels_tyres',
+             'root_cause': 'Low tyre pressure from neglected checks (underinflation)',
+             'symptoms': [{'signal': 'derived.coast_down_rolling_resistance',
+                           'direction': 'up',
+                           'condition': 'coast-down drag rises versus baseline (inference)'},
+                          {'signal': 'derived.road_roughness',
+                           'direction': 'unstable',
+                           'condition': 'ride response changes (inference)'}],
+             'needs': ['derived.coast_down_rolling_resistance', 'derived.road_roughness'],
+             'rating': {'severity': 8, 'occurrence': 7, 'detectability': 7},
+             'detectable_now': False,
+             'advise_stop': True,
+             'rider_text': 'A tyre may be low on air, which can affect handling and cause a '
+                           'crash. Stop safely and check the pressure and tyre condition.',
+             'action': 'Check cold pressure with a gauge and inspect tyres for damage.',
+             'sources': [{'ref': "Owner's Manual, Periodic Maintenance p.140 (file "
+                                 'owner_CB1000RC_RAC_EN) - Honda, 2020, '
+                                 'https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CB1000RC_RAC_EN/2500_2500/0088.pdf',
+                          'confidence': 'medium'},
+                         {'ref': "Owner's Manual, Maintenance Fundamentals - Tires p.69 (file "
+                                 'owner_CB300RK_AK) - Honda, 2020, '
+                                 'https://www.bike-parts-honda.it/thumbs/pdf_url/img/owner_manuals/owner_CB300RK_AK/2500_2500/0071.pdf',
+                          'confidence': 'medium'}],
+             'displayable': True},
+ 'TYR-002': {'id': 'TYR-002',
+             'subsystem': 'wheels_tyres',
+             'root_cause': 'Slow puncture or embedded object, cut, bulge in tyre',
+             'symptoms': [{'signal': 'derived.coast_down_rolling_resistance',
+                           'direction': 'up',
+                           'condition': 'drag rises gradually over rides (inference)'},
+                          {'signal': 'sensor.imu_accel_y',
+                           'direction': 'unstable',
+                           'condition': 'lateral wobble at speed (inference)'}],
+             'needs': ['derived.coast_down_rolling_resistance', 'sensor.imu_accel_y'],
+             'rating': {'severity': 8, 'occurrence': 5, 'detectability': 8},
+             'detectable_now': False,
+             'advise_stop': True,
+             'rider_text': 'A tyre may be losing air or be damaged. Stop safely and have the '
+                           'tyre inspected before riding further.',
+             'action': 'Inspect tread and sidewalls for nails, cuts and bulges; replace or '
+                       'repair per tyre maker rules.',
+             'sources': [{'ref': "Owner's Manual, Tires Inspection p.123 (file "
+                                 'owner_VT750C2BA) - Honda, 2020, '
+                                 'https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_VT750C2BA/2500_2500/0130.pdf',
+                          'confidence': 'medium'}],
+             'displayable': True},
+ 'TYR-003': {'id': 'TYR-003',
+             'subsystem': 'wheels_tyres',
+             'root_cause': 'Wheel bearing wear (play, rough rotation) from age, water ingress '
+                           'or impact',
+             'symptoms': [{'signal': 'derived.coast_down_rolling_resistance',
+                           'direction': 'up',
+                           'condition': 'higher drag with no brake cause (inference)'},
+                          {'signal': 'sensor.imu_accel_z',
+                           'direction': 'unstable',
+                           'condition': 'speed-dependent vibration (inference)'},
+                          {'signal': 'did.VEHICLE_SPEED',
+                           'direction': 'up',
+                           'condition': 'vibration grows with road speed'}],
+             'needs': ['derived.coast_down_rolling_resistance',
+                       'sensor.imu_accel_z',
+                       'did.VEHICLE_SPEED'],
+             'rating': {'severity': 8, 'occurrence': 4, 'detectability': 8},
+             'detectable_now': False,
+             'advise_stop': True,
+             'rider_text': 'A wheel bearing may be worn, which can make steering or handling '
+                           'vague. Stop safely and have the wheel inspected before riding '
+                           'further.',
+             'action': 'Check wheel play and rotation by hand; replace both bearings of the '
+                       'wheel if worn.',
+             'sources': [{'ref': 'How To Check And Replace Motorcycle Wheel Bearings - '
+                                 'Motorcyclist, 2020, '
+                                 'https://motorcyclistonline.com/mc-garage-video-how-to-check-motorcycle-wheel-bearings',
+                          'confidence': 'low'}],
+             'displayable': False},
+ 'TYR-004': {'id': 'TYR-004',
+             'subsystem': 'wheels_tyres',
+             'root_cause': 'Wheel imbalance or uneven tyre wear/damage causing vibration at '
+                           'speed',
+             'symptoms': [{'signal': 'sensor.imu_accel_z',
+                           'direction': 'unstable',
+                           'condition': 'vibration amplitude rises in a speed band '
+                                        '(inference)'},
+                          {'signal': 'derived.road_roughness',
+                           'direction': 'up',
+                           'condition': 'apparent roughness elevated on smooth road '
+                                        '(inference)'},
+                          {'signal': 'did.VEHICLE_SPEED',
+                           'direction': 'up',
+                           'condition': 'vibration present at higher speeds'}],
+             'needs': ['sensor.imu_accel_z', 'derived.road_roughness', 'did.VEHICLE_SPEED'],
+             'rating': {'severity': 8, 'occurrence': 4, 'detectability': 6},
+             'detectable_now': True,
+             'advise_stop': True,
+             'rider_text': 'The wheel may be out of balance or the tyre damaged, causing '
+                           'vibration. Stop safely and have the wheel and tyre inspected.',
+             'action': 'Rebalance the wheel and inspect the tyre for bumps, bulges and uneven '
+                       'wear.',
+             'sources': [{'ref': "Owner's Manual, Maintenance Fundamentals - Tires p.69 (file "
+                                 'owner_CB300RK_AK) - Honda, 2020, '
+                                 'https://www.bike-parts-honda.it/thumbs/pdf_url/img/owner_manuals/owner_CB300RK_AK/2500_2500/0071.pdf',
+                          'confidence': 'low'}],
              'displayable': False}}
 
 # catalog ids that apply to the CL250 (vehicle/cl250_faults.yaml, D-078)
@@ -425,4 +1396,40 @@ APPLIES_CL250 = ('CHG-001',
  'COL-003',
  'COL-004',
  'COL-005',
- 'COL-006')
+ 'COL-006',
+ 'IGN-001',
+ 'IGN-002',
+ 'IGN-003',
+ 'IGN-004',
+ 'IGN-005',
+ 'FUE-001',
+ 'FUE-002',
+ 'FUE-003',
+ 'FUE-004',
+ 'FUE-005',
+ 'FUE-006',
+ 'FUE-007',
+ 'LUB-001',
+ 'LUB-002',
+ 'LUB-003',
+ 'LUB-004',
+ 'CLU-001',
+ 'CLU-002',
+ 'CLU-003',
+ 'CLU-004',
+ 'CLU-005',
+ 'FDR-001',
+ 'FDR-002',
+ 'FDR-003',
+ 'FDR-004',
+ 'FDR-005',
+ 'BRK-001',
+ 'BRK-002',
+ 'BRK-003',
+ 'BRK-004',
+ 'BRK-005',
+ 'BRK-006',
+ 'TYR-001',
+ 'TYR-002',
+ 'TYR-003',
+ 'TYR-004')
