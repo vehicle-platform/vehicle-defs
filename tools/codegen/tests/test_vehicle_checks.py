@@ -559,3 +559,12 @@ def test_scan_sensitive_flag_is_true_or_absent_and_not_on_a_bitmap(vehicle, plat
     bitmap["sensitive"] = True
     errs = check_vehicle(vehicle, platform_db)
     assert any("not sensitive data" in e for e in errs), errs
+
+
+def test_scan_vin_request_must_be_sensitive(vehicle, platform_db):
+    """safety-reviewer MAJOR-1 (E-15 (1)): a defs data error can never unmask a VIN."""
+    entries = vehicle["discovery_scan"]["requests"]
+    vin = next(e for e in entries if e["request"] == [0x09, 0x02])
+    del vin["sensitive"]
+    errs = check_vehicle(vehicle, platform_db)
+    assert any("a VIN request must be sensitive" in e for e in errs), errs

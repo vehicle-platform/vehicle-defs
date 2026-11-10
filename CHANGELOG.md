@@ -8,7 +8,7 @@ All notable changes to vehicle-defs. Semver (see CLAUDE.md): new message/signal 
 
 MINOR: the discovery scan marks the entry whose answer identifies the vehicle (ISSUES E-15 (1), D-033). No DBC signal, ID, layout, scale, VSS path, DID, poll, BLE, mailbox layout, `tester_policy`, D-020 golden copy or frame-gate change; the gate functions in `vehicle_cl250.c` are unchanged.
 
-- `discovery_scan` entries take an optional `sensitive: true` (codegen: true or absent, never on a support bitmap); `OBD_VIN` (0x09 0x02) carries it.
+- `discovery_scan` entries take an optional `sensitive: true` (codegen: true or absent, never on a support bitmap, and required on a VIN request: J1979 0x09 0x02 or ISO 14229 DID 0xF190); `OBD_VIN` (0x09 0x02) carries it.
 - `vehicle_cl250_scan_t` gains `bool sensitive` (gen/c conn, rt_core, hil_sim). Consumer: **vehicle-connectivity-node**'s probe finds the VIN entry by this flag instead of its local SAE J1979 constants 0x09/0x02 (it still fails closed unless exactly one entry is marked).
 
 ## [0.26.0] — 2026-11-10
