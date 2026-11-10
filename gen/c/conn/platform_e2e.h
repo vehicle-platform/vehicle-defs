@@ -12,6 +12,14 @@
 extern "C" {
 #endif
 
+/* Standard-ID ranges of the platform bus whose messages must be E2E-protected
+ * (ARCHITECTURE section 4, codegen config ID_RANGES): a sender can refuse to put an
+ * unprotected frame there (ISSUES E-14 (5)). */
+#define PLATFORM_E2E_RANGE_SAFETY_FIRST_ID (0x010u)
+#define PLATFORM_E2E_RANGE_SAFETY_LAST_ID (0x07Fu)
+#define PLATFORM_E2E_RANGE_HEARTBEAT_FIRST_ID (0x080u)
+#define PLATFORM_E2E_RANGE_HEARTBEAT_LAST_ID (0x08Fu)
+
 /* VehicleSpeed 0x021, cycle 50 ms, sender RT_CORE */
 #define PLATFORM_VEHICLE_SPEED_E2E_DATA_ID (0x1021u)
 #define PLATFORM_VEHICLE_SPEED_E2E_TIMEOUT_MS (150u)

@@ -294,6 +294,14 @@ def generate_e2e_c(db: Database, target: config.CTarget) -> dict[str, str]:
     src = "dbc/platform.dbc"
     h = [BANNER.format(source=src), "#ifndef PLATFORM_E2E_H", "#define PLATFORM_E2E_H", ""]
     h += ['#include "vehicle_e2e.h"', "", "#ifdef __cplusplus", 'extern "C" {', "#endif", ""]
+    h += ["/* Standard-ID ranges of the platform bus whose messages must be E2E-protected",
+          " * (ARCHITECTURE section 4, codegen config ID_RANGES): a sender can refuse to put an",
+          " * unprotected frame there (ISSUES E-14 (5)). */"]  # fmt: skip
+    for r in config.ID_RANGES:
+        if r.e2e_mandatory:
+            h.append(f"#define PLATFORM_E2E_RANGE_{r.name.upper()}_FIRST_ID ({_hex(r.first, 3)})")
+            h.append(f"#define PLATFORM_E2E_RANGE_{r.name.upper()}_LAST_ID ({_hex(r.last, 3)})")
+    h.append("")
     c = [BANNER.format(source=src), '#include "platform_e2e.h"', ""]
     for m in msgs:
         snake = camel_to_snake_case(m.name)

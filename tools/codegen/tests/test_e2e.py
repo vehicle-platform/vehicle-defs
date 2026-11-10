@@ -117,3 +117,19 @@ def test_wrong_crc_keeps_receiver_unsynced():
     assert e2e.check(DATA_ID, 1, T, bytes(bad), rx, 0) == S.WRONG_CRC
     assert rx.synced is False
     assert e2e.check_timeout(rx, T, 0) == S.NO_NEW_DATA
+
+
+def test_e2e_id_ranges_are_exported_for_every_c_target():
+    """ISSUES E-14 (5): senders read the E2E-mandatory platform ID ranges from gen/."""
+    from vehicle_codegen import config, gen_c
+    from vehicle_codegen.dbc_checks import load_dbc
+
+    db = load_dbc(config.PLATFORM_DBC)
+    mandatory = [r for r in config.ID_RANGES if r.e2e_mandatory]
+    assert {r.name for r in mandatory} == {"safety", "heartbeat"}
+    for target in config.C_TARGETS:
+        h = gen_c.generate_e2e_c(db, target)["platform_e2e.h"]
+        for r in mandatory:
+            name = r.name.upper()
+            assert f"#define PLATFORM_E2E_RANGE_{name}_FIRST_ID (0x{r.first:03X}u)" in h
+            assert f"#define PLATFORM_E2E_RANGE_{name}_LAST_ID (0x{r.last:03X}u)" in h
