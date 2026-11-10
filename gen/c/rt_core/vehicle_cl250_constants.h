@@ -80,5 +80,6 @@
 #define VEHICLE_CL250_J1349_REFERENCE_PRESSURE_KPA (99.0f) /* provisional [kPa] */
 #define VEHICLE_CL250_J1349_REFERENCE_TEMPERATURE_C (25.0f) /* provisional [degC] */
 #define VEHICLE_CL250_DRY_AIR_GAS_CONSTANT_J_PER_KG_K (287.05f) /* calculated [J/(kg K)] */
+#define VEHICLE_CL250_DATA_QUALITY_TESTER_STALL_GAP_MS (500u) /* provisional [ms] */
 
 #endif /* VEHICLE_CL250_CONSTANTS_H */

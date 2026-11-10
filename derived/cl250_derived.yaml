@@ -1201,14 +1201,31 @@ signals:
       Bit mask of the poll groups (110 ms ... 10 s) with a stale, never-received or NRC
       sample, plus tester health flags. The DID ages and states come from the tester's
       own table, not as value inputs: a stale DID is what this reports, so it must not
-      invalidate it.
+      invalidate it. Rule (D-104): bit poll_<N>ms is set when any polled DID with
+      poll_period_ms N is older than its stale_after_ms, was never received, or got a
+      negative response to its last request; a DID the tester stopped (D-068) or skipped
+      does not count (unanswered_did_count reports those). bus_off is set when
+      can_bus_off_count is greater than at the previous sample (0 before the first);
+      tester_stall when tester_step_gap_max is greater than
+      data_quality_tester_stall_gap_ms. A stale or missing health input sets its bit
+      (unknown counts as bad). The value is the sum of the set bits.
     catalog: Data quality per sample
     unit: enum
     range: [0.0, 255.0]
     resolution: 1.0
+    bits:
+      0: poll_110ms
+      1: poll_200ms
+      2: poll_800ms
+      3: poll_2000ms
+      4: poll_5000ms
+      5: poll_10000ms
+      6: bus_off
+      7: tester_stall
     inputs:
       - sensor.can_bus_off_count
       - sensor.tester_step_gap_max
+      - const.data_quality_tester_stall_gap_ms
     period_ms: 110
     stale_after_ms: 330
     output: [log]

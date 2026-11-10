@@ -920,6 +920,14 @@ def generate_derived_c(doc: dict[str, Any], constants: dict[str, Any]) -> dict[s
             for code, label in signals[n]["values"].items():
                 h.append(define(f"DERIVED_{derived.value_define(n, label)}", f"{code}.0f", n))
         h.append("")
+    masked = [n for n in names if "bits" in signals[n]]
+    if masked:
+        h.append("/* Bit-mask signal bits (the `bits` of the defs, D-104): the output is the sum")
+        h.append(" * of the set bits, as a float like every derived output. */")
+        for n in masked:
+            for bit, label in sorted(signals[n]["bits"].items()):
+                h.append(define(f"DERIVED_{derived.bit_define(n, label)}", f"{1 << bit}u", n))
+        h.append("")
     h.append("/* Ride-summary records (class B): rt-core UDS DIDs 0xFD40-0xFD5F (D-070 item 4). */")
     for key, r in doc["ride_summary_records"].items():
         h.append(f"#define {_record_c(key)} ({_hex(r['did'], 4)})")

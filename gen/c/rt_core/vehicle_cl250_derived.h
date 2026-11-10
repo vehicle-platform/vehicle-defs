@@ -276,6 +276,17 @@ extern "C" {
 #define VEHICLE_CL250_DERIVED_VALUE_NEUTRAL_COASTING_STATE_NEUTRAL (1.0f) /* neutral_coasting_state */
 #define VEHICLE_CL250_DERIVED_VALUE_NEUTRAL_COASTING_STATE_COASTING (2.0f) /* neutral_coasting_state */
 
+/* Bit-mask signal bits (the `bits` of the defs, D-104): the output is the sum
+ * of the set bits, as a float like every derived output. */
+#define VEHICLE_CL250_DERIVED_BIT_DATA_QUALITY_MASK_POLL_110MS (1u) /* data_quality_mask */
+#define VEHICLE_CL250_DERIVED_BIT_DATA_QUALITY_MASK_POLL_200MS (2u) /* data_quality_mask */
+#define VEHICLE_CL250_DERIVED_BIT_DATA_QUALITY_MASK_POLL_800MS (4u) /* data_quality_mask */
+#define VEHICLE_CL250_DERIVED_BIT_DATA_QUALITY_MASK_POLL_2000MS (8u) /* data_quality_mask */
+#define VEHICLE_CL250_DERIVED_BIT_DATA_QUALITY_MASK_POLL_5000MS (16u) /* data_quality_mask */
+#define VEHICLE_CL250_DERIVED_BIT_DATA_QUALITY_MASK_POLL_10000MS (32u) /* data_quality_mask */
+#define VEHICLE_CL250_DERIVED_BIT_DATA_QUALITY_MASK_BUS_OFF (64u) /* data_quality_mask */
+#define VEHICLE_CL250_DERIVED_BIT_DATA_QUALITY_MASK_TESTER_STALL (128u) /* data_quality_mask */
+
 /* Ride-summary records (class B): rt-core UDS DIDs 0xFD40-0xFD5F (D-070 item 4). */
 #define VEHICLE_CL250_RIDE_USAGE_DID (0xFD40u)
 #define VEHICLE_CL250_RIDE_FUELING_DID (0xFD41u)
