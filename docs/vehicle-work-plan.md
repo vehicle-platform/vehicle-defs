@@ -589,7 +589,8 @@ All additional equipment must be removable before inspection. This is one of the
 
 | Item | Purpose | Estimate (TL) |
 |---|---|---|
-| ESP32-S3 (main unit) | Processing unit | 300-450 |
+| NUCLEO-H745ZI-Q (STM32H745: M7 = rt-core, M4 = safety partition; D-001, D-072, D-094) | Main MCU | ~2900 |
+| ESP32-S3 (connectivity-node: BLE/Wi-Fi bridge, Phase 0 tester until rt-core, D-023) | Connectivity | 300-450 |
 | CAN transceiver | Physical layer | 80-150 |
 | IMU (6/9-axis) | Motion data | 150-300 |
 | GPS module + antenna | Position, speed, turn radius | 250-450 |
@@ -602,16 +603,16 @@ All additional equipment must be removable before inspection. This is one of the
 | Vibration mount, fasteners | Mounting | 100-200 |
 | Cable, connectors, spiral wrap, fuse | Wiring | 250-400 |
 | PCB fabrication (main unit) | Board | 400-700 |
-| **Subtotal (mandatory)** | | **2510-4400** |
+| **Subtotal (mandatory)** | | **5410-7300** |
 | Suspension potentiometers (opt.) | Instrumentation | 300-600 |
 | Temperature sensors (opt.) | Thermal analysis | 150-400 |
 | Sprocket (for experiment) | Sensitivity test | 300-600 |
 | **Subtotal (optional)** | | **750-1600** |
 | Dynamometer session | Accuracy reference | 0-6000 |
 | Track day (optional) | Controlled data | 0-3000 |
-| **Grand total** | | **3260-15000** |
+| **Grand total** | | **6160-17900** |
 
-The wide range is due to the dyno and track-day line items. If university facilities can be used, the total stays close to the lower band.
+The board price is the NUCLEO-H755ZI-Q list price of `hardware-procurement-list.md` (2,904.30 TL); the NUCLEO-H745ZI-Q bought on 2026-11-02 (D-094) is the same class. The itemised, current list with stores and prices is `hardware-procurement-list.md`; this table is the planning estimate. The wide range is due to the dyno and track-day line items. If university facilities can be used, the total stays close to the lower band.
 
 ---
 

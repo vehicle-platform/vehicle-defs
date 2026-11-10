@@ -208,7 +208,7 @@ _Superseded in part (D-032, D-045): upload is BLE → phone → server, not Wi-F
 
 ### 9.1 Already on Hand
 
-- ESP32-S3 (main unit)
+- ESP32-S3 (connectivity-node: the Phase 0 data collector and temporary sole tester, D-023; the main MCU is the STM32H7, D-001/D-094)
 - OBD2/CAN connection
 - Nextion display
 
