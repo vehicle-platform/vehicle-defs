@@ -8,6 +8,7 @@ MINOR, additive: the `data_quality_mask` bit layout (D-104, ISSUES E-30 (3)). No
 
 - Derived signals may carry `bits:` (bit -> name; codegen checks unit enum, no `values`, range 0..2^(highest bit + 1) - 1, and that `poll_<N>ms` bits name each tester poll period once). gen/c `vehicle_cl250_derived.h`: `VEHICLE_CL250_DERIVED_BIT_DATA_QUALITY_MASK_<POLL_110MS ... POLL_10000MS | BUS_OFF | TESTER_STALL>` (1u ... 128u); Python `SIGNALS["data_quality_mask"]["bits"]`.
 - `data_quality_mask`: the D-104 rule in its description, new input `const.data_quality_tester_stall_gap_ms`.
+- `vehicle_defs.vehicle_cl250.DID_VERIFIED` (Python, additive): name -> the C table's `verified`, so a record-only consumer can recognise a D-068 stopped DID.
 - **`data_quality_tester_stall_gap_ms` = 500 (provisional, D-104):** a new constant (`VEHICLE_CL250_DATA_QUALITY_TESTER_STALL_GAP_MS`).
 
 ## [0.27.0] — 2026-11-10

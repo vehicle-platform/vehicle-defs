@@ -167,6 +167,51 @@ DID_STALE_AFTER_MS = {
     "REFERENCE_TORQUE": 30000,
 }
 
+# name -> verified: the DID's answer was confirmed on the vehicle (the C table's
+# `verified`); an unverified DID can be stopped by the tester (D-068 item 2, D-104)
+DID_VERIFIED = {
+    "ENGINE_SPEED": True,
+    "VEHICLE_SPEED": True,
+    "THROTTLE_POS": True,
+    "COOLANT_TEMP": True,
+    "BATTERY_VOLTAGE": True,
+    "ENGINE_LOAD": False,
+    "TIMING_ADVANCE": False,
+    "ABSOLUTE_LOAD": False,
+    "RELATIVE_THROTTLE_POS": False,
+    "ABSOLUTE_THROTTLE_POS_B": False,
+    "ACCEL_PEDAL_POS_D": False,
+    "COMMANDED_THROTTLE": False,
+    "RELATIVE_ACCEL_PEDAL_POS": False,
+    "INTAKE_MAP": False,
+    "MAF_RATE": False,
+    "COMMANDED_EQUIV_RATIO": False,
+    "SHORT_TERM_FUEL_TRIM_B1": False,
+    "INJECTION_TIMING": False,
+    "ENGINE_FUEL_RATE": False,
+    "DEMAND_TORQUE_PCT": False,
+    "ACTUAL_TORQUE_PCT": False,
+    "BAROMETRIC_PRESSURE": False,
+    "LONG_TERM_FUEL_TRIM_B1": False,
+    "FUEL_PRESSURE": False,
+    "FUEL_RAIL_PRESSURE_REL": False,
+    "FUEL_RAIL_PRESSURE_GAUGE": False,
+    "COMMANDED_EVAP_PURGE": False,
+    "FUEL_LEVEL": False,
+    "ETHANOL_PERCENT": False,
+    "INTAKE_AIR_TEMP": False,
+    "CATALYST_TEMP_B1S1": False,
+    "AMBIENT_AIR_TEMP": False,
+    "ENGINE_OIL_TEMP": False,
+    "RUN_TIME_SINCE_START": False,
+    "DISTANCE_WITH_MIL": False,
+    "WARMUPS_SINCE_CLEAR": False,
+    "DISTANCE_SINCE_CLEAR": False,
+    "TIME_WITH_MIL": False,
+    "TIME_SINCE_CLEAR": False,
+    "REFERENCE_TORQUE": False,
+}
+
 # D-020: sid -> allowed sub-functions (None = any)
 ALLOWED_SERVICES = {
     0x10: frozenset({0x01, 0x03}),

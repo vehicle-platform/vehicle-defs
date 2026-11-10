@@ -9,6 +9,7 @@ import sys
 import pytest
 
 from vehicle_codegen import config
+from vehicle_codegen.yaml_checks import load_yaml
 
 CC = shutil.which("gcc") or shutil.which("cc")
 C_DIR = config.GEN_DIR / "c"
@@ -65,3 +66,10 @@ def test_python_and_c_agree_on_stale_after_ms(directory, monkeypatch, tmp_path):
         name, poll_ms = by_did[so.probe_did(i)]
         assert so.probe_poll(i) == poll_ms, name
         assert so.probe_stale(i) == mod.DID_STALE_AFTER_MS[name], name
+
+
+def test_python_has_a_verified_flag_for_every_did(monkeypatch):
+    """D-104: a record-only consumer needs `verified` to recognise a stopped DID (D-068)."""
+    mod = _vehicle_module(monkeypatch)
+    vehicle = load_yaml(config.VEHICLE_YAML)
+    assert mod.DID_VERIFIED == {d["name"]: d["verified"] for d in vehicle["dids"]}

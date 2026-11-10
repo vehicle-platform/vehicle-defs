@@ -187,6 +187,14 @@ def generate_vehicle_py(vehicle: dict[str, Any], derived_doc: dict[str, Any] | N
     for d in vehicle["dids"]:
         lines.append(f'    "{d["name"]}": {config.did_stale_after_ms(d)},')
     lines += ["}", ""]
+    lines += [
+        "# name -> verified: the DID's answer was confirmed on the vehicle (the C table's",
+        "# `verified`); an unverified DID can be stopped by the tester (D-068 item 2, D-104)",
+        "DID_VERIFIED = {",
+    ]
+    for d in vehicle["dids"]:
+        lines.append(f'    "{d["name"]}": {bool(d["verified"])},')
+    lines += ["}", ""]
     policy = vehicle["tester_policy"]
     allowed = {e["sid"]: e.get("subfunctions") for e in policy["allowed"]}
     lines.append("# D-020: sid -> allowed sub-functions (None = any)")
