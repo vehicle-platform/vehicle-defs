@@ -421,3 +421,8 @@ constants:
     unit: km/h
     status: provisional
     source: "D-105 recommendation: the v^2 term needs a speed spread to separate CdA from rolling resistance; replace after G1"
+  throttle_torque_lag_min_samples:
+    value: 4
+    unit: count
+    status: provisional
+    source: "D-106 recommendation: at least four samples of each DID inside the lag search range, so a lag can be told from a poll offset; with the 1000 ms search range a DID must be polled every 250 ms or faster"

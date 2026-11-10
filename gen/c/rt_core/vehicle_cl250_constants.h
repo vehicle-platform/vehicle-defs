@@ -87,5 +87,6 @@
 #define VEHICLE_CL250_COAST_DOWN_MIN_SEGMENT_MS (3000u) /* provisional [ms] */
 #define VEHICLE_CL250_COAST_DOWN_MIN_SAMPLES (30u) /* provisional [count] */
 #define VEHICLE_CL250_COAST_DOWN_MIN_SPEED_SPREAD_KMH (20.0f) /* provisional [km/h] */
+#define VEHICLE_CL250_THROTTLE_TORQUE_LAG_MIN_SAMPLES (4u) /* provisional [count] */
 
 #endif /* VEHICLE_CL250_CONSTANTS_H */
