@@ -9,6 +9,7 @@
 /* QM information for the derived signals (D-070 item 5); status and source of each
  * value are in vehicle/cl250_constants.yaml. */
 #define VEHICLE_CL250_ENGINE_DISPLACEMENT_CM3 (249u) /* spec [cm3] */
+#define VEHICLE_CL250_ENGINE_REVOLUTIONS_PER_CYCLE (2u) /* spec [rev] */
 #define VEHICLE_CL250_ENGINE_BORE_MM (76.0f) /* spec [mm] */
 #define VEHICLE_CL250_ENGINE_STROKE_MM (55.0f) /* spec [mm] */
 #define VEHICLE_CL250_ENGINE_COMPRESSION_RATIO (10.7f) /* spec */
@@ -36,6 +37,7 @@
 #define VEHICLE_CL250_DERIVED_MOVING_SPEED_MIN_KMH (3.0f) /* provisional [km/h] */
 #define VEHICLE_CL250_DERIVED_THROTTLE_CLOSED_MAX_PCT (2.0f) /* provisional [%] */
 #define VEHICLE_CL250_DERIVED_THROTTLE_LOAD_MIN_PCT (10.0f) /* provisional [%] */
+#define VEHICLE_CL250_DERIVED_GEAR_MATCH_TOLERANCE (0.05f) /* provisional */
 #define VEHICLE_CL250_DERIVED_GEAR_RATIO_TOLERANCE (0.06f) /* provisional */
 #define VEHICLE_CL250_DERIVED_STEADY_SPEED_SPREAD_KMH (4.0f) /* provisional [km/h] */
 #define VEHICLE_CL250_DERIVED_STEADY_MIN_DURATION_MS (10000u) /* provisional [ms] */
