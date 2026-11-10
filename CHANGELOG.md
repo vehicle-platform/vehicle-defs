@@ -6,7 +6,9 @@ All notable changes to vehicle-defs. Semver (see CLAUDE.md): new message/signal 
 
 ## [0.28.0] — 2026-11-11
 
-MINOR: the coast-down method (D-105) and the `data_quality_mask` bit layout (D-104, part 1 below).
+MINOR: the `data_quality_mask` bit layout (D-104, part 1), the coast-down method (D-105, part 2) and the `tester_rtt_did` input of `ride_tester_nrc78_count` (part 3).
+
+Part 3, a declared-input fix (ISSUES E-30 (1); D-095 item 1: the rule needs it): `ride_tester_nrc78_count` sums the since-boot NRC 0x78 counter per rotating round-trip DID, but that DID was no input. New sensor `tester_rtt_did` (phase0 `ble.telemetry.rttDid`, rt_core null) appended last, so the other `VEHICLE_CL250_SENSOR_*` indices stay; `VEHICLE_CL250_SENSOR_COUNT` 18 -> 19; the rule text names it.
 
 Part 2: the coast-down method (D-105, ISSUES E-30 (2)). No DBC signal, ID, scale, VSS path, DID, poll, BLE, mailbox layout, ride-record layout, `tester_policy` or gate change.
 

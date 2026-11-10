@@ -18,7 +18,7 @@ extern "C" {
  * (a DID's in vehicle_cl250_dids[], a sensor's below, a derived signal's here).
  * rt_core_ready = false: an input is not defined for rt-core yet, never valid. */
 
-#define VEHICLE_CL250_SENSOR_COUNT (18u)
+#define VEHICLE_CL250_SENSOR_COUNT (19u)
 #define VEHICLE_CL250_SENSOR_IMU_ACCEL_X (0u) /* [m/s2] */
 #define VEHICLE_CL250_SENSOR_IMU_ACCEL_Y (1u) /* [m/s2] */
 #define VEHICLE_CL250_SENSOR_IMU_ACCEL_Z (2u) /* [m/s2] */
@@ -37,6 +37,7 @@ extern "C" {
 #define VEHICLE_CL250_SENSOR_TESTER_RTT_MAX (15u) /* [ms] */
 #define VEHICLE_CL250_SENSOR_TESTER_NRC78_COUNT (16u) /* [count] */
 #define VEHICLE_CL250_SENSOR_TESTER_STEP_GAP_MAX (17u) /* [ms] */
+#define VEHICLE_CL250_SENSOR_TESTER_RTT_DID (18u) /* [] */
 
 #define VEHICLE_CL250_DERIVED_COUNT (141u) /* classes A and B */
 #define VEHICLE_CL250_DERIVED_GEARBOX_RATIO_MEASURED (0u) /* class A */
