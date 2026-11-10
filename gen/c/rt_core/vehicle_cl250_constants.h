@@ -81,5 +81,11 @@
 #define VEHICLE_CL250_J1349_REFERENCE_TEMPERATURE_C (25.0f) /* provisional [degC] */
 #define VEHICLE_CL250_DRY_AIR_GAS_CONSTANT_J_PER_KG_K (287.05f) /* calculated [J/(kg K)] */
 #define VEHICLE_CL250_DATA_QUALITY_TESTER_STALL_GAP_MS (500u) /* provisional [ms] */
+#define VEHICLE_CL250_RIDER_MASS_DEFAULT_KG (80.0f) /* provisional [kg] */
+#define VEHICLE_CL250_COAST_DOWN_SPEED_MIN_KMH (20.0f) /* provisional [km/h] */
+#define VEHICLE_CL250_COAST_DOWN_SPEED_MAX_KMH (100.0f) /* provisional [km/h] */
+#define VEHICLE_CL250_COAST_DOWN_MIN_SEGMENT_MS (3000u) /* provisional [ms] */
+#define VEHICLE_CL250_COAST_DOWN_MIN_SAMPLES (30u) /* provisional [count] */
+#define VEHICLE_CL250_COAST_DOWN_MIN_SPEED_SPREAD_KMH (20.0f) /* provisional [km/h] */
 
 #endif /* VEHICLE_CL250_CONSTANTS_H */

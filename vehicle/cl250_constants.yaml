@@ -391,3 +391,33 @@ constants:
     unit: ms
     status: provisional
     source: "D-104 recommendation: a tester step gap above this marks the sample as tester_stall in data_quality_mask; about 4.5 times the fastest poll period (110 ms), well above a normal step and below the D-080 freeze-frame silence (~3.6 s once per stop epoch), which therefore shows as a stall; replace by the G1 step-gap distribution"
+  rider_mass_default_kg:
+    value: 80.0
+    unit: kg
+    status: provisional
+    source: "D-105 recommendation: the single rider of the D-029 total mass (252 kg = 172 kg wet + 80 kg rider, limits total_mass_default_kg); coast-down forces need the total mass; replace by the rider's weight"
+  coast_down_speed_min_kmh:
+    value: 20.0
+    unit: km/h
+    status: provisional
+    source: "D-105 recommendation: below it the drag term is small next to rolling resistance and the 1 km/h speed resolution dominates the decay; replace after G1"
+  coast_down_speed_max_kmh:
+    value: 100.0
+    unit: km/h
+    status: provisional
+    source: "D-105 recommendation: a CL250 coasting from above this is rare and long; keeps the fit on the road speeds the bike sees; replace after G1"
+  coast_down_min_segment_ms:
+    value: 3000
+    unit: ms
+    status: provisional
+    source: "D-105 recommendation: drops the first seconds of a coast (clutch and throttle transients, driveline settling); replace by the transient length seen at G1"
+  coast_down_min_samples:
+    value: 30
+    unit: count
+    status: provisional
+    source: "D-105 recommendation: about 3.3 s of 110 ms ticks in total; fewer give an unstable two-parameter fit"
+  coast_down_min_speed_spread_kmh:
+    value: 20.0
+    unit: km/h
+    status: provisional
+    source: "D-105 recommendation: the v^2 term needs a speed spread to separate CdA from rolling resistance; replace after G1"
