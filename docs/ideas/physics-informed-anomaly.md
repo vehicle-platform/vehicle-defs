@@ -18,6 +18,8 @@ Stage 1 estimators (classical, before any network): recursive least squares for 
 
 ## 2. Fault catalog schema draft (D-084)
 
+Implemented in faults/catalog.yaml (defs 0.28.0).
+
 One entry per fault, YAML, vehicle-independent; a per-vehicle list says which entries apply.
 
 ```yaml

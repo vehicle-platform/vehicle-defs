@@ -1,0 +1,36 @@
+# Fault catalog (D-084): vehicle-independent, FMEA-style fault signatures. Schema draft:
+# docs/ideas/physics-informed-anomaly.md section 2. Which entries apply to a vehicle is
+# decided per vehicle (vehicle/cl250_faults.yaml, D-078).
+#
+# Entry keys: id (AAA-000, unique), subsystem, root_cause, symptoms [{signal, direction
+# up|down|unstable|absent, condition, window?}], needs [signal], residual?, rating {severity,
+# occurrence, detectability: 1-10}, detectable_now, advise_stop, rider_text, action,
+# sources [{ref, confidence high|medium|low}]. Signal names: did.<DID name>,
+# derived.<signal>, sensor.<sensor>; codegen refuses a signal defs does not define for an
+# applied entry (invariant 2). An entry without a high/medium source is CONFIRM: generated
+# `displayable: false`, never shown to a rider (D-084 item 5).
+
+schema_version: 1
+
+entries:
+  - id: CHG-003
+    subsystem: charging
+    root_cause: Stator phase open circuit
+    symptoms:
+      - signal: did.BATTERY_VOLTAGE
+        direction: down
+        condition: window W4_CRUISE
+        window: W4_CRUISE
+      - signal: derived.charging_ripple
+        direction: up
+        condition: rpm above idle band
+    needs: [did.BATTERY_VOLTAGE, did.ENGINE_SPEED, derived.charging_ripple]
+    residual: charging.output_vs_rpm
+    rating: {severity: 6, occurrence: 4, detectability: 6}
+    detectable_now: false # derived.charging_ripple waits for Q-036
+    advise_stop: false
+    rider_text: >-
+      The charging system is not keeping the battery charged at higher engine speeds.
+      The battery may run down on longer rides.
+    action: Have the stator windings and the regulator/rectifier measured.
+    sources: [] # CONFIRM until the research supplies a source

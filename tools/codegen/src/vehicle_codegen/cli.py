@@ -9,6 +9,7 @@ from pathlib import Path
 
 from . import (
     config,
+    faults,
     gen_ble,
     gen_c,
     gen_catalog,
@@ -78,6 +79,12 @@ def run_checks(with_vss: bool = True) -> list[str]:
     errors += gen_catalog.check_catalog(
         load_yaml(config.OBD_CATALOG_YAML), load_yaml(config.VEHICLE_YAML)
     )
+    errors += faults.check_faults(
+        load_yaml(config.FAULT_CATALOG_YAML),
+        load_yaml(config.FAULTS_CL250_YAML),
+        load_yaml(config.VEHICLE_YAML),
+        load_yaml(config.DERIVED_YAML),
+    )
     if with_vss:
         base = gen_vss.fetch_base()
         errors += gen_vss.check_overlay(
@@ -141,6 +148,9 @@ def render_all(with_vss: bool = True) -> dict[Path, str]:
     files[py / "mailbox.py"] = gen_mailbox.generate_python(mailbox, db)
     files[py / "ble.py"] = gen_ble.generate_python(ble)
     files[py / "vehicle_catalog.py"] = gen_catalog.generate_python(cand, vehicle, iso)
+    files[py / "faults.py"] = faults.generate_python(
+        load_yaml(config.FAULT_CATALOG_YAML), load_yaml(config.FAULTS_CL250_YAML)
+    )
     if with_vss:
         files[Path("vss") / "vss_dbc.json"] = gen_vss.export_json(gen_vss.fetch_base())
     return files
