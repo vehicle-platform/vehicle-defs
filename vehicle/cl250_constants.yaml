@@ -24,6 +24,11 @@ constants:
     unit: cm3
     status: spec
     source: vehicle-work-plan.md section 2
+  engine_revolutions_per_cycle:
+    value: 2
+    unit: rev
+    status: spec
+    source: "vehicle-work-plan.md section 2 (four-stroke single): one intake stroke and one injection per two crankshaft revolutions"
   engine_bore_mm:
     value: 76.0
     unit: mm
@@ -166,6 +171,11 @@ constants:
     unit: "%"
     status: provisional
     source: "D-103 recommendation: throttle clearly open = driven (clutch slip, launch); generic"
+  derived_gear_match_tolerance:
+    value: 0.05
+    unit: ""
+    status: provisional
+    source: "D-070 item 6 algorithm parameter (the gear estimate since defs v0.14.0, until now hand-written in vehicle-server formulas.py and rt-core derived_gear.h): a measured ratio within this relative distance of a gear's ratio is that gear; tighter than derived_gear_ratio_tolerance, which judges clutch engagement"
   derived_gear_ratio_tolerance:
     value: 0.06
     unit: ""

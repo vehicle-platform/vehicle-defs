@@ -4,6 +4,7 @@
 # name -> (value, unit, status); sources: vehicle/cl250_constants.yaml (D-070)
 CONSTANTS = {
     "engine_displacement_cm3": (249, "cm3", "spec"),
+    "engine_revolutions_per_cycle": (2, "rev", "spec"),
     "engine_bore_mm": (76.0, "mm", "spec"),
     "engine_stroke_mm": (55.0, "mm", "spec"),
     "engine_compression_ratio": (10.7, "", "spec"),
@@ -31,6 +32,7 @@ CONSTANTS = {
     "derived_moving_speed_min_kmh": (3.0, "km/h", "provisional"),
     "derived_throttle_closed_max_pct": (2.0, "%", "provisional"),
     "derived_throttle_load_min_pct": (10.0, "%", "provisional"),
+    "derived_gear_match_tolerance": (0.05, "", "provisional"),
     "derived_gear_ratio_tolerance": (0.06, "", "provisional"),
     "derived_steady_speed_spread_kmh": (4.0, "km/h", "provisional"),
     "derived_steady_min_duration_ms": (10000, "ms", "provisional"),

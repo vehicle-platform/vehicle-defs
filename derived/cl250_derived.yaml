@@ -329,7 +329,7 @@ signals:
     output: [log]
   gear_estimate:
     class: A
-    description: Engaged gear (1-6) matched to the measured ratio, 0 = no gear matches.
+    description: "Engaged gear (1-6) matched to the measured ratio, 0 = no gear matches. Rule: the gear whose ratio is nearest to gearbox_ratio_measured (relative distance, the lower gear on a tie) if within derived_gear_match_tolerance, else 0."
     catalog: Gear estimate
     unit: enum
     range: [0.0, 6.0]
@@ -342,6 +342,7 @@ signals:
       - const.gear_ratio_4
       - const.gear_ratio_5
       - const.gear_ratio_6
+      - const.derived_gear_match_tolerance
     period_ms: 110
     stale_after_ms: 330
     output: [log]
@@ -881,18 +882,18 @@ signals:
     output: [log]
   fuel_per_stroke:
     class: A
-    description: Fuel mass per injection (one per two revolutions) from the fuel rate and the RPM.
+    description: Fuel mass per injection (one per engine_revolutions_per_cycle revolutions) from the fuel rate and the RPM.
     catalog: Fuelling per stroke, BSFC
     unit: mg
     range: [0.0, 50.0]
     resolution: 0.01
-    inputs: [did.ENGINE_FUEL_RATE, did.ENGINE_SPEED, const.fuel_density_kg_per_l]
+    inputs: [did.ENGINE_FUEL_RATE, did.ENGINE_SPEED, const.fuel_density_kg_per_l, const.engine_revolutions_per_cycle]
     period_ms: 110
     stale_after_ms: 6000
     output: [log]
   volumetric_efficiency:
     class: A
-    description: "Approximate volumetric efficiency by the speed-density method. Rule (D-103): VE = MAF_RATE / (rho x engine_displacement_cm3 x ENGINE_SPEED / 120) x 100, with rho = INTAKE_MAP / (R_air x INTAKE_AIR_TEMP) (ideal gas, dry air, R_air = 287.05 J/(kg K), a physical constant, not a threshold); unit conversions as needed."
+    description: "Approximate volumetric efficiency by the speed-density method. Rule (D-103): VE = MAF_RATE / (rho x engine_displacement_cm3 x ENGINE_SPEED / (60 x engine_revolutions_per_cycle)) x 100, with rho = INTAKE_MAP / (R_air x INTAKE_AIR_TEMP) (ideal gas, dry air, R_air = 287.05 J/(kg K), a physical constant, not a threshold); unit conversions as needed."
     catalog: Volumetric efficiency
     unit: "%"
     range: [0.0, 150.0]
@@ -902,6 +903,7 @@ signals:
       - did.ENGINE_SPEED
       - did.INTAKE_AIR_TEMP
       - const.engine_displacement_cm3
+      - const.engine_revolutions_per_cycle
       - did.MAF_RATE
     period_ms: 110
     stale_after_ms: 15000
@@ -955,7 +957,7 @@ signals:
     output: [log]
   intake_flow_residual:
     class: A
-    description: "Measured air mass flow against the speed-density estimate, relative. Rule (D-103, provisional): (MAF_RATE - expected) / expected x 100 with expected = intake_flow_residual_ve_reference_pct / 100 x rho x engine_displacement_cm3 x ENGINE_SPEED / 120 (rho as in volumetric_efficiency)."
+    description: "Measured air mass flow against the speed-density estimate, relative. Rule (D-103, provisional): (MAF_RATE - expected) / expected x 100 with expected = intake_flow_residual_ve_reference_pct / 100 x rho x engine_displacement_cm3 x ENGINE_SPEED / (60 x engine_revolutions_per_cycle) (rho as in volumetric_efficiency)."
     catalog: Throttle and intake plausibility residuals
     unit: "%"
     range: [-100.0, 100.0]
@@ -966,6 +968,7 @@ signals:
       - did.ENGINE_SPEED
       - did.INTAKE_AIR_TEMP
       - const.engine_displacement_cm3
+      - const.engine_revolutions_per_cycle
       - const.intake_flow_residual_ve_reference_pct
     period_ms: 110
     stale_after_ms: 15000

@@ -4,6 +4,14 @@ All notable changes to vehicle-defs. Semver (see CLAUDE.md): new message/signal 
 
 ## [Unreleased]
 
+## [0.25.0] — 2026-11-10
+
+MINOR, additive: two derived-signal constants that the consumers hand-wrote until now (ISSUES E-30 (7), (10)); values unchanged, so no derived output changes. No DBC signal, ID, layout, scale, VSS path, DID, ride-record layout, poll, BLE, mailbox layout, `tester_policy`, D-020 golden copy or frame-gate change; rt-core's derived input table (`vehicle_cl250_derived.c/h`) is unchanged (constants are not table inputs).
+
+- **`engine_revolutions_per_cycle` = 2 (spec, four-stroke):** a `const.*` input of `fuel_per_stroke`, `volumetric_efficiency` and `intake_flow_residual`; the VE and residual rules now say `ENGINE_SPEED / (60 x engine_revolutions_per_cycle)` instead of `/ 120`.
+- **`derived_gear_match_tolerance` = 0.05 (provisional, D-070 item 6):** a `const.*` input of `gear_estimate`, whose description now states the rule (nearest gear ratio, lower gear on a tie, within the tolerance, else 0). It is deliberately tighter than `derived_gear_ratio_tolerance` (0.06, clutch engagement, D-103).
+- New in `gen/c/rt_core/vehicle_cl250_constants.h` (two defines) and `gen/python/vehicle_defs/vehicle_constants.py`; `vehicle_derived.py` inputs/descriptions follow. Consumers: **vehicle-server** and **vehicle-rt-core** replace their literals at their next bump (golden vectors unchanged).
+
 ## [0.24.0] — 2026-11-05
 
 MINOR: D-103 wiring fixes found by the vehicle-server reference review (D-103 item 5) and the D-093 amendment 3 addendum (docs). No DBC signal, ID, layout, scale, VSS path, DID, ride-record layout, poll, BLE, mailbox layout, `tester_policy`, D-020 golden copy or frame-gate change; rt-core's derived input table changes only by the added/removed DID and derived inputs of the listed (not rt-core-implemented) signals, and `VEHICLE_CL250_DERIVED_INPUT_MAX` goes 5 -> 6 (`effective_tyre_radius`), i.e. +2 B of const flash per table row; rt-core takes it at its next bump (a recompile, no code change).
