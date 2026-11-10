@@ -54,6 +54,7 @@ SIGNAL_OPTIONAL = (
     "per_gear",
     "record",
     "window",
+    "values",
 )
 SENSOR_KEYS = {"description", "unit", "sample_period_ms", "stale_after_ms", "phase0", "rt_core"}
 RECORD_KEYS = {"did", "description"}
@@ -426,6 +427,37 @@ def _check_signal(
         errors.append(f"{where}: only class B has a record")
     if "window" in sig and cls != "B":
         errors.append(f"{where}: only class B has a window")
+    if "values" in sig:
+        errors += _check_values(where, name, sig, doc)
+    return errors
+
+
+def value_define(signal: str, value_name: str) -> str:
+    """C name of an enum value (gen_c.py): VEHICLE_CL250_DERIVED_<this>."""
+    return f"VALUE_{signal}_{value_name}".upper()
+
+
+def _check_values(where: str, name: str, sig: dict[str, Any], doc: dict[str, Any]) -> list[str]:
+    """`values`: integer code -> snake_case name of an enum signal, so no consumer writes
+    the codes by hand (gen_c.py: one float define each; gen_python.py: SIGNALS[...])."""
+    values = sig["values"]
+    if sig["unit"] != "enum":
+        return [f"{where}: only unit enum has values"]
+    if not isinstance(values, dict) or not values:
+        return [f"{where}: values must be a non-empty mapping of code -> name"]
+    errors: list[str] = []
+    lo, hi = sig["range"]
+    taken = {s.upper() for s in doc["signals"]}
+    for code, label in values.items():
+        if isinstance(code, bool) or not isinstance(code, int) or not lo <= code <= hi:
+            errors.append(f"{where}: value code {code!r} must be an integer within the range")
+        if not isinstance(label, str) or not _SNAKE.match(label):
+            errors.append(f"{where}: value name {label!r} must be snake_case")
+        elif value_define(name, label) in taken:
+            errors.append(f"{where}: value {label} collides with a signal name")
+    labels = list(values.values())
+    if len(set(labels)) != len(labels):
+        errors.append(f"{where}: value names must be unique")
     return errors
 
 

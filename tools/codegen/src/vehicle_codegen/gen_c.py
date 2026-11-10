@@ -873,6 +873,14 @@ def generate_derived_c(doc: dict[str, Any], constants: dict[str, Any]) -> dict[s
     for i, n in enumerate(names):
         h.append(define(f"DERIVED_{n.upper()}", f"{i}u", f"class {signals[n]['class']}"))
     h.append("")
+    coded = [n for n in names if "values" in signals[n]]
+    if coded:
+        h.append("/* Enum signal codes (the `values` of the defs): output values, float like every")
+        h.append(" * derived output. */")
+        for n in coded:
+            for code, label in signals[n]["values"].items():
+                h.append(define(f"DERIVED_{derived.value_define(n, label)}", f"{code}.0f", n))
+        h.append("")
     h.append("/* Ride-summary records (class B): rt-core UDS DIDs 0xFD40-0xFD5F (D-070 item 4). */")
     for key, r in doc["ride_summary_records"].items():
         h.append(f"#define {_record_c(key)} ({_hex(r['did'], 4)})")

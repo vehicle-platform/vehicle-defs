@@ -339,3 +339,46 @@ def test_the_window_table_in_c(doc, refs):
     assert "0xFD4Bu" not in c  # records are named, never literals
     # The window signals are class B: they are in the signal table with their record.
     assert "/* window_cruise_count [count] */" in c
+
+
+def _enum(doc, name, values, **fields):
+    _add(doc, name, unit="enum", range=[0.0, 2.0], resolution=1.0, values=values, **fields)
+
+
+def test_enum_values_are_checked(doc, refs):
+    _enum(doc, "t_ok", {0: "low", 1: "mid", 2: "high"})
+    assert _check(doc, refs) == []
+    _enum(doc, "t_out", {3: "beyond"})
+    _enum(doc, "t_bool", {True: "yes"})
+    _enum(doc, "t_case", {0: "Low"})
+    _enum(doc, "t_dup", {0: "same", 1: "same"})
+    _enum(doc, "t_empty", {})
+    _add(doc, "t_unit", values={0: "zero"})
+    errors = _check(doc, refs)
+    assert _has(errors, "t_out", "within the range")
+    assert _has(errors, "t_bool", "within the range")
+    assert _has(errors, "t_case", "snake_case")
+    assert _has(errors, "t_dup", "unique")
+    assert _has(errors, "t_empty", "non-empty")
+    assert _has(errors, "t_unit", "only unit enum")
+    assert not any("t_ok" in e for e in errors)
+
+
+def test_enum_value_name_cannot_collide_with_a_signal(doc, refs):
+    _enum(doc, "t_state", {0: "idle"})
+    _add(doc, "value_t_state_idle")
+    assert _has(_check(doc, refs), "t_state", "collides with a signal name")
+
+
+def test_generated_c_names_every_enum_value(doc, refs):
+    h = gen_c.generate_derived_c(doc, refs["constants"])["vehicle_cl250_derived.h"]
+    names = derived.rt_core_signals(doc)
+    coded = [n for n in names if "values" in doc["signals"][n]]
+    assert {"gear_estimate", "clutch_state", "neutral_coasting_state"} <= set(coded)
+    for n in coded:
+        for code, label in doc["signals"][n]["values"].items():
+            define = f"VEHICLE_CL250_DERIVED_{derived.value_define(n, label)} ({code}.0f)"
+            assert define in h
+    assert gen_python.generate_derived_py(doc).count("'values': {") == len(
+        [s for s in doc["signals"].values() if "values" in s]
+    )

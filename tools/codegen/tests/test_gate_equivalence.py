@@ -31,6 +31,9 @@ FLAGS = [
     *shlex.split(os.environ.get("GATE_EXTRA_CFLAGS", "")),
 ]  # fmt: skip
 GATE_DIR = config.GEN_DIR / "c" / "rt_core"  # conn and hil_sim carry the same file
+# The exhaustive harness run; MemorySanitizer at -O0 is several times slower and its CI time
+# varies by runner (215 s to over 600 s), so the Makefile's MSan pass raises this.
+RUN_TIMEOUT_S = int(os.environ.get("GATE_RUN_TIMEOUT_S", "600"))
 
 
 def _reference_c(vehicle) -> str:
@@ -436,7 +439,7 @@ def test_single_exit_gate_equals_previous_gate(vehicle, tmp_path, opt):
          "-o", str(exe)],
         check=True,
     )  # fmt: skip
-    run = subprocess.run([str(exe)], capture_output=True, text=True, timeout=600)
+    run = subprocess.run([str(exe)], capture_output=True, text=True, timeout=RUN_TIMEOUT_S)
     report = dict(
         (line.split()[0], dict(kv.split("=") for kv in line.split()[1:]))
         for line in run.stdout.splitlines()
