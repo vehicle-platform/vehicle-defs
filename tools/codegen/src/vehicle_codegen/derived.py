@@ -55,6 +55,7 @@ SIGNAL_OPTIONAL = (
     "record",
     "window",
     "values",
+    "bits",
 )
 SENSOR_KEYS = {"description", "unit", "sample_period_ms", "stale_after_ms", "phase0", "rt_core"}
 RECORD_KEYS = {"did", "description"}
@@ -429,6 +430,8 @@ def _check_signal(
         errors.append(f"{where}: only class B has a window")
     if "values" in sig:
         errors += _check_values(where, name, sig, doc)
+    if "bits" in sig:
+        errors += _check_bits(where, name, sig, doc, vehicle)
     return errors
 
 
@@ -458,6 +461,55 @@ def _check_values(where: str, name: str, sig: dict[str, Any], doc: dict[str, Any
     labels = list(values.values())
     if len(set(labels)) != len(labels):
         errors.append(f"{where}: value names must be unique")
+    return errors
+
+
+def bit_define(signal: str, bit_name: str) -> str:
+    """C name of a bit-mask bit (gen_c.py): VEHICLE_CL250_DERIVED_<this>."""
+    return f"BIT_{signal}_{bit_name}".upper()
+
+
+_POLL_BIT = re.compile(r"^poll_([0-9]+)ms$")
+
+
+def _check_bits(
+    where: str, name: str, sig: dict[str, Any], doc: dict[str, Any], vehicle: dict[str, Any]
+) -> list[str]:
+    """`bits`: bit number -> snake_case name of a bit-mask signal (D-104), so no consumer
+    writes the bit positions by hand (gen_c.py: one mask define each; gen_python.py:
+    SIGNALS[...]). The range is exactly 0 .. 2^(highest bit + 1) - 1. A `poll_<N>ms` bit
+    stands for the polled DIDs with poll_period_ms N, so the poll bits name every poll
+    period of the vehicle's tester table exactly once."""
+    bits = sig["bits"]
+    if sig["unit"] != "enum":
+        return [f"{where}: only unit enum has bits"]
+    if "values" in sig:
+        return [f"{where}: a signal has values or bits, not both"]
+    if not isinstance(bits, dict) or not bits:
+        return [f"{where}: bits must be a non-empty mapping of bit -> name"]
+    errors: list[str] = []
+    taken = {s.upper() for s in doc["signals"]}
+    numbers = [b for b in bits if not isinstance(b, bool) and isinstance(b, int)]
+    for bit, label in bits.items():
+        if isinstance(bit, bool) or not isinstance(bit, int) or not 0 <= bit <= 31:
+            errors.append(f"{where}: bit {bit!r} must be an integer in 0..31")
+        if not isinstance(label, str) or not _SNAKE.match(label):
+            errors.append(f"{where}: bit name {label!r} must be snake_case")
+        elif bit_define(name, label) in taken:
+            errors.append(f"{where}: bit {label} collides with a signal name")
+    labels = [v for v in bits.values() if isinstance(v, str)]
+    if len(set(labels)) != len(labels):
+        errors.append(f"{where}: bit names must be unique")
+    if numbers and list(sig["range"]) != [0.0, float((1 << (max(numbers) + 1)) - 1)]:
+        errors.append(f"{where}: range must be [0, 2^(highest bit + 1) - 1]")
+    polls = [int(m.group(1)) for v in labels if (m := _POLL_BIT.match(v))]
+    if polls:
+        periods = sorted({d["poll_period_ms"] for d in vehicle["dids"]})
+        if sorted(polls) != periods:
+            errors.append(
+                f"{where}: poll bits {sorted(polls)} must name each tester poll period "
+                f"{periods} once"
+            )
     return errors
 
 

@@ -384,6 +384,61 @@ def test_generated_c_names_every_enum_value(doc, refs):
     )
 
 
+def _mask(doc, name, bits, hi=7.0, **fields):
+    _add(doc, name, unit="enum", range=[0.0, hi], resolution=1.0, bits=bits, **fields)
+
+
+def test_mask_bits_are_checked(doc, refs):
+    _mask(doc, "t_ok", {0: "low", 1: "mid", 2: "high"})
+    assert _check(doc, refs) == []
+    _mask(doc, "t_wide", {0: "a", 1: "b"})  # range 0..7 but only two bits
+    _mask(doc, "t_neg", {-1: "a"}, hi=1.0)
+    _mask(doc, "t_bool", {True: "yes"}, hi=1.0)
+    _mask(doc, "t_case", {0: "Low"}, hi=1.0)
+    _mask(doc, "t_dup", {0: "same", 1: "same"}, hi=3.0)
+    _mask(doc, "t_empty", {})
+    _mask(doc, "t_both", {0: "a"}, hi=1.0, values={0: "zero"})
+    _add(doc, "t_unit", bits={0: "zero"})
+    _mask(doc, "t_poll", {0: "poll_110ms", 1: "poll_999ms"}, hi=3.0)
+    errors = _check(doc, refs)
+    assert _has(errors, "t_wide", "range must be")
+    assert _has(errors, "t_neg", "0..31")
+    assert _has(errors, "t_bool", "0..31")
+    assert _has(errors, "t_case", "snake_case")
+    assert _has(errors, "t_dup", "unique")
+    assert _has(errors, "t_empty", "non-empty")
+    assert _has(errors, "t_both", "not both")
+    assert _has(errors, "t_unit", "only unit enum")
+    assert _has(errors, "t_poll", "each tester poll period")
+    assert not any("t_ok" in e for e in errors)
+
+
+def test_mask_bit_name_cannot_collide_with_a_signal(doc, refs):
+    _mask(doc, "t_mask", {0: "lost"}, hi=1.0)
+    _add(doc, "bit_t_mask_lost")
+    assert _has(_check(doc, refs), "t_mask", "collides with a signal name")
+
+
+def test_data_quality_mask_has_one_poll_bit_per_poll_period(doc, refs):
+    """D-104: the poll bits follow the tester table; adding a poll period fails the check."""
+    bits = doc["signals"]["data_quality_mask"]["bits"]
+    periods = sorted({d["poll_period_ms"] for d in refs["vehicle"]["dids"]})
+    assert [v for _, v in sorted(bits.items())][: len(periods)] == [f"poll_{p}ms" for p in periods]
+    assert {"bus_off", "tester_stall"} <= set(bits.values())
+    refs["vehicle"]["dids"][0]["poll_period_ms"] = 333
+    assert _has(_check(doc, refs), "data_quality_mask", "each tester poll period")
+
+
+def test_generated_c_names_every_mask_bit(doc, refs):
+    h = gen_c.generate_derived_c(doc, refs["constants"])["vehicle_cl250_derived.h"]
+    masked = [n for n in derived.rt_core_signals(doc) if "bits" in doc["signals"][n]]
+    assert masked == ["data_quality_mask"]
+    for n in masked:
+        for bit, label in doc["signals"][n]["bits"].items():
+            assert f"VEHICLE_CL250_DERIVED_{derived.bit_define(n, label)} ({1 << bit}u)" in h
+    assert gen_python.generate_derived_py(doc).count("'bits': {") == 1
+
+
 def test_timing_macros_equal_the_table_data(doc, refs):
     """Static sizing in rt-core uses these compile-time copies; they must equal the tables."""
     h = gen_c.generate_derived_c(doc, refs["constants"])["vehicle_cl250_derived.h"]
