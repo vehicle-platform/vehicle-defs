@@ -79,5 +79,6 @@
 #define VEHICLE_CL250_INTAKE_FLOW_RESIDUAL_VE_REFERENCE_PCT (85.0f) /* provisional [%] */
 #define VEHICLE_CL250_J1349_REFERENCE_PRESSURE_KPA (99.0f) /* provisional [kPa] */
 #define VEHICLE_CL250_J1349_REFERENCE_TEMPERATURE_C (25.0f) /* provisional [degC] */
+#define VEHICLE_CL250_DRY_AIR_GAS_CONSTANT_J_PER_KG_K (287.05f) /* calculated [J/(kg K)] */
 
 #endif /* VEHICLE_CL250_CONSTANTS_H */

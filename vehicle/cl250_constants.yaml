@@ -381,3 +381,8 @@ constants:
     unit: degC
     status: provisional
     source: "SAE J1349 reference air temperature, used by power_correction_factor in the density-ratio (J1349-style) form; a D-070 item 6 algorithm parameter, until now hand-written in vehicle-server formulas.py and rt-core derived_core.h"
+  dry_air_gas_constant_j_per_kg_k:
+    value: 287.05
+    unit: J/(kg K)
+    status: calculated
+    source: "specific gas constant of dry air in the ISO 2533 / ICAO standard atmosphere: R* / M = 8.31432 J/(mol K) / 0.0289644 kg/mol = 287.0529, rounded to 287.05 (the value the VE rule used); one value for air_density, altitude_change, power_correction_factor, volumetric_efficiency and intake_flow_residual (until defs v0.26.0 the consumers hand-wrote 287.058 for the density and 287.05 for VE, ISSUES E-30 (10))"

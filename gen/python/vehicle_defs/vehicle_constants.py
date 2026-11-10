@@ -74,4 +74,5 @@ CONSTANTS = {
     "intake_flow_residual_ve_reference_pct": (85.0, "%", "provisional"),
     "j1349_reference_pressure_kpa": (99.0, "kPa", "provisional"),
     "j1349_reference_temperature_c": (25.0, "degC", "provisional"),
+    "dry_air_gas_constant_j_per_kg_k": (287.05, "J/(kg K)", "calculated"),
 }
