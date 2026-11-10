@@ -1378,7 +1378,301 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                                  'owner_CB300RK_AK) - Honda, 2020, '
                                  'https://www.bike-parts-honda.it/thumbs/pdf_url/img/owner_manuals/owner_CB300RK_AK/2500_2500/0071.pdf',
                           'confidence': 'low'}],
-             'displayable': False}}
+             'displayable': False},
+ 'SUS-001': {'id': 'SUS-001',
+             'subsystem': 'suspension_steering',
+             'root_cause': 'Fork seal leak (cracked seal, grit under lip, or nicked fork tube) '
+                           'lets fork oil escape; damping falls and oil can reach the front '
+                           'brake.',
+             'symptoms': [{'signal': 'derived.road_roughness',
+                           'direction': 'up',
+                           'condition': 'rougher ride metric than baseline at same speed over '
+                                        'weeks (inference)'},
+                          {'signal': 'sensor.imu_accel_z',
+                           'direction': 'unstable',
+                           'condition': 'extra rebound or bounce after bumps (inference)'}],
+             'needs': ['derived.road_roughness', 'sensor.imu_accel_z'],
+             'rating': {'severity': 8, 'occurrence': 6, 'detectability': 8},
+             'detectable_now': False,
+             'advise_stop': True,
+             'rider_text': 'Oil may be leaking from your front fork. Fork oil on the brake can '
+                           'reduce stopping power. Stop somewhere safe and check the fork legs '
+                           'and brake for oil. Do not ride on until it is checked.',
+             'action': 'Inspect fork tubes and brake pads and disc for oil; replace seals and '
+                       'clean or replace contaminated brake parts; check the tube for nicks.',
+             'sources': [{'ref': 'How Do I Know If My Fork Seals Are Bad? - Risk Racing, n.d., '
+                                 'https://riskracing.com/blogs/news/how-do-i-know-if-my-fork-seals-are-bad',
+                          'confidence': 'low'},
+                         {'ref': '6 Motorcycle Suspension Problems To Watch Out For - Haynes, '
+                                 'n.d., '
+                                 'https://us.haynes.com/blogs/tips-tutorials/6-motorcycle-suspension-problems-to-watch-out-for',
+                          'confidence': 'medium'},
+                         {'ref': 'Leaking fork seals FAQs - Motorcyclist, n.d., '
+                                 'https://www.motorcyclistonline.com/how-to/leaking-fork-seals-faqs/',
+                          'confidence': 'low'}],
+             'displayable': True},
+ 'SUS-002': {'id': 'SUS-002',
+             'subsystem': 'suspension_steering',
+             'root_cause': 'Steering-head bearing worn, dry or wrongly adjusted; steering '
+                           'becomes notchy, stiff or loose.',
+             'symptoms': [{'signal': 'sensor.imu_gyro_z',
+                           'direction': 'unstable',
+                           'condition': 'yaw oscillation or wander at steady speed '
+                                        '(inference)'},
+                          {'signal': 'did.VEHICLE_SPEED',
+                           'direction': 'unstable',
+                           'condition': 'oscillation present only in a speed band, not at '
+                                        'standstill (inference)'}],
+             'needs': ['sensor.imu_gyro_z', 'did.VEHICLE_SPEED'],
+             'rating': {'severity': 9, 'occurrence': 4, 'detectability': 8},
+             'detectable_now': False,
+             'advise_stop': True,
+             'rider_text': 'Your steering may be worn or loose. This can make the front end '
+                           'wander or shake. Stop somewhere safe and do not ride on until the '
+                           'steering is checked.',
+             'action': 'Raise the front wheel, turn lock to lock for notchiness, check for '
+                       'play with the front brake applied; adjust or replace bearings.',
+             'sources': [{'ref': 'MOT inspection manual for motorcycles, 2. Steering - GOV.UK '
+                                 '(DVSA), n.d., '
+                                 'https://gov.uk/guidance/mot-inspection-manual-for-motorcycles/2-steering',
+                          'confidence': 'high'},
+                         {'ref': "Five things that will ruin your motorcycle's handling - "
+                                 'RevZilla Common Tread, n.d., '
+                                 'https://www.cyclegear.com/common-tread/five-things-that-will-ruin-your-motorcycles-handling',
+                          'confidence': 'low'}],
+             'displayable': True},
+ 'SUS-003': {'id': 'SUS-003',
+             'subsystem': 'suspension_steering',
+             'root_cause': 'Rear shock loses damping (oil leak, foaming or wear); rear bounces '
+                           'after bumps and squats under load.',
+             'symptoms': [{'signal': 'sensor.imu_accel_z',
+                           'direction': 'unstable',
+                           'condition': 'repeated oscillation after a single bump (inference)'},
+                          {'signal': 'derived.road_roughness',
+                           'direction': 'up',
+                           'condition': 'higher than baseline on the same road (inference)'}],
+             'needs': ['sensor.imu_accel_z', 'derived.road_roughness'],
+             'rating': {'severity': 7, 'occurrence': 6, 'detectability': 6},
+             'detectable_now': True,
+             'advise_stop': True,
+             'rider_text': 'Your rear suspension may have lost damping, so the rear can bounce '
+                           'and grip less, especially in bends and braking. Stop somewhere '
+                           'safe and have it checked before riding further.',
+             'action': 'Inspect the shock for oil on the body; test by pushing the rear down '
+                       'and watching for repeated bounce; replace or rebuild the shock.',
+             'sources': [{'ref': '6 Motorcycle Suspension Problems To Watch Out For - Haynes, '
+                                 'n.d., '
+                                 'https://us.haynes.com/blogs/tips-tutorials/6-motorcycle-suspension-problems-to-watch-out-for',
+                          'confidence': 'medium'}],
+             'displayable': True},
+ 'SUS-004': {'id': 'SUS-004',
+             'subsystem': 'suspension_steering',
+             'root_cause': 'Loose suspension, axle or steering fasteners (inference; no opened '
+                           'page covers torque loss on this bike).',
+             'symptoms': [{'signal': 'sensor.imu_accel_y',
+                           'direction': 'unstable',
+                           'condition': 'new lateral shake or rattle with speed (inference)'},
+                          {'signal': 'derived.road_roughness',
+                           'direction': 'up',
+                           'condition': 'sudden step change without road change (inference)'}],
+             'needs': ['sensor.imu_accel_y', 'derived.road_roughness'],
+             'rating': {'severity': 9, 'occurrence': 3, 'detectability': 8},
+             'detectable_now': False,
+             'advise_stop': True,
+             'rider_text': 'Something in the front or rear suspension may be loose. A loose '
+                           'part can affect steering and braking. Stop somewhere safe and '
+                           'check that nothing is loose before riding on.',
+             'action': 'Check torque of fork pinch bolts, axle nuts, shock mounts and swingarm '
+                       'pivot to the manual values.',
+             'sources': [{'ref': 'MOT inspection manual for motorcycles, 2. Steering - GOV.UK '
+                                 '(DVSA), n.d., '
+                                 'https://gov.uk/guidance/mot-inspection-manual-for-motorcycles/2-steering',
+                          'confidence': 'high'}],
+             'displayable': True},
+ 'WIR-001': {'id': 'WIR-001',
+             'subsystem': 'wiring',
+             'root_cause': 'Corroded or loose ground connection; several circuits share one '
+                           'earth, so many items misbehave together.',
+             'symptoms': [{'signal': 'did.BATTERY_VOLTAGE',
+                           'direction': 'unstable',
+                           'condition': 'drops or flicker under load such as lights or '
+                                        'indicators (inference)'},
+                          {'signal': 'sensor.can_rx_error_count',
+                           'direction': 'up',
+                           'condition': 'node resets or noisy supply causing errors '
+                                        '(inference)'}],
+             'needs': ['did.BATTERY_VOLTAGE', 'sensor.can_rx_error_count'],
+             'rating': {'severity': 6, 'occurrence': 6, 'detectability': 5},
+             'detectable_now': True,
+             'advise_stop': False,
+             'rider_text': 'Your electrical system shows an unstable supply, which can make '
+                           'lights or instruments cut out. Have the battery and ground '
+                           'connections checked soon, and stop if the lights fail.',
+             'action': 'Clean and tighten battery and frame ground points; test the earth with '
+                       'a jumper wire.',
+             'sources': [{'ref': 'How to cure electrical faults on your motorbike - Haynes, '
+                                 'n.d., '
+                                 'https://uk.haynes.com/blogs/tips-tutorials/how-to-cure-electrical-faults-on-your-motorbike',
+                          'confidence': 'medium'}],
+             'displayable': True},
+ 'WIR-002': {'id': 'WIR-002',
+             'subsystem': 'wiring',
+             'root_cause': 'Corroded or loose connector terminal, often from water ingress, '
+                           'giving intermittent contact.',
+             'symptoms': [{'signal': 'did.BATTERY_VOLTAGE',
+                           'direction': 'unstable',
+                           'condition': 'intermittent drops that follow bumps or wet weather '
+                                        '(inference)'},
+                          {'signal': 'sensor.can_bus_off_count',
+                           'direction': 'up',
+                           'condition': 'bus-off events when a CAN connector is intermittent '
+                                        '(inference)'}],
+             'needs': ['did.BATTERY_VOLTAGE', 'sensor.can_bus_off_count'],
+             'rating': {'severity': 6, 'occurrence': 6, 'detectability': 6},
+             'detectable_now': True,
+             'advise_stop': False,
+             'rider_text': 'A connector may be corroded or loose, so equipment can cut out on '
+                           'bumps or in rain. Have the wiring checked soon.',
+             'action': 'Open and inspect connectors for corrosion or water; clean, dry, and '
+                       'seal them.',
+             'sources': [{'ref': 'How to cure electrical faults on your motorbike - Haynes, '
+                                 'n.d., '
+                                 'https://uk.haynes.com/blogs/tips-tutorials/how-to-cure-electrical-faults-on-your-motorbike',
+                          'confidence': 'medium'}],
+             'displayable': True},
+ 'WIR-003': {'id': 'WIR-003',
+             'subsystem': 'wiring',
+             'root_cause': 'Chafed harness rubbing through insulation at a steering or frame '
+                           'rub point, causing a short or open circuit.',
+             'symptoms': [{'signal': 'did.BATTERY_VOLTAGE',
+                           'direction': 'down',
+                           'condition': 'sudden sag when the handlebar turns or a short occurs '
+                                        '(inference)'},
+                          {'signal': 'sensor.can_tx_error_count',
+                           'direction': 'up',
+                           'condition': 'if a CAN wire is affected (inference)'}],
+             'needs': ['did.BATTERY_VOLTAGE', 'sensor.can_tx_error_count'],
+             'rating': {'severity': 8, 'occurrence': 4, 'detectability': 6},
+             'detectable_now': True,
+             'advise_stop': True,
+             'rider_text': 'A wire may be rubbed through and shorting, which can blow fuses or '
+                           'start a fire. Stop somewhere safe and have the wiring checked '
+                           'before riding on.',
+             'action': 'Inspect harness at steering head and frame contacts; repair insulation '
+                       'and re-route with protection.',
+             'sources': [{'ref': 'Motorcycle wiring harness chafe search summary; BMW S 1000 '
+                                 'RR bulletin cited, not opened - various, n.d., '
+                                 'https://static.nhtsa.gov/odi/tsbs/2013/MC-10150156-9999.pdf',
+                          'confidence': 'low'}],
+             'displayable': False},
+ 'WIR-004': {'id': 'WIR-004',
+             'subsystem': 'wiring',
+             'root_cause': 'Blown fuse from a short or overload; the protected circuit goes '
+                           'dead (a repeat blow points to an underlying short).',
+             'symptoms': [{'signal': 'did.BATTERY_VOLTAGE',
+                           'direction': 'absent',
+                           'condition': 'load on one circuit disappears while battery voltage '
+                                        'stays normal (inference)'},
+                          {'signal': 'sensor.can_rx_error_count',
+                           'direction': 'up',
+                           'condition': 'only if a node on that fuse loses power (inference)'}],
+             'needs': ['did.BATTERY_VOLTAGE', 'sensor.can_rx_error_count'],
+             'rating': {'severity': 6, 'occurrence': 6, 'detectability': 7},
+             'detectable_now': False,
+             'advise_stop': False,
+             'rider_text': 'A fuse may have blown and some equipment has stopped working. Do '
+                           'not fit a bigger fuse. Have the cause found, and stop if lights '
+                           'are affected.',
+             'action': 'Find the short before fitting a fuse of the specified rating.',
+             'sources': [{'ref': 'Motorcycle LED turn signal hyperflash search results (blown '
+                                 'fuse as common cause), not opened - Eagle Lights, n.d., '
+                                 'https://eaglelights.com/pages/motorcycle-hyperflashing',
+                          'confidence': 'low'}],
+             'displayable': False},
+ 'LIT-001': {'id': 'LIT-001',
+             'subsystem': 'lighting',
+             'root_cause': 'Headlight failure (LED module, connector, fuse or ground), leaving '
+                           'no forward illumination at night.',
+             'symptoms': [{'signal': 'did.BATTERY_VOLTAGE',
+                           'direction': 'absent',
+                           'condition': 'no load step when the headlight is switched '
+                                        '(inference)'}],
+             'needs': ['did.BATTERY_VOLTAGE'],
+             'rating': {'severity': 8, 'occurrence': 4, 'detectability': 8},
+             'detectable_now': False,
+             'advise_stop': True,
+             'rider_text': 'Your headlight may have failed. You may not see the road or be '
+                           'seen. Stop somewhere safe and do not ride on at night until it is '
+                           'fixed.',
+             'action': 'Check fuse, connector and ground before the lamp unit.',
+             'sources': [{'ref': 'How to cure electrical faults on your motorbike - Haynes, '
+                                 'n.d., '
+                                 'https://uk.haynes.com/blogs/tips-tutorials/how-to-cure-electrical-faults-on-your-motorbike',
+                          'confidence': 'medium'}],
+             'displayable': True},
+ 'LIT-002': {'id': 'LIT-002',
+             'subsystem': 'lighting',
+             'root_cause': 'Tail or brake light failure (LED, wiring, brake switch or ground), '
+                           'so following traffic gets no warning.',
+             'symptoms': [{'signal': 'did.BATTERY_VOLTAGE',
+                           'direction': 'absent',
+                           'condition': 'no load step when the brake is applied (inference)'}],
+             'needs': ['did.BATTERY_VOLTAGE'],
+             'rating': {'severity': 8, 'occurrence': 4, 'detectability': 8},
+             'detectable_now': False,
+             'advise_stop': True,
+             'rider_text': 'Your brake or tail light may not be working, so drivers behind you '
+                           'may not see you slow. Stop somewhere safe and fix it before riding '
+                           'on.',
+             'action': 'Check bulb or LED, brake switch, wiring and ground; ask someone to '
+                       'watch the light.',
+             'sources': [{'ref': 'How to cure electrical faults on your motorbike - Haynes, '
+                                 'n.d., '
+                                 'https://uk.haynes.com/blogs/tips-tutorials/how-to-cure-electrical-faults-on-your-motorbike',
+                          'confidence': 'medium'}],
+             'displayable': True},
+ 'LIT-003': {'id': 'LIT-003',
+             'subsystem': 'lighting',
+             'root_cause': 'Indicator fails or hyper-flashes; typical after an LED swap on a '
+                           'load-dependent flasher, or from a blown fuse or bad bulb '
+                           'connection.',
+             'symptoms': [{'signal': 'did.BATTERY_VOLTAGE',
+                           'direction': 'unstable',
+                           'condition': 'flash-rate ripple on the supply is faster than normal '
+                                        '(inference)'}],
+             'needs': ['did.BATTERY_VOLTAGE'],
+             'rating': {'severity': 5, 'occurrence': 5, 'detectability': 8},
+             'detectable_now': False,
+             'advise_stop': False,
+             'rider_text': 'Your indicators flash too fast or not at all, so other road users '
+                           'may misread your turns. Use hand signals if needed and have it '
+                           'fixed soon.',
+             'action': 'Check LED load versus the flasher, bulb connection and fuse; fit a '
+                       'compatible flasher.',
+             'sources': [{'ref': 'Motorcycle LED turn signal hyper flash search results, '
+                                 'summary only; page returned 403 - Eagle Lights, n.d., '
+                                 'https://eaglelights.com/pages/motorcycle-hyperflashing',
+                          'confidence': 'low'}],
+             'displayable': False},
+ 'LIT-004': {'id': 'LIT-004',
+             'subsystem': 'lighting',
+             'root_cause': 'Dash illumination or warning lamp failure (backlight, connector or '
+                           'supply drop).',
+             'symptoms': [{'signal': 'did.BATTERY_VOLTAGE',
+                           'direction': 'down',
+                           'condition': 'low or unstable supply dims instruments (inference)'}],
+             'needs': ['did.BATTERY_VOLTAGE'],
+             'rating': {'severity': 4, 'occurrence': 4, 'detectability': 7},
+             'detectable_now': False,
+             'advise_stop': False,
+             'rider_text': 'Your dash light may be dim or out, so you may miss warnings at '
+                           'night. Have it checked soon.',
+             'action': 'Check dash connector and supply, then the backlight unit.',
+             'sources': [{'ref': 'How to cure electrical faults on your motorbike - Haynes, '
+                                 'n.d., '
+                                 'https://uk.haynes.com/blogs/tips-tutorials/how-to-cure-electrical-faults-on-your-motorbike',
+                          'confidence': 'medium'}],
+             'displayable': True}}
 
 # catalog ids that apply to the CL250 (vehicle/cl250_faults.yaml, D-078)
 APPLIES_CL250 = ('CHG-001',
@@ -1432,4 +1726,16 @@ APPLIES_CL250 = ('CHG-001',
  'TYR-001',
  'TYR-002',
  'TYR-003',
- 'TYR-004')
+ 'TYR-004',
+ 'SUS-001',
+ 'SUS-002',
+ 'SUS-003',
+ 'SUS-004',
+ 'WIR-001',
+ 'WIR-002',
+ 'WIR-003',
+ 'WIR-004',
+ 'LIT-001',
+ 'LIT-002',
+ 'LIT-003',
+ 'LIT-004')
