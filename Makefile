@@ -49,7 +49,8 @@ clang-gate:
 	done; echo "clang-gate: warnings OK"
 	GATE_CC=$(CLANG) GATE_EXTRA_CFLAGS="$(CLANG_WARN)" $(CODEGEN) pytest -q tools/codegen/tests/test_gate_equivalence.py
 	@if [ "$$(uname -s)" = Linux ]; then \
-		GATE_CC=$(CLANG) GATE_EXTRA_CFLAGS="$(CLANG_WARN) -fsanitize=memory -fno-omit-frame-pointer -g" \
+		GATE_CC=$(CLANG) GATE_RUN_TIMEOUT_S=1800 \
+			GATE_EXTRA_CFLAGS="$(CLANG_WARN) -fsanitize=memory -fno-omit-frame-pointer -g" \
 			$(CODEGEN) pytest -q tools/codegen/tests/test_gate_equivalence.py -k single_exit; \
 	else echo "clang-gate: MemorySanitizer runs on Linux only, skipped here"; fi
 

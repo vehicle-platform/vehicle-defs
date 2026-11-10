@@ -181,6 +181,16 @@ extern "C" {
 #define VEHICLE_CL250_DERIVED_WINDOW_POST_STOP_COOLANT_END (139u) /* class B */
 #define VEHICLE_CL250_DERIVED_WINDOW_POST_STOP_COUNT (140u) /* class B */
 
+/* Enum signal codes (the `values` of the defs): output values, float like every
+ * derived output. */
+#define VEHICLE_CL250_DERIVED_VALUE_GEAR_ESTIMATE_NO_GEAR (0.0f) /* gear_estimate */
+#define VEHICLE_CL250_DERIVED_VALUE_CLUTCH_STATE_ENGAGED (0.0f) /* clutch_state */
+#define VEHICLE_CL250_DERIVED_VALUE_CLUTCH_STATE_DISENGAGED (1.0f) /* clutch_state */
+#define VEHICLE_CL250_DERIVED_VALUE_CLUTCH_STATE_SLIPPING (2.0f) /* clutch_state */
+#define VEHICLE_CL250_DERIVED_VALUE_NEUTRAL_COASTING_STATE_DRIVEN (0.0f) /* neutral_coasting_state */
+#define VEHICLE_CL250_DERIVED_VALUE_NEUTRAL_COASTING_STATE_NEUTRAL (1.0f) /* neutral_coasting_state */
+#define VEHICLE_CL250_DERIVED_VALUE_NEUTRAL_COASTING_STATE_COASTING (2.0f) /* neutral_coasting_state */
+
 /* Ride-summary records (class B): rt-core UDS DIDs 0xFD40-0xFD5F (D-070 item 4). */
 #define VEHICLE_CL250_RIDE_USAGE_DID (0xFD40u)
 #define VEHICLE_CL250_RIDE_FUELING_DID (0xFD41u)

@@ -72,4 +72,6 @@ CONSTANTS = {
     "ride_cornering_aggressiveness_lat_accel_ref_mps2": (6.0, "m/s2", "provisional"),
     "ride_cornering_aggressiveness_lean_ref_deg": (40.0, "deg", "provisional"),
     "intake_flow_residual_ve_reference_pct": (85.0, "%", "provisional"),
+    "j1349_reference_pressure_kpa": (99.0, "kPa", "provisional"),
+    "j1349_reference_temperature_c": (25.0, "degC", "provisional"),
 }

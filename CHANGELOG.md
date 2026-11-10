@@ -6,11 +6,13 @@ All notable changes to vehicle-defs. Semver (see CLAUDE.md): new message/signal 
 
 ## [0.25.0] — 2026-11-10
 
-MINOR, additive: two derived-signal constants that the consumers hand-wrote until now (ISSUES E-30 (7), (10)); values unchanged, so no derived output changes. No DBC signal, ID, layout, scale, VSS path, DID, ride-record layout, poll, BLE, mailbox layout, `tester_policy`, D-020 golden copy or frame-gate change; rt-core's derived input table (`vehicle_cl250_derived.c/h`) is unchanged (constants are not table inputs).
+MINOR, additive: four derived-signal constants and the codes of three enum signals that the consumers hand-wrote until now (ISSUES E-30 (7), (10)); values unchanged, so no derived output changes. No DBC signal, ID, layout, scale, VSS path, DID, ride-record layout, poll, BLE, mailbox layout, `tester_policy`, D-020 golden copy or frame-gate change; rt-core's derived input table (`vehicle_cl250_derived.c`) is unchanged (constants are not table inputs); `vehicle_cl250_derived.h` only gains the enum-code defines.
 
 - **`engine_revolutions_per_cycle` = 2 (spec, four-stroke):** a `const.*` input of `fuel_per_stroke`, `volumetric_efficiency` and `intake_flow_residual`; the VE and residual rules now say `ENGINE_SPEED / (60 x engine_revolutions_per_cycle)` instead of `/ 120`.
 - **`derived_gear_match_tolerance` = 0.05 (provisional, D-070 item 6):** a `const.*` input of `gear_estimate`, whose description now states the rule (nearest gear ratio, lower gear on a tie, within the tolerance, else 0). It is deliberately tighter than `derived_gear_ratio_tolerance` (0.06, clutch engagement, D-103).
-- New in `gen/c/rt_core/vehicle_cl250_constants.h` (two defines) and `gen/python/vehicle_defs/vehicle_constants.py`; `vehicle_derived.py` inputs/descriptions follow. Consumers: **vehicle-server** and **vehicle-rt-core** replace their literals at their next bump (golden vectors unchanged).
+- **`j1349_reference_pressure_kpa` = 99.0, `j1349_reference_temperature_c` = 25.0 (provisional, D-070 item 6):** `const.*` inputs of `power_correction_factor`, whose description now states the rule (rho_ref / air_density, rho_ref = dry-air density at the two reference values).
+- **Enum codes (`values`, new optional key of a `unit: enum` derived signal; codegen checks: integer codes within the range, unique snake_case names, no clash with a signal name):** `gear_estimate` {0: no_gear}, `clutch_state` {0: engaged, 1: disengaged, 2: slipping}, `neutral_coasting_state` {0: driven, 1: neutral, 2: coasting}. rt-core gets float defines `VEHICLE_CL250_DERIVED_VALUE_<SIGNAL>_<NAME>` in `vehicle_cl250_derived.h` (the table itself is unchanged), the Python reference `SIGNALS[name]["values"]`.
+- New in `gen/c/rt_core/vehicle_cl250_constants.h` (four defines) and `gen/python/vehicle_defs/vehicle_constants.py`; `vehicle_derived.py` inputs/descriptions follow. Consumers: **vehicle-server** and **vehicle-rt-core** replace their literals at their next bump (golden vectors unchanged).
 
 ## [0.24.0] — 2026-11-05
 

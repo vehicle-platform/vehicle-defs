@@ -371,3 +371,13 @@ constants:
     unit: "%"
     status: provisional
     source: "D-103 recommendation: a typical mid-load volumetric efficiency of a small two-valve-per-cylinder single (generic 80-90 %); replace by the volumetric_efficiency median of the first warm rides"
+  j1349_reference_pressure_kpa:
+    value: 99.0
+    unit: kPa
+    status: provisional
+    source: "SAE J1349 reference dry-air pressure, used by power_correction_factor in the density-ratio (J1349-style) form; a D-070 item 6 algorithm parameter, until now hand-written in vehicle-server formulas.py and rt-core derived_core.h"
+  j1349_reference_temperature_c:
+    value: 25.0
+    unit: degC
+    status: provisional
+    source: "SAE J1349 reference air temperature, used by power_correction_factor in the density-ratio (J1349-style) form; a D-070 item 6 algorithm parameter, until now hand-written in vehicle-server formulas.py and rt-core derived_core.h"
