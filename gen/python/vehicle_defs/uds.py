@@ -109,6 +109,70 @@ SERVERS = {
     },
 }
 
+# Record and bitfield DIDs (not the ride-summary records): node -> DID name -> did,
+# length, field positions ({byte, mask} or {byte, length}, unsigned big-endian) and the
+# named values of enumerated fields. Data only (ISSUES E-13 (3)).
+RECORD_FIELDS = {
+    "RT_CORE": {
+        "VEHICLE_TESTER_STATUS": {
+            "did": 0xFD00,
+            "length": 2,
+            "fields": {
+                "ECU_PRESENT": {"byte": 0, "mask": 0x01},
+                "SESSION_UP": {"byte": 0, "mask": 0x02},
+                "LATCHED": {"byte": 0, "mask": 0x04},
+                "FAULT": {"byte": 1, "mask": 0xFF},
+            },
+            "values": {
+                "FAULT": {"NONE": 0x00, "GATE": 0x01, "GUARD": 0x02, "FOREIGN_TESTER": 0x03, "NOT_RUNNING": 0x04},
+            },
+        },
+        "RT_CORE_HEALTH": {
+            "did": 0xFD02,
+            "length": 23,
+            "fields": {
+                "STEP_STATS_FRESH": {"byte": 0, "mask": 0x01},
+                "VEHICLE_LATCHED": {"byte": 0, "mask": 0x02},
+                "STEP_OVERRUNS": {"byte": 1, "length": 2},
+                "STEP_GAP_MAX_MS": {"byte": 3, "length": 2},
+                "VEHICLE_STATE": {"byte": 5, "length": 1},
+                "VEHICLE_BUS_OFFS": {"byte": 6, "length": 2},
+                "VEHICLE_RECOVERIES": {"byte": 8, "length": 2},
+                "VEHICLE_RECOVER_DEFERRED": {"byte": 10, "length": 2},
+                "VEHICLE_NAS_ABORTS": {"byte": 12, "length": 2},
+                "PLATFORM_STATE": {"byte": 14, "length": 1},
+                "PLATFORM_BUS_OFFS": {"byte": 15, "length": 2},
+                "PLATFORM_RECOVERIES": {"byte": 17, "length": 2},
+                "PLATFORM_RECOVER_DEFERRED": {"byte": 19, "length": 2},
+                "PLATFORM_NAS_ABORTS": {"byte": 21, "length": 2},
+            },
+            "values": {
+                "VEHICLE_STATE": {"ERROR_ACTIVE": 0x00, "ERROR_PASSIVE": 0x01, "BUS_OFF": 0x02, "LATCHED": 0x03, "UNKNOWN": 0xFF},
+                "PLATFORM_STATE": {"ERROR_ACTIVE": 0x00, "ERROR_PASSIVE": 0x01, "BUS_OFF": 0x02, "LATCHED": 0x03, "UNKNOWN": 0xFF},
+            },
+        },
+        "LEAN_HEALTH": {
+            "did": 0xFD03,
+            "length": 5,
+            "fields": {
+                "RECORD_FRESH": {"byte": 0, "mask": 0x01},
+                "OFFSET_LEARNED": {"byte": 0, "mask": 0x02},
+                "OFFSET_REJECTED": {"byte": 0, "mask": 0x04},
+                "SPEED_PRODUCER_FAULT": {"byte": 0, "mask": 0x08},
+                "OUTPUT_CONSUMER_FAULT": {"byte": 0, "mask": 0x10},
+                "SPEED_CONSUMER_FAULT": {"byte": 0, "mask": 0x20},
+                "EKF_ALIVE_OK": {"byte": 0, "mask": 0x40},
+                "RESERVED": {"byte": 0, "mask": 0x80},
+                "OFFSET_REJECTS": {"byte": 1, "length": 2},
+                "UNLEARNED_S": {"byte": 3, "length": 2},
+            },
+            "values": {
+                "UNLEARNED_S": {"UNKNOWN": 0xFFFF},
+            },
+        },
+    },
+}
+
 # Ride-summary records (D-098): record -> did, length, header positions and the signal
 # fields. raw = round((value - range_min) / resolution), unsigned big-endian; `na` (all
 # ones) is NOT_AVAILABLE, `raw_max` the largest valid raw value. Data only.

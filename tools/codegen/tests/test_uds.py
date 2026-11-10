@@ -5,6 +5,7 @@ import ctypes
 import re
 import shutil
 import subprocess
+import types
 
 import pytest
 
@@ -422,3 +423,27 @@ def test_record_macros(dids):
 def test_max_age_rejected_when_invalid(dids, iso, vehicle):
     _rt(dids)["dids"][2]["max_age_ms"] = 0
     assert any("max_age_ms" in e for e in _errors(dids, iso, vehicle))
+
+
+def test_record_fields_cover_every_record_did_with_fields():
+    """ISSUES E-13 (3): host testers decode record/bitfield DIDs from vehicle_defs.uds."""
+    data = load_yaml(config.DIDS_YAML)
+    iso = load_yaml(config.ISO14229_YAML)
+    vehicle = load_yaml(config.VEHICLE_YAML)
+    text = gen_uds.generate_uds_py(iso, data, vehicle)
+    module = types.ModuleType("uds_under_test")
+    exec(text, module.__dict__)  # the generated module under test
+    for node, content in gen_uds.servers(data).items():
+        for d in content.get("dids") or []:
+            if not d.get("fields") or d.get("ride_record"):
+                continue
+            rec = module.RECORD_FIELDS[node][d["name"]]
+            assert rec["did"] == d["did"] and rec["length"] == d["length"]
+            assert list(rec["fields"]) == [f["name"] for f in d["fields"]]
+            for f in d["fields"]:
+                pos = rec["fields"][f["name"]]
+                assert pos["byte"] == f["byte"]
+                assert pos.get("mask") == f.get("mask") and pos.get("length") == f.get("length")
+            assert rec["values"] == {k: dict(v) for k, v in (d.get("values") or {}).items()}
+    health = module.RECORD_FIELDS["RT_CORE"]["RT_CORE_HEALTH"]
+    assert health["did"] == 0xFD02 and health["values"]["VEHICLE_STATE"]["UNKNOWN"] == 0xFF
