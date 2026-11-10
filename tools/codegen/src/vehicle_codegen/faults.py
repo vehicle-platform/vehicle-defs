@@ -153,12 +153,18 @@ def _check_entry(label: str, e: dict[str, Any], windows: set[str]) -> list[str]:
     return errors
 
 
+def _names_fuel_leak(root_cause: str) -> bool:
+    """A leak of fuel (a fuel line, tank, pump or injector), not an intake (air) leak."""
+    text = root_cause.lower()
+    return "leak" in text and ("fuel" in text or "injector" in text)
+
+
 def _stop_required(e: dict[str, Any]) -> bool:
     """D-084 item 4: brakes, steering, tyres, a fuel leak or severity >= 8 advise stopping."""
     severity = e["rating"]["severity"] if isinstance(e["rating"], dict) else 0
     return (
         e["subsystem"] in ALWAYS_STOP_SUBSYSTEMS
-        or (e["subsystem"] == "fuel_air" and "leak" in str(e["root_cause"]).lower())
+        or (e["subsystem"] == "fuel_air" and _names_fuel_leak(str(e["root_cause"])))
         or (_is_int(severity) and severity >= SEVERITY_STOP)
     )
 

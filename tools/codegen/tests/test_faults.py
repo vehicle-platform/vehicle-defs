@@ -152,11 +152,21 @@ def test_generated_content(catalog, applic):
         assert gen["displayable"] is faults.displayable(e)
         assert gen["rating"] == e["rating"]
         assert gen["detectable_now"] is e["detectable_now"]
-    # The first research batch has only unverified sources: nothing is shown to a rider yet.
-    assert not any(v["displayable"] for v in ns["FAULTS"].values())
+    # Every displayable entry rests on a high/medium source (D-084 item 5).
+    for v in ns["FAULTS"].values():
+        if v["displayable"]:
+            assert any(src["confidence"] in ("high", "medium") for src in v["sources"])
 
 
 def test_generated_file_has_no_drift():
     py = config.GEN_DIR / "python" / "vehicle_defs" / "faults.py"
     files = render_all(with_vss=False)
     assert files[py.relative_to(config.GEN_DIR)] == py.read_text(encoding="utf-8")
+
+
+def test_an_intake_air_leak_is_not_a_fuel_leak(catalog, applic, refs):
+    e = _mild_entry(catalog)
+    e.update(subsystem="fuel_air", root_cause="Intake (vacuum) leak at the throttle body")
+    assert _check(catalog, applic, refs) == []
+    e["root_cause"] = "Leaking fuel injector seal"
+    assert _has(_check(catalog, applic, refs), "advise_stop: true")
