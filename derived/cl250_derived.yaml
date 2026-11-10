@@ -444,7 +444,6 @@ signals:
       - derived.gear_estimate
       - const.derived_moving_speed_min_kmh
       - const.derived_gear_ratio_tolerance
-      - const.derived_throttle_closed_max_pct
       - const.derived_throttle_load_min_pct
       - const.gear_ratio_1
       - const.gear_ratio_2
@@ -465,7 +464,6 @@ signals:
     inputs:
       - derived.gearbox_ratio_measured
       - derived.gear_estimate
-      - did.THROTTLE_POS
       - const.gear_ratio_1
       - const.gear_ratio_2
       - const.gear_ratio_3
@@ -512,19 +510,11 @@ signals:
     range: [0.0, 5000.0]
     resolution: 10.0
     inputs:
-      - did.ENGINE_SPEED
       - did.VEHICLE_SPEED
-      - did.THROTTLE_POS
-      - derived.gear_estimate
       - const.derived_moving_speed_min_kmh
       - const.launch_event_end_speed_kmh
       - const.derived_gear_ratio_tolerance
       - const.gear_ratio_1
-      - const.gear_ratio_2
-      - const.gear_ratio_3
-      - const.gear_ratio_4
-      - const.gear_ratio_5
-      - const.gear_ratio_6
       - derived.gearbox_ratio_measured
     event: true
     output: [log]
@@ -1106,7 +1096,7 @@ signals:
     unit: flag
     range: [0.0, 1.0]
     resolution: 1.0
-    inputs: [did.ENGINE_SPEED, did.ENGINE_LOAD, did.COOLANT_TEMP, did.ENGINE_OIL_TEMP, const.derived_operating_coolant_degc, const.cold_engine_abuse_rpm_max, const.cold_engine_abuse_load_max_pct]
+    inputs: [did.ENGINE_SPEED, did.ENGINE_LOAD, did.COOLANT_TEMP, const.derived_operating_coolant_degc, const.cold_engine_abuse_rpm_max, const.cold_engine_abuse_load_max_pct]
     period_ms: 110
     stale_after_ms: 15000
     output: [log]
@@ -1184,7 +1174,7 @@ signals:
     unit: "%"
     range: [0.0, 100.0]
     resolution: 0.1
-    inputs: [did.FUEL_LEVEL, did.VEHICLE_SPEED, derived.vehicle_accel, const.fuel_level_filtered_accel_max_mps2]
+    inputs: [did.FUEL_LEVEL, derived.vehicle_accel, const.fuel_level_filtered_accel_max_mps2]
     period_ms: 110
     window_ms: 30000
     stale_after_ms: 15000
@@ -1337,7 +1327,7 @@ signals:
     unit: s
     range: [0.0, 3600.0]
     resolution: 1.0
-    inputs: [did.COOLANT_TEMP, did.RUN_TIME_SINCE_START, const.derived_operating_coolant_degc, did.ENGINE_SPEED]
+    inputs: [did.COOLANT_TEMP, const.derived_operating_coolant_degc, did.ENGINE_SPEED]
     record: RIDE_THERMAL
     output: [log, ride_summary]
   ride_coolant_rate_max:
@@ -1545,7 +1535,6 @@ signals:
       - derived.gearbox_ratio_measured
       - derived.gear_estimate
       - did.VEHICLE_SPEED
-      - did.THROTTLE_POS
       - const.secondary_reduction_ratio
       - const.derived_steady_speed_spread_kmh
       - const.derived_steady_min_duration_ms
@@ -1556,7 +1545,6 @@ signals:
       - const.gear_ratio_4
       - const.gear_ratio_5
       - const.gear_ratio_6
-      - const.primary_reduction_ratio
     per_gear: true
     record: RIDE_DRIVETRAIN
     output: [log, ride_summary]
