@@ -236,7 +236,7 @@ def generate_python(catalog: dict[str, Any], applicability: dict[str, Any]) -> s
     applies = tuple(applicability["applies"])
     return (
         PY_BANNER
-        + "\n# id -> entry (faults/catalog.yaml) + `displayable` (high/medium source, else CONFIRM)\n"
+        + "\n# id -> entry (faults/catalog.yaml) + `displayable` (else CONFIRM)\n"
         + "FAULTS = "
         + pprint.pformat(faults, sort_dicts=False, width=96)
         + "\n\n# catalog ids that apply to the CL250 (vehicle/cl250_faults.yaml, D-078)\n"
