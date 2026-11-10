@@ -544,3 +544,27 @@ def test_scan_after_must_name_an_earlier_bitmap(vehicle, platform_db):
     vin["after"] = {"name": "OBD_INFOTYPES_01_20", "id": 0x21}
     errs = check_vehicle(vehicle, platform_db)
     assert any("outside OBD_INFOTYPES_01_20" in e for e in errs), errs
+
+
+def test_scan_sensitive_flag_is_true_or_absent_and_not_on_a_bitmap(vehicle, platform_db):
+    entries = vehicle["discovery_scan"]["requests"]
+    vin = next(e for e in entries if e["request"] == [0x09, 0x02])
+    assert vin.get("sensitive") is True  # D-033, ISSUES E-15 (1)
+    assert [e["name"] for e in entries if e.get("sensitive")] == ["OBD_VIN"]
+    vin["sensitive"] = "yes"
+    errs = check_vehicle(vehicle, platform_db)
+    assert any("sensitive is true or absent" in e for e in errs), errs
+    vin["sensitive"] = True
+    bitmap = next(e for e in entries if e["request"] == [0x09, 0x00])
+    bitmap["sensitive"] = True
+    errs = check_vehicle(vehicle, platform_db)
+    assert any("not sensitive data" in e for e in errs), errs
+
+
+def test_scan_vin_request_must_be_sensitive(vehicle, platform_db):
+    """safety-reviewer MAJOR-1 (E-15 (1)): a defs data error can never unmask a VIN."""
+    entries = vehicle["discovery_scan"]["requests"]
+    vin = next(e for e in entries if e["request"] == [0x09, 0x02])
+    del vin["sensitive"]
+    errs = check_vehicle(vehicle, platform_db)
+    assert any("a VIN request must be sensitive" in e for e in errs), errs

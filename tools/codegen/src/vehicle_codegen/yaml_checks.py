@@ -207,6 +207,10 @@ def dtc_warm_idle(data: dict[str, Any], derived_doc: dict[str, Any]) -> dict[str
 # D-059: the generated scan table holds requests of up to this many bytes.
 SCAN_REQUEST_MAX = 3
 SCAN_BITMAP_IDS = 0x20  # ids per 4-byte support bitmap
+# Requests whose answer identifies the vehicle by protocol (D-033, ISSUES E-15 (1)): SAE
+# J1979 service 0x09 infotype 0x02 (VIN) and ISO 14229-1 DID 0xF190 (VIN). A discovery entry
+# with one of them must be marked sensitive, so a defs data error can never unmask a VIN.
+SCAN_VIN_REQUESTS = ((0x09, 0x02), (0x22, 0xF1, 0x90))
 
 
 def check_discovery(data: dict[str, Any]) -> list[str]:
@@ -241,6 +245,13 @@ def check_discovery(data: dict[str, Any]) -> list[str]:
             errors.append(f"{label}: request {req} violates tester_policy (D-020)")
         elif not frame_allowed(data, single_frame(data, req)):
             errors.append(f"{label}: request {req} refused by the frame gate (D-059)")
+        if tuple(req) in SCAN_VIN_REQUESTS and item.get("sensitive") is not True:
+            errors.append(f"{label}: a VIN request must be sensitive: true (D-033)")
+        if item.get("sensitive", False) is not False:
+            if item["sensitive"] is not True:
+                errors.append(f"{label}: sensitive is true or absent")
+            elif item.get("bitmap") is True:
+                errors.append(f"{label}: a support bitmap is not sensitive data")
         if item.get("bitmap", False) is not False:
             if item["bitmap"] is not True or len(req) < 2 or req[-1] % SCAN_BITMAP_IDS != 0:
                 errors.append(f"{label}: a bitmap request ends in a multiple of 0x20")

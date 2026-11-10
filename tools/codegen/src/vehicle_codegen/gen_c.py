@@ -578,7 +578,8 @@ def generate_vehicle_c(
         " * bitmap_offset != 0: the positive response carries a 4-byte support bitmap at",
         " * this offset (counted from the response SID); bit 7 of its first byte is id",
         " * base + 1, base = the last request byte. after != SCAN_NONE: send only if entry",
-        " * `after`'s bitmap marks `after_id` supported. */",
+        " * `after`'s bitmap marks `after_id` supported. sensitive: the answer identifies",
+        " * the vehicle (D-033, e.g. the VIN) and is never printed in full. */",
         define("SCAN_COUNT", f"{len(vehicle['discovery_scan']['requests'])}u"),
         define("SCAN_REQUEST_MAX", f"{SCAN_REQUEST_MAX}u", "request bytes"),
         define("SCAN_NONE", "0xFFu", "no `after` condition"),
@@ -588,6 +589,7 @@ def generate_vehicle_c(
         "    uint8_t bitmap_offset; /* 0 = the answer is not a support bitmap */",
         "    uint8_t after;         /* index of the gating bitmap entry, or SCAN_NONE */",
         "    uint8_t after_id;      /* id that entry must mark supported */",
+        "    bool sensitive;        /* D-033: identifies the vehicle, never printed in full */",
         "} vehicle_cl250_scan_t;",
         f"extern const vehicle_cl250_scan_t vehicle_cl250_discovery_scan[{p}_SCAN_COUNT];",
         "",
@@ -625,9 +627,10 @@ def generate_vehicle_c(
         after_index = f"{index[after['name']]}u" if after else f"{p}_SCAN_NONE"
         after_id = _hex(after["id"], 2) if after else "0x00u"
         bitmap_offset = len(e["request"]) if e.get("bitmap") else 0
+        sensitive = "true" if e.get("sensitive") else "false"
         c.append(
             "    { { " + ", ".join(_hex(b, 2) for b in req) + " }, "
-            f"{len(e['request'])}u, {bitmap_offset}u, {after_index}, {after_id} }}, "
+            f"{len(e['request'])}u, {bitmap_offset}u, {after_index}, {after_id}, {sensitive} }}, "
             f"/* {e['name']} */"
         )
     c += ["};", ""]

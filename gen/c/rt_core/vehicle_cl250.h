@@ -274,7 +274,8 @@ bool vehicle_cl250_frame_allowed(const uint8_t *frame, size_t size);
  * bitmap_offset != 0: the positive response carries a 4-byte support bitmap at
  * this offset (counted from the response SID); bit 7 of its first byte is id
  * base + 1, base = the last request byte. after != SCAN_NONE: send only if entry
- * `after`'s bitmap marks `after_id` supported. */
+ * `after`'s bitmap marks `after_id` supported. sensitive: the answer identifies
+ * the vehicle (D-033, e.g. the VIN) and is never printed in full. */
 #define VEHICLE_CL250_SCAN_COUNT (24u)
 #define VEHICLE_CL250_SCAN_REQUEST_MAX (3u) /* request bytes */
 #define VEHICLE_CL250_SCAN_NONE (0xFFu) /* no `after` condition */
@@ -284,6 +285,7 @@ typedef struct {
     uint8_t bitmap_offset; /* 0 = the answer is not a support bitmap */
     uint8_t after;         /* index of the gating bitmap entry, or SCAN_NONE */
     uint8_t after_id;      /* id that entry must mark supported */
+    bool sensitive;        /* D-033: identifies the vehicle, never printed in full */
 } vehicle_cl250_scan_t;
 extern const vehicle_cl250_scan_t vehicle_cl250_discovery_scan[VEHICLE_CL250_SCAN_COUNT];
 
