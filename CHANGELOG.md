@@ -6,7 +6,9 @@ All notable changes to vehicle-defs. Semver (see CLAUDE.md): new message/signal 
 
 ## [0.28.0] — 2026-11-11
 
-MINOR: the `data_quality_mask` bit layout (D-104, part 1), the coast-down method (D-105, part 2) and the `tester_rtt_did` input of `ride_tester_nrc78_count` (part 3).
+MINOR: the `data_quality_mask` bit layout (D-104, part 1), the coast-down method (D-105, part 2) the `tester_rtt_did` input of `ride_tester_nrc78_count` (part 3) and the W4 residual and throttle-lag rules (D-106, part 4).
+
+Part 4 (D-106, ISSUES E-30 (4), (9); Claude recommendation under the user's standing order): `window_cruise_final_drive_residual` = the D-103 `ride_final_drive_ratio` rule inside the first qualifying W4 instance minus `secondary_reduction_ratio` (inputs `const.gear_ratio_1..6` added, unread `did.VEHICLE_SPEED` removed); `window_cruise_ve_residual` = mean VE in the instance minus `intake_flow_residual_ve_reference_pct` (unread `derived.gear_estimate`, `did.THROTTLE_POS` removed); `throttle_torque_lag` is NA "poll too slow" when THROTTLE_POS or ACTUAL_TORQUE_PCT is polled slower than `throttle_torque_lag_search_max_ms / throttle_torque_lag_min_samples` (new provisional constant 4; always NA on the CL250 until a faster torque poll is decided).
 
 Part 3, a declared-input fix (ISSUES E-30 (1); D-095 item 1: the rule needs it): `ride_tester_nrc78_count` sums the since-boot NRC 0x78 counter per rotating round-trip DID, but that DID was no input. New sensor `tester_rtt_did` (phase0 `ble.telemetry.rttDid`, rt_core null) appended last, so the other `VEHICLE_CL250_SENSOR_*` indices stay; `VEHICLE_CL250_SENSOR_COUNT` 18 -> 19; the rule text names it.
 

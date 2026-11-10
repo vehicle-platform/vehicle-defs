@@ -1089,16 +1089,16 @@ const vehicle_cl250_derived_t vehicle_cl250_derived[VEHICLE_CL250_DERIVED_COUNT]
         VEHICLE_CL250_DERIVED_CLASS_RIDE, false, false, true,
         0u, 0u, 0u, VEHICLE_CL250_RIDE_WINDOW_CRUISE_DID, 1u,
         -0.5f, 0.5f, 0.001f,
-        3u, 0u,
-        { { VEHICLE_CL250_DERIVED_INPUT_DERIVED, VEHICLE_CL250_DERIVED_GEARBOX_RATIO_MEASURED }, { VEHICLE_CL250_DERIVED_INPUT_DERIVED, VEHICLE_CL250_DERIVED_GEAR_ESTIMATE }, { VEHICLE_CL250_DERIVED_INPUT_DID, (uint8_t)VEHICLE_CL250_IDX_VEHICLE_SPEED }, { 0u, 0u }, { 0u, 0u }, { 0u, 0u }, { 0u, 0u } },
+        2u, 0u,
+        { { VEHICLE_CL250_DERIVED_INPUT_DERIVED, VEHICLE_CL250_DERIVED_GEARBOX_RATIO_MEASURED }, { VEHICLE_CL250_DERIVED_INPUT_DERIVED, VEHICLE_CL250_DERIVED_GEAR_ESTIMATE }, { 0u, 0u }, { 0u, 0u }, { 0u, 0u }, { 0u, 0u }, { 0u, 0u } },
         { { 0u, 0u, 0.0f, 0.0f }, { 0u, 0u, 0.0f, 0.0f } }
     },
     { /* window_cruise_ve_residual [%] */
         VEHICLE_CL250_DERIVED_CLASS_RIDE, false, false, true,
         0u, 0u, 0u, VEHICLE_CL250_RIDE_WINDOW_CRUISE_DID, 1u,
         -50.0f, 50.0f, 0.1f,
-        3u, 0u,
-        { { VEHICLE_CL250_DERIVED_INPUT_DERIVED, VEHICLE_CL250_DERIVED_VOLUMETRIC_EFFICIENCY }, { VEHICLE_CL250_DERIVED_INPUT_DERIVED, VEHICLE_CL250_DERIVED_GEAR_ESTIMATE }, { VEHICLE_CL250_DERIVED_INPUT_DID, (uint8_t)VEHICLE_CL250_IDX_THROTTLE_POS }, { 0u, 0u }, { 0u, 0u }, { 0u, 0u }, { 0u, 0u } },
+        1u, 0u,
+        { { VEHICLE_CL250_DERIVED_INPUT_DERIVED, VEHICLE_CL250_DERIVED_VOLUMETRIC_EFFICIENCY }, { 0u, 0u }, { 0u, 0u }, { 0u, 0u }, { 0u, 0u }, { 0u, 0u }, { 0u, 0u } },
         { { 0u, 0u, 0.0f, 0.0f }, { 0u, 0u, 0.0f, 0.0f } }
     },
     { /* window_cruise_engine_vibration [m/s2] */

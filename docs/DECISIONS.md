@@ -863,6 +863,14 @@ Both modes share the scenario format and the evaluation/report. Before hardware 
 - Not chosen: a fixed calibration constant measured on level ground (needs a user measurement, wrong after a remount); a per-segment fit with a median (needs a wide speed range in every segment, fewer results); a fixed Crr with a CdA-only fit (rolling resistance would no longer be measured); speed-derived deceleration with a flat-road assumption (grade bias).
 - Why: the IMU removes the grade without a model, the per-ride offset removes the sensor and mounting error without a user step, and the provisional numbers are replaced from G1 coast data.
 
+**D-106 — The two W4 cruise residuals (the D-103 final-drive rule inside the window, the D-103 VE reference) and a resolvability rule for throttle_torque_lag** (2026-11-11, Claude recommendation under the user's standing order "continue with the recommended options without stopping"; ISSUES E-30 (4), (9), D-079, D-103, D-095)
+1. **`window_cruise_final_drive_residual`:** the `ride_final_drive_ratio` rule of D-103 applied to the first qualifying W4 instance: median over its valid samples with a valid gear n of gearbox_ratio_measured x secondary_reduction_ratio / gear_ratio_n, minus secondary_reduction_ratio. The missing `const.gear_ratio_1..6` inputs are added and the unread `did.VEHICLE_SPEED` is removed (D-095 item 1: the W4 conditions already hold the speed).
+2. **`window_cruise_ve_residual`:** mean of the valid volumetric_efficiency samples inside the instance minus `intake_flow_residual_ve_reference_pct` (85 %, provisional, D-103), the reference intake_flow_residual already uses; the unread `derived.gear_estimate` and `did.THROTTLE_POS` are removed. A per-operating-point VE map replaces the single reference once G1 rides exist.
+3. **`throttle_torque_lag` (ISSUES E-30 (9)):** resolvable only when both THROTTLE_POS and ACTUAL_TORQUE_PCT are polled at least every throttle_torque_lag_search_max_ms / `throttle_torque_lag_min_samples` (new, 4, provisional); else NA "poll too slow". On the CL250 (ACTUAL_TORQUE_PCT every 2000 ms, verified: false) it is NA until a faster poll is decided at G1; the poll itself is not changed here (tester schedule and bus load).
+- Not chosen: a faster ACTUAL_TORQUE_PCT poll now (an unverified DID, tester load before G1); widening the lag search range to seconds (a lag that long is not a throttle response).
+- Not chosen: a VE map by RPM and throttle with invented values (no data behind it); a cross-ride baseline (needs history storage rt-core does not have).
+- Why: both rules reuse values and rules already decided, so no new number is invented.
+
 ## Open questions (awaiting decision)
 
 | ID | Question | When to resolve | Note |
