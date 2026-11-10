@@ -1984,23 +1984,42 @@ signals:
     output: [log, ride_summary]
   window_cruise_final_drive_residual:
     class: B
-    description: Final-drive ratio measured in the cruise window minus the defs constant.
+    description: >-
+      Final-drive ratio measured in the cruise window minus the defs constant. Rule (D-106,
+      the ride_final_drive_ratio rule of D-103 inside the window): over the valid samples of
+      the first qualifying W4 instance with a valid gear_estimate n, the median of
+      gearbox_ratio_measured x secondary_reduction_ratio / gear_ratio_n, minus
+      secondary_reduction_ratio. NA without such a sample.
     catalog: "Health window: cruise"
     unit: ratio
     range: [-0.5, 0.5]
     resolution: 0.001
-    inputs: [derived.gearbox_ratio_measured, derived.gear_estimate, did.VEHICLE_SPEED, const.secondary_reduction_ratio]
+    inputs:
+      - derived.gearbox_ratio_measured
+      - derived.gear_estimate
+      - const.secondary_reduction_ratio
+      - const.gear_ratio_1
+      - const.gear_ratio_2
+      - const.gear_ratio_3
+      - const.gear_ratio_4
+      - const.gear_ratio_5
+      - const.gear_ratio_6
     window: W4_CRUISE
     record: RIDE_WINDOW_CRUISE
     output: [log, ride_summary]
   window_cruise_ve_residual:
     class: B
-    description: Volumetric efficiency in the cruise window minus its expected value at that gear and speed.
+    description: >-
+      Volumetric efficiency in the cruise window minus its expected value. Rule (D-106,
+      provisional): the mean of the valid volumetric_efficiency samples inside the first
+      qualifying W4 instance minus intake_flow_residual_ve_reference_pct (the same reference
+      as intake_flow_residual, until a per-operating-point VE map exists). NA without a valid
+      sample.
     catalog: "Health window: cruise"
     unit: "%"
     range: [-50.0, 50.0]
     resolution: 0.1
-    inputs: [derived.volumetric_efficiency, derived.gear_estimate, did.THROTTLE_POS]
+    inputs: [derived.volumetric_efficiency, const.intake_flow_residual_ve_reference_pct]
     window: W4_CRUISE
     record: RIDE_WINDOW_CRUISE
     output: [log, ride_summary]

@@ -740,13 +740,13 @@ extern const platform_uds_did_t platform_uds_dids[PLATFORM_UDS_DID_COUNT];
 #define PLATFORM_UDS_RIDE_WINDOW_CRUISE_RESERVED_BYTE (3u)
 #define PLATFORM_UDS_RIDE_WINDOW_CRUISE_RESERVED_MASK (0xFEu) /* Reserved, zero */
 #define PLATFORM_UDS_RIDE_WINDOW_CRUISE_FINAL_DRIVE_RESIDUAL_BYTE (4u)
-#define PLATFORM_UDS_RIDE_WINDOW_CRUISE_FINAL_DRIVE_RESIDUAL_LENGTH (2u) /* Final-drive ratio measured in the cruise window minus the defs constant */
+#define PLATFORM_UDS_RIDE_WINDOW_CRUISE_FINAL_DRIVE_RESIDUAL_LENGTH (2u) /* Final-drive ratio measured in the cruise window minus the defs constant. Rule (D-106, the ride_final_drive_ratio rule of D-103 inside the window): over the valid samples of the first qualifying W4 instance with a valid gear_estimate n, the median of gearbox_ratio_measured x secondary_reduction_ratio / gear_ratio_n, minus secondary_reduction_ratio. NA without such a sample */
 #define PLATFORM_UDS_RIDE_WINDOW_CRUISE_FINAL_DRIVE_RESIDUAL_MAX (0x03E8u) /* largest valid raw value */
 #define PLATFORM_UDS_RIDE_WINDOW_CRUISE_FINAL_DRIVE_RESIDUAL_NA (0xFFFFu) /* NOT_AVAILABLE (D-098) */
 #define PLATFORM_UDS_RIDE_WINDOW_CRUISE_FINAL_DRIVE_RESIDUAL_RANGE_MIN (-0.5f) /* window_cruise_final_drive_residual */
 #define PLATFORM_UDS_RIDE_WINDOW_CRUISE_FINAL_DRIVE_RESIDUAL_RESOLUTION (0.001f)
 #define PLATFORM_UDS_RIDE_WINDOW_CRUISE_VE_RESIDUAL_BYTE (6u)
-#define PLATFORM_UDS_RIDE_WINDOW_CRUISE_VE_RESIDUAL_LENGTH (2u) /* Volumetric efficiency in the cruise window minus its expected value at that gear and speed */
+#define PLATFORM_UDS_RIDE_WINDOW_CRUISE_VE_RESIDUAL_LENGTH (2u) /* Volumetric efficiency in the cruise window minus its expected value. Rule (D-106, provisional): the mean of the valid volumetric_efficiency samples inside the first qualifying W4 instance minus intake_flow_residual_ve_reference_pct (the same reference as intake_flow_residual, until a per-operating-point VE map exists). NA without a valid sample */
 #define PLATFORM_UDS_RIDE_WINDOW_CRUISE_VE_RESIDUAL_MAX (0x03E8u) /* largest valid raw value */
 #define PLATFORM_UDS_RIDE_WINDOW_CRUISE_VE_RESIDUAL_NA (0xFFFFu) /* NOT_AVAILABLE (D-098) */
 #define PLATFORM_UDS_RIDE_WINDOW_CRUISE_VE_RESIDUAL_RANGE_MIN (-50.0f) /* window_cruise_ve_residual */
