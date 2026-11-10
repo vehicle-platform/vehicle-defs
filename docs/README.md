@@ -43,7 +43,7 @@ Authority order: `DECISIONS.md` > `ARCHITECTURE.md` > other English docs. For ve
 | 791-860 | §9b HIL bench |
 | 861-     902 | §10 Phase 2, eliminated items, open notes |
 
-## vehicle-work-plan.md (672 lines)
+## vehicle-work-plan.md (673 lines)
 
 | Lines | Section |
 |---|---|
@@ -56,7 +56,7 @@ Authority order: `DECISIONS.md` > `ARCHITECTURE.md` > other English docs. For ve
 | 423-475 | §8 virtual dynamometer protocol |
 | 476-548 | §9-11 assistant profiles, modification experiments, real dyno |
 | 549-587 | §12 legal/safety framework |
-| 588-672 | §13-16 BOM, schedule, risks, deliverables |
+| 588-673 | §13-16 BOM, schedule, risks, deliverables |
 
 ## phase0-data-collection-plan.md (278 lines)
 
