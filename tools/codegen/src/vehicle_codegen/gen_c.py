@@ -509,6 +509,11 @@ def generate_vehicle_c(
         h.append(f"    {p}_IDX_{d['name']} = {i},")
     h.append("} vehicle_cl250_did_index_t;")
     h.append("")
+    h += ["/* Compile-time copies of vehicle_cl250_dids[].poll_period_ms, for static sizing of",
+          " * per-DID histories (the table stays the runtime source; they are equal). */"]  # fmt: skip
+    for d in dids:
+        h.append(define(f"POLL_MS_{d['name']}", f"{d['poll_period_ms']}u"))
+    h.append("")
     h += [
         "/* physical = raw * factor_num / factor_den + offset,",
         " * raw = `length` data bytes after the DID echo, unsigned big-endian. */",
@@ -872,6 +877,17 @@ def generate_derived_c(doc: dict[str, Any], constants: dict[str, Any]) -> dict[s
     h.append(define("DERIVED_COUNT", f"{len(names)}u", "classes A and B"))
     for i, n in enumerate(names):
         h.append(define(f"DERIVED_{n.upper()}", f"{i}u", f"class {signals[n]['class']}"))
+    h.append("")
+    h += ["/* Compile-time copies of the table's period_ms and window_ms (signals with a window",
+          " * only) and of the windows' max_duration_ms, for static sizing of histories. */"]  # fmt: skip
+    for n in names:
+        if "period_ms" in signals[n]:
+            h.append(define(f"PERIOD_MS_{n.upper()}", f"{signals[n]['period_ms']}u"))
+        if "window_ms" in signals[n]:
+            h.append(define(f"WINDOW_MS_{n.upper()}", f"{signals[n]['window_ms']}u"))
+    for key, w in doc["windows"].items():
+        if "max_duration_ms" in w:
+            h.append(define(f"MAX_DURATION_MS_{key}", f"{w['max_duration_ms']}u"))
     h.append("")
     coded = [n for n in names if "values" in signals[n]]
     if coded:
