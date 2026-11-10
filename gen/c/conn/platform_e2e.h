@@ -19,6 +19,13 @@ extern "C" {
 #define PLATFORM_E2E_RANGE_SAFETY_LAST_ID (0x07Fu)
 #define PLATFORM_E2E_RANGE_HEARTBEAT_FIRST_ID (0x080u)
 #define PLATFORM_E2E_RANGE_HEARTBEAT_LAST_ID (0x08Fu)
+/* True for a standard ID in any E2E-mandatory range; extended IDs are outside the plan. */
+static inline bool platform_e2e_id_mandatory(uint32_t id, bool extended)
+{
+    return (!extended) &&
+           (((id >= PLATFORM_E2E_RANGE_SAFETY_FIRST_ID) && (id <= PLATFORM_E2E_RANGE_SAFETY_LAST_ID)) ||
+           ((id >= PLATFORM_E2E_RANGE_HEARTBEAT_FIRST_ID) && (id <= PLATFORM_E2E_RANGE_HEARTBEAT_LAST_ID)));
+}
 
 /* VehicleSpeed 0x021, cycle 50 ms, sender RT_CORE */
 #define PLATFORM_VEHICLE_SPEED_E2E_DATA_ID (0x1021u)
