@@ -850,8 +850,49 @@ def generate_uds_py(iso: dict[str, Any], data: dict[str, Any], vehicle: dict[str
             lines.append(f'            "{t["name"]}": (0x{t["dtc"]:06X}, "{t["code"]}"),')
         lines += ["        },", "    },"]
     lines += ["}", ""]
+    lines += _record_fields_py(data)
     lines += _ride_records_py(data)
     return "\n".join(lines)
+
+
+def _record_fields_py(data: dict[str, Any]) -> list[str]:
+    """Field layouts of the record/bitfield DIDs (ISSUES E-13 (3)) so host testers (vehicle-
+    hil-bench, scripts) decode e.g. 0xFD02 from defs instead of by hand. Ride-summary records
+    have their own table below (RIDE_RECORDS). Data only."""
+    lines = [
+        "# Record and bitfield DIDs (not the ride-summary records): node -> DID name -> did,",
+        "# length, field positions ({byte, mask} or {byte, length}, unsigned big-endian) and the",
+        "# named values of enumerated fields. Data only (ISSUES E-13 (3)).",
+        "RECORD_FIELDS = {",
+    ]
+    for node, content in servers(data).items():
+        items = [
+            d for d in content.get("dids") or [] if d.get("fields") and not d.get("ride_record")
+        ]
+        if not items:
+            continue
+        lines.append(f'    "{node}": {{')
+        for d in items:
+            lines += [
+                f'        "{d["name"]}": {{',
+                f'            "did": 0x{d["did"]:04X},',
+                f'            "length": {d["length"]},',
+                '            "fields": {',
+            ]
+            for f in d["fields"]:
+                if "mask" in f:
+                    pos = f'{{"byte": {f["byte"]}, "mask": 0x{f["mask"]:02X}}}'
+                else:
+                    pos = f'{{"byte": {f["byte"]}, "length": {f["length"]}}}'
+                lines.append(f'                "{f["name"]}": {pos},')
+            lines += ["            },", '            "values": {']
+            for field, named in (d.get("values") or {}).items():
+                pairs = ", ".join(f'"{k}": 0x{v:02X}' for k, v in named.items())
+                lines.append(f'                "{field}": {{{pairs}}},')
+            lines += ["            },", "        },"]
+        lines.append("    },")
+    lines += ["}", ""]
+    return lines
 
 
 def _ride_records_py(data: dict[str, Any]) -> list[str]:
