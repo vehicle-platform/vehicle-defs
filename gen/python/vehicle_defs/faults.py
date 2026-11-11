@@ -1672,7 +1672,98 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                                  'n.d., '
                                  'https://uk.haynes.com/blogs/tips-tutorials/how-to-cure-electrical-faults-on-your-motorbike',
                           'confidence': 'medium'}],
-             'displayable': True}}
+             'displayable': True},
+ 'FUE-008': {'id': 'FUE-008',
+             'subsystem': 'fuel_air',
+             'root_cause': 'O2 sensor slow, drifting or with a failed heater (inference): the '
+                           'ECU loses reliable closed-loop feedback, so fuelling is corrected '
+                           'late or not at all. Fuel trims wander or saturate and '
+                           'warm-up/cruise mixture drifts.',
+             'symptoms': [{'signal': 'did.SHORT_TERM_FUEL_TRIM_B1',
+                           'direction': 'unstable',
+                           'condition': 'Cruise or steady throttle after warm-up; trim swings '
+                                        'slowly or sticks at a limit (inference).'},
+                          {'signal': 'did.LONG_TERM_FUEL_TRIM_B1',
+                           'direction': 'up',
+                           'condition': 'Persistent large correction (either sign) once warm; '
+                                        'learned value drifts away from zero (inference).'},
+                          {'signal': 'did.COOLANT_TEMP',
+                           'direction': 'up',
+                           'condition': 'Engine fully warm, so closed loop should be active; '
+                                        'used to gate the trim symptoms (inference).'},
+                          {'signal': 'did.ENGINE_SPEED',
+                           'direction': 'unstable',
+                           'condition': 'Mild hunting at idle or light load when the mixture '
+                                        'is off (inference).'}],
+             'needs': ['did.SHORT_TERM_FUEL_TRIM_B1',
+                       'did.LONG_TERM_FUEL_TRIM_B1',
+                       'did.COOLANT_TEMP',
+                       'did.ENGINE_SPEED'],
+             'rating': {'severity': 4, 'occurrence': 4, 'detectability': 5},
+             'detectable_now': False,
+             'advise_stop': False,
+             'rider_text': 'The exhaust oxygen sensor may be responding slowly or not heating, '
+                           'so the engine management cannot fine-tune the fuel mixture. You '
+                           'may notice higher fuel use, rough running or a check-engine light. '
+                           'Have the bike inspected soon.',
+             'action': 'Read stored fault codes with a Honda-capable scan tool, check the '
+                       'sensor heater circuit and wiring, then replace the sensor if out of '
+                       'specification.',
+             'sources': [{'ref': 'Honda Motorcycle Aftersales Plus One, DTC and PGM-FI '
+                                 'diagnostics article - Honda Motor Co., 2025, '
+                                 'https://global.honda/en/motorcycle-aftersales/plusone/202506.html '
+                                 '(supports only: PGM-FI stores DTCs, scan tool recommended; '
+                                 'failure behaviour here is inferred)',
+                          'confidence': 'low'}],
+             'displayable': False},
+ 'FUE-009': {'id': 'FUE-009',
+             'subsystem': 'fuel_air',
+             'root_cause': 'Idle air control or fast-idle valve fault (inference): stuck, '
+                           'clogged or electrically failed valve gives wrong idle speed, '
+                           'especially cold (fast idle missing) or hot (idle too high or '
+                           'hunting). Intake air leaks can mimic it.',
+             'symptoms': [{'signal': 'did.ENGINE_SPEED',
+                           'direction': 'unstable',
+                           'condition': 'At idle, speed hunts or sits away from the target '
+                                        '(high or low) with throttle closed (inference).'},
+                          {'signal': 'derived.idle_rpm_std',
+                           'direction': 'up',
+                           'condition': 'Idle RPM standard deviation increases versus the '
+                                        'healthy baseline (inference).'},
+                          {'signal': 'did.THROTTLE_POS',
+                           'direction': 'absent',
+                           'condition': 'Throttle at closed position, so the idle error is not '
+                                        'rider input (inference).'},
+                          {'signal': 'did.COOLANT_TEMP',
+                           'direction': 'down',
+                           'condition': 'Cold start, when fast idle should raise the speed; '
+                                        'low idle or stalling points to the valve '
+                                        '(inference).'},
+                          {'signal': 'did.INTAKE_MAP',
+                           'direction': 'unstable',
+                           'condition': 'Manifold pressure fluctuates at idle with the speed '
+                                        'hunting (inference).'}],
+             'needs': ['did.ENGINE_SPEED',
+                       'derived.idle_rpm_std',
+                       'did.THROTTLE_POS',
+                       'did.COOLANT_TEMP',
+                       'did.INTAKE_MAP'],
+             'rating': {'severity': 5, 'occurrence': 4, 'detectability': 4},
+             'detectable_now': False,
+             'advise_stop': False,
+             'rider_text': 'The engine idle may be unstable, too high or too low, and it may '
+                           'stall at stops or when cold. Stalling in traffic is a hazard, so '
+                           'take care at junctions and have the bike inspected soon.',
+             'action': 'Check throttle body and idle air passages for deposits, intake leaks '
+                       'and the valve connector and wiring, then clean or replace the valve '
+                       'per the model service manual.',
+             'sources': [{'ref': 'Honda Motorcycle Aftersales Plus One, DTC and PGM-FI '
+                                 'diagnostics article - Honda Motor Co., 2025, '
+                                 'https://global.honda/en/motorcycle-aftersales/plusone/202506.html '
+                                 '(supports only: PGM-FI stores DTCs; idle-valve failure '
+                                 'behaviour is inferred)',
+                          'confidence': 'low'}],
+             'displayable': False}}
 
 # catalog ids that apply to the CL250 (vehicle/cl250_faults.yaml, D-078)
 APPLIES_CL250 = ('CHG-001',
@@ -1738,4 +1829,6 @@ APPLIES_CL250 = ('CHG-001',
  'LIT-001',
  'LIT-002',
  'LIT-003',
- 'LIT-004')
+ 'LIT-004',
+ 'FUE-008',
+ 'FUE-009')
