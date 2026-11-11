@@ -579,7 +579,7 @@ AT HOME/AFTERWARDS (demo, bonus)
 | Layer | Technology | Role |
 |---|---|---|
 | Signal broker | **Kuksa Databroker** (Docker container) | Single source of truth, VSS semantic model — no application touches CAN directly |
-| CAN bridge | Self-written service | CAN → VSS translation (uses the `vehicle-defs` schema) |
+| CAN bridge | **Eclipse kuksa-can-provider** (D-004; `vehicle-linux-node` `docker-compose.yml`) | CAN → VSS translation from `platform.dbc` + the generated `gen/vss/vss_dbc.json` (`dbc2vss` keys of the VSS overlay); receive-only, nothing self-written |
 | Application framework | Velocitas SDK (Phase 2) | Each function (lane tracking, vehicle-mcp, HMI) is a "Vehicle App" |
 | Communication | gRPC (local) + MQTT (cloud/`vehicle-server`) | Standard protocols |
 | Container/OTA management | Eclipse Kanto (Phase 2) | Simple process in the MVP, moves to containers with maturity |
