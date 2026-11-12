@@ -872,6 +872,13 @@ Both modes share the scenario format and the evaluation/report. Before hardware 
 - Not chosen: a VE map by RPM and throttle with invented values (no data behind it); a cross-ride baseline (needs history storage rt-core does not have).
 - Why: both rules reuse values and rules already decided, so no new number is invented.
 
+**D-107 — Import paths: relative inside a module, absolute across modules** (2026-11-12, user; review of all repos)
+1. **Rule:** a relative import stays inside its module (at most one `../`); anything that crosses a module or a layer uses the repo's absolute form. A chain of `../../..` is a defect, not a style choice.
+2. **Per language:** TypeScript `@/` = `src` and `@defs/` = the `external/vehicle-defs` submodule (`tsconfig` `paths` + Vite `resolve.alias`; vehicle-analyzer#56). Python: `from .x import y` inside a package, the full package name (`vehicle_server...`) across packages (already the case in every Python repo). Dart: `package:vehicle_mobile/...` for every import under `lib/`, enforced by the `always_use_package_imports` lint, because Dart allows no mix of the two forms (vehicle-mobile#35). C/C++: include roots (`-I src`, `-I test`, the generated defs directory; CMake `target_include_directories`) and `#include "services/x.h"`, never `#include "../x.h"` (vehicle-connectivity-node#48; rt-core, safety-node and hil-bench already comply).
+3. **Review state (2026-11-12):** the Python repos, rt-core, safety-node, hil-bench and analyzer `src/` complied already; analyzer tests, mobile `lib/` and conn-node tests were converted. Existing code is not refactored again; new code and touched files follow the rule, `architecture-guard` flags violations.
+- Not chosen: relative imports everywhere (a moved file breaks its importers and a layer violation such as `hal` → `features` hides behind `../../`); absolute imports everywhere (churn inside modules for no gain, and Python packages lose their relocatability).
+- Why: the platform's one-way dependency rule is checked by reading the imports; an absolute path names the layer it crosses, a relative one does not.
+
 ## Open questions (awaiting decision)
 
 | ID | Question | When to resolve | Note |
