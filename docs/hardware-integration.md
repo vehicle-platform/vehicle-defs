@@ -148,7 +148,7 @@ One row per cable that leaves a board or a box. Pin orders are fixed in the Fusi
 | P3 | Pi 5 box → camera (front) | 22-pin CSI flex | Pi 15→22 pin cable | — | as short as the mount allows | shielded sleeve if it passes the engine (**proposal**) |
 | E1 | ESP32 conn box ↔ platform bus | 2: `PCAN_H`, `PCAN_L` | FLRY-B twisted pair | DT 2-pin | mid-bus node: no 120 Ω | the on-board 120 Ω of its SN65HVD230 removed/open |
 
-Counts this table implies for Wave 1 (check against the procurement list before ordering): Main Box glands 6 (G1–G6) plus up to 4 more if G6a–G6e enter through their own PG7 instead of one multi-core harness (**decide at the box**), Pi box 4, ESP32 box 2, each sensor/IMU/radar/relay box 1–2. Deutsch DT: about 12 pairs (2–8 pin). LiYCY: 5 m 4-core, 2 m 8-core, 5 m 2-core; FLRY-B pair 3 m.
+Counts this table implies for Wave 1 (check against the procurement list before ordering): Main Box glands 6 (G1–G6) plus up to 4 more if G6a–G6e enter through their own PG7 instead of one multi-core harness (**decide at the box**), Pi box 4, ESP32 box 2, each sensor/IMU/radar/relay box 1–2. Deutsch DT: 13 pairs for Wave 1 (6× 2-pin: G3, G6b ×2, P1, P2, E1; 2× 3-pin: G6a; 4× 4-pin: G5, G6c ×2, G6e, with G5 6-pin if its six cores are confirmed; 1× 8-pin: G4); the G6f Scale 1B sensor runs add 12 in Wave 2 (7× 2-pin with five NTCs, 3× 3-pin, 2× 6-pin), 25 in all. The procurement list v3.0 carries these counts and adds 20 % spare to the cable metres. LiYCY: 5 m 4-core, 2 m 8-core, 5 m 2-core; FLRY-B pair 3 m.
 
 ## 4. Mechanical integration
 
