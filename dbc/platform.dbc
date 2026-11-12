@@ -146,14 +146,17 @@ CM_ BO_ 288 "QM requests from rt-core to the safety partition (D-072 item 4c), p
 CM_ SG_ 288 IGNITION_STATE "Ignition (key) state seen by rt-core power management; UNKNOWN until measured. 3 is reserved and is read as UNKNOWN. Only OFF lets the partition accept a lock; it can never cause a lock or an unlock by itself.";
 CM_ SG_ 288 PARK_MODE "rt-core park mode (wake-on-motion watch, D-072 item 2); UNKNOWN until known. 3 is reserved and is read as UNKNOWN. Informational for the immobilizer; never a mode input to the safety functions.";
 CM_ SG_ 288 IMMOBILIZER_LOCK_REQUEST "LOCK = the phone or park mode asks the partition to lock the starter relay; it is only a request. LOCK is 3 and 1 and 2 are reserved and read as NONE, so any single-bit error from NONE or LOCK lands on a reserved value. The partition counts a lock only on a NONE -> LOCK transition with E2E OK, after it has seen NONE with E2E OK since its own boot, with IGNITION_STATE = OFF and its own IMU stationary (D-072 item 7). There is no unlock request: unlocking is the partition's own decision (NFC, PIN, hidden bypass).";
+BA_DEF_  "Baudrate" INT 0 1000000;
 BA_DEF_ BU_ "NodeId" INT 0 15;
 BA_DEF_ BO_ "GenMsgCycleTime" INT 0 10000;
 BA_DEF_ BO_ "E2E_Protected" ENUM "No","Yes";
 BA_DEF_ BO_ "E2E_DataID" INT 0 65535;
+BA_DEF_DEF_  "Baudrate" 500000;
 BA_DEF_DEF_ "NodeId" 0;
 BA_DEF_DEF_ "GenMsgCycleTime" 0;
 BA_DEF_DEF_ "E2E_Protected" "No";
 BA_DEF_DEF_ "E2E_DataID" 0;
+BA_ "Baudrate" 500000;
 BA_ "NodeId" BU_ RT_CORE 1;
 BA_ "NodeId" BU_ SAFETY 2;
 BA_ "NodeId" BU_ CONN 4;
