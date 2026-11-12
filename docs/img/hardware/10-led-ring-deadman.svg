@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 460" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" role="img" aria-label="LED ring chain: M4 TIM1 DMA on PE9 and PE11 through the 74AHCT125 buffer and a 330 ohm series resistor to the two WS2812B rings, with the ring 5 V supply switched by a P-MOSFET held on by a 74HC123 monostable that the M4 retriggers from its main loop on PF10; mirror LEDs on PF8 and PF9 through N-MOSFETs; indicator inputs through PC817 opto-couplers on PE2 and PE3">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#1f2a37"/></marker>
+  </defs>
+  <rect width="1000" height="460" fill="#ffffff"/>
+  <text x="20" y="28" font-size="16" font-weight="600" fill="#1f2a37">Fig. 10 — M4 outputs and inputs on C1-IO: LED rings with the dead-man, mirror LEDs, indicator inputs (D-072 item 5, D-075 item 4)</text>
+  <text x="20" y="46" fill="#6b7280">Everything here is on M4 ports E/F; nothing is shared with the M7. Pins from the v0.1 pin plan (proposal).</text>
+
+  <!-- M4 block -->
+  <rect x="30" y="80" width="130" height="300" rx="6" fill="#fef3f2" stroke="#b42318" stroke-width="1.5"/>
+  <text x="95" y="102" text-anchor="middle" font-weight="600" fill="#b42318">Cortex-M4</text>
+  <text x="95" y="118" text-anchor="middle" font-size="10" fill="#6b7280">safety-node super loop</text>
+  <g font-size="11" fill="#1f2a37" text-anchor="end">
+    <text x="150" y="150">PE9 TIM1_CH1</text>
+    <text x="150" y="176">PE11 TIM1_CH2</text>
+    <text x="150" y="216">PF10 DEADMAN_KICK</text>
+    <text x="150" y="262">PF8 MIRROR_L</text>
+    <text x="150" y="284">PF9 MIRROR_R</text>
+    <text x="150" y="330">PE2 IND_L</text>
+    <text x="150" y="352">PE3 IND_R</text>
+  </g>
+
+  <!-- ring data path -->
+  <line x1="160" y1="146" x2="230" y2="146" stroke="#1f2a37" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="160" y1="172" x2="230" y2="172" stroke="#1f2a37" stroke-width="2" marker-end="url(#a)"/>
+  <rect x="230" y="128" width="110" height="60" rx="4" fill="#ffffff" stroke="#1f2a37"/>
+  <text x="285" y="152" text-anchor="middle" font-weight="600" fill="#1f2a37">74AHCT125</text>
+  <text x="285" y="168" text-anchor="middle" font-size="10" fill="#6b7280">3.3 → 5 V buffer (M4-only)</text>
+  <line x1="340" y1="146" x2="400" y2="146" stroke="#1f2a37" stroke-width="2"/>
+  <rect x="400" y="138" width="34" height="16" fill="#ffffff" stroke="#1f2a37"/><text x="417" y="150" text-anchor="middle" font-size="9" fill="#1f2a37">330 Ω</text>
+  <line x1="434" y1="146" x2="520" y2="146" stroke="#1f2a37" stroke-width="2" marker-end="url(#a)"/>
+  <text x="477" y="140" text-anchor="middle" font-size="9" fill="#6b7280">Data + GND twisted</text>
+  <line x1="340" y1="172" x2="400" y2="172" stroke="#1f2a37" stroke-width="2"/>
+  <rect x="400" y="164" width="34" height="16" fill="#ffffff" stroke="#1f2a37"/><text x="417" y="176" text-anchor="middle" font-size="9" fill="#1f2a37">330 Ω</text>
+  <line x1="434" y1="172" x2="520" y2="172" stroke="#1f2a37" stroke-width="2" marker-end="url(#a)"/>
+  <!-- rings -->
+  <circle cx="560" cy="146" r="22" fill="none" stroke="#1f2a37" stroke-width="6" stroke-dasharray="6 5"/>
+  <circle cx="560" cy="200" r="22" fill="none" stroke="#1f2a37" stroke-width="6" stroke-dasharray="6 5"/>
+  <line x1="520" y1="172" x2="538" y2="196" stroke="#1f2a37" stroke-width="2"/>
+  <text x="600" y="142" font-size="11" fill="#1f2a37">ring L · WS2812B ×12, 800 kHz</text>
+  <text x="600" y="156" font-size="10" fill="#6b7280">beside the gauge; long run, slack at the head stock</text>
+  <text x="600" y="196" font-size="11" fill="#1f2a37">ring R · WS2812B ×12</text>
+  <text x="600" y="210" font-size="10" fill="#6b7280">test at full length on the desk first</text>
+  <!-- ring supply with deadman -->
+  <line x1="560" y1="80" x2="560" y2="124" stroke="#b54708" stroke-width="2"/>
+  <text x="566" y="92" font-size="10" fill="#b54708">+5V_RING</text>
+  <rect x="470" y="60" width="80" height="28" rx="3" fill="#fffaeb" stroke="#b54708"/>
+  <text x="510" y="78" text-anchor="middle" font-size="10" fill="#1f2a37">P-MOSFET switch</text>
+  <line x1="430" y1="74" x2="470" y2="74" stroke="#b54708" stroke-width="2"/>
+  <text x="400" y="78" text-anchor="end" font-size="10" fill="#b54708">+5V (Board A buck)</text>
+  <line x1="550" y1="74" x2="560" y2="74" stroke="#b54708" stroke-width="2"/>
+  <!-- deadman -->
+  <line x1="160" y1="212" x2="230" y2="212" stroke="#1f2a37" stroke-width="2" marker-end="url(#a)"/>
+  <rect x="230" y="196" width="110" height="60" rx="4" fill="#ffffff" stroke="#1f2a37"/>
+  <text x="285" y="218" text-anchor="middle" font-weight="600" fill="#1f2a37">74HC123</text>
+  <text x="285" y="232" text-anchor="middle" font-size="10" fill="#6b7280">retriggerable monostable</text>
+  <text x="285" y="246" text-anchor="middle" font-size="10" fill="#6b7280">trigger input PULLED DOWN</text>
+  <path d="M340 226 L380 226 L380 100 L510 100 L510 88" fill="none" stroke="#1f2a37" stroke-width="1.5" marker-end="url(#a)"/>
+  <text x="392" y="118" font-size="10" fill="#1f2a37">Q holds the gate while kicks keep coming</text>
+  <text x="170" y="236" font-size="10" fill="#b42318">edge per completed decision step</text>
+  <text x="170" y="248" font-size="10" fill="#b42318">never timer / PWM / DMA</text>
+  <text x="230" y="276" font-size="10" fill="#6b7280">If the M4 hangs, the pulses stop, Q drops, the ring goes dark: GREEN can never freeze.</text>
+  <text x="230" y="290" font-size="10" fill="#6b7280">Required unless the moving alive-pixel method is chosen. Ring DMA never touches SRAM4.</text>
+
+  <!-- mirror LEDs -->
+  <line x1="160" y1="258" x2="400" y2="258" stroke="#1f2a37" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="160" y1="280" x2="400" y2="280" stroke="#1f2a37" stroke-width="2" marker-end="url(#a)"/>
+  <rect x="400" y="248" width="150" height="44" rx="4" fill="#ffffff" stroke="#1f2a37"/>
+  <text x="475" y="266" text-anchor="middle" font-size="11" fill="#1f2a37">logic-level N-MOSFET ×2</text>
+  <text x="475" y="282" text-anchor="middle" font-size="10" fill="#6b7280">low side → LED + series R (TBD)</text>
+  <text x="560" y="266" font-size="11" fill="#1f2a37">mirror LEDs L / R (blind spot)</text>
+  <text x="560" y="282" font-size="10" fill="#6b7280">"side clear" is never shown with a static output</text>
+
+  <!-- indicator inputs -->
+  <rect x="230" y="312" width="130" height="56" rx="4" fill="#ffffff" stroke="#1f2a37"/>
+  <text x="295" y="332" text-anchor="middle" font-size="11" fill="#1f2a37">2× PC817 (DIP-4)</text>
+  <text x="295" y="346" text-anchor="middle" font-size="10" fill="#6b7280">series R ≥ 16 V, reverse diode</text>
+  <text x="295" y="360" text-anchor="middle" font-size="10" fill="#6b7280">pull-up by min CTR</text>
+  <line x1="230" y1="326" x2="160" y2="326" stroke="#1f2a37" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="230" y1="348" x2="160" y2="348" stroke="#1f2a37" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="470" y1="326" x2="360" y2="326" stroke="#b54708" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="470" y1="348" x2="360" y2="348" stroke="#b54708" stroke-width="2" marker-end="url(#a)"/>
+  <text x="480" y="330" font-size="11" fill="#1f2a37">rear indicator feed L (12 V, harness tap CONFIRM, not cut)</text>
+  <text x="480" y="352" font-size="11" fill="#1f2a37">rear indicator feed R</text>
+  <text x="480" y="370" font-size="10" fill="#6b7280">M4's own input (Q-033). A broken wire, dead opto or stuck input reads "not signalling": it may only escalate a warning, never suppress PRESENT/APPROACHING.</text>
+  <text x="480" y="384" font-size="10" fill="#6b7280">The M7 `TAP_*` PC817 module on Board B is not shared with these.</text>
+
+  <rect x="30" y="400" width="950" height="48" rx="6" fill="#f8fafc" stroke="#1f2a37"/>
+  <text x="42" y="420" font-size="11" fill="#1f2a37">Radars: HLK-LD2451 ×2 on UART7 (PE7/PE8) and USART6 (PG9/PG14), 5 V from Board A, UART level CONFIRM; rear-left and rear-right DT-0508 boxes (plastic radome), angle per datasheet.</text>
+  <text x="42" y="438" font-size="11" fill="#6b7280">Any change to this chain in code is safety-critical (invariant 8). Static alive outputs are forbidden by D-072 item 5.</text>
+</svg>

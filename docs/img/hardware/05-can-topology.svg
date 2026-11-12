@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 480" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" role="img" aria-label="CAN topology: the vehicle bus is terminated by the OEM at both ends and we hang a short unterminated DLC stub to FDCAN1 plus an optional listen-only Raspi tap; the platform bus is our own line with 120 ohm at the H755 end and at the far end, with the ESP32 and the Pi MCP2515 on it">
+  <rect width="1000" height="480" fill="#ffffff"/>
+  <text x="20" y="28" font-size="16" font-weight="600" fill="#1f2a37">Fig. 5 — Two CAN buses, where the terminations are and where they are not</text>
+  <text x="20" y="46" fill="#6b7280">■ = 120 Ω termination. The vehicle bus already has two (OEM); we add none, so the DLC branch is an unterminated stub and stays &lt; 50 cm.</text>
+
+  <!-- Vehicle bus -->
+  <text x="40" y="86" font-weight="600" fill="#067647">VEHICLE CAN (CL250 OEM, 500 kbps)</text>
+  <rect x="40" y="100" width="14" height="14" fill="#067647"/>
+  <rect x="946" y="100" width="14" height="14" fill="#067647"/>
+  <line x1="54" y1="107" x2="946" y2="107" stroke="#067647" stroke-width="4"/>
+  <text x="47" y="132" text-anchor="middle" font-size="10" fill="#6b7280">OEM end</text>
+  <text x="953" y="132" text-anchor="middle" font-size="10" fill="#6b7280">OEM end</text>
+  <rect x="180" y="124" width="120" height="40" rx="4" fill="#ecfdf3" stroke="#067647"/>
+  <text x="240" y="148" text-anchor="middle" font-weight="600" fill="#1f2a37">CL250 ECU</text>
+  <line x1="240" y1="107" x2="240" y2="124" stroke="#067647" stroke-width="2"/>
+  <!-- DLC stub -->
+  <circle cx="470" cy="107" r="5" fill="#067647"/>
+  <text x="470" y="92" text-anchor="middle" font-size="11" fill="#1f2a37">DLC (under the seat, CONFIRM)</text>
+  <line x1="470" y1="107" x2="470" y2="210" stroke="#067647" stroke-width="3"/>
+  <text x="478" y="150" font-size="11" fill="#b54708" font-weight="600">Y-cable stub &lt; 50 cm</text>
+  <text x="478" y="164" font-size="11" fill="#6b7280">twisted CANH/CANL, no 120 Ω</text>
+  <text x="478" y="178" font-size="11" fill="#6b7280">never extended by adding one</text>
+  <rect x="380" y="210" width="180" height="60" rx="4" fill="#eff6ff" stroke="#175cd3" stroke-width="1.5"/>
+  <text x="470" y="232" text-anchor="middle" font-weight="600" fill="#175cd3">H755 M7 · FDCAN1</text>
+  <text x="470" y="248" text-anchor="middle" font-size="11" fill="#1f2a37">SN65HVD230 #1 (Board A)</text>
+  <text x="470" y="262" text-anchor="middle" font-size="11" fill="#b42318">the ONE tester, reads only (D-037)</text>
+  <!-- Raspi tap -->
+  <circle cx="760" cy="107" r="5" fill="#067647"/>
+  <line x1="760" y1="107" x2="760" y2="210" stroke="#067647" stroke-width="2" stroke-dasharray="3 4"/>
+  <rect x="680" y="210" width="160" height="60" rx="4" fill="#f9fafb" stroke="#6b7280"/>
+  <text x="760" y="232" text-anchor="middle" font-weight="600" fill="#1f2a37">Raspi 5 can0 (optional)</text>
+  <text x="760" y="248" text-anchor="middle" font-size="11" fill="#1f2a37">CAN_CTRLMODE_LISTENONLY</text>
+  <text x="760" y="262" text-anchor="middle" font-size="11" fill="#6b7280">no ACK, no TX, no termination</text>
+  <!-- Phase 0 -->
+  <text x="40" y="200" font-size="11" fill="#6b7280">Phase 0 (today): the ESP32-S3 TWAI</text>
+  <text x="40" y="214" font-size="11" fill="#6b7280">sits on this same stub as the</text>
+  <text x="40" y="228" font-size="11" fill="#6b7280">temporary sole tester (D-023).</text>
+  <text x="40" y="242" font-size="11" fill="#6b7280">Never both at once.</text>
+
+  <!-- Platform bus -->
+  <text x="40" y="326" font-weight="600" fill="#175cd3">PLATFORM CAN (ours, 500 kbps classic, 11-bit)</text>
+  <rect x="380" y="340" width="14" height="14" fill="#175cd3"/>
+  <rect x="926" y="340" width="14" height="14" fill="#175cd3"/>
+  <line x1="394" y1="347" x2="926" y2="347" stroke="#175cd3" stroke-width="4"/>
+  <text x="387" y="372" text-anchor="middle" font-size="10" fill="#6b7280">end 1: Board A</text>
+  <text x="933" y="372" text-anchor="middle" font-size="10" fill="#6b7280">end 2: last node</text>
+  <line x1="470" y1="270" x2="470" y2="347" stroke="#175cd3" stroke-width="3"/>
+  <text x="478" y="300" font-size="11" fill="#175cd3">FDCAN2 · SN65HVD230 #2</text>
+  <text x="478" y="314" font-size="11" fill="#6b7280">120 Ω here (physical end)</text>
+  <!-- ESP32 -->
+  <circle cx="640" cy="347" r="5" fill="#175cd3"/>
+  <line x1="640" y1="347" x2="640" y2="400" stroke="#175cd3" stroke-width="2"/>
+  <rect x="560" y="400" width="160" height="56" rx="4" fill="#f9fafb" stroke="#1f2a37"/>
+  <text x="640" y="422" text-anchor="middle" font-weight="600" fill="#1f2a37">ESP32-S3 conn</text>
+  <text x="640" y="438" text-anchor="middle" font-size="11" fill="#1f2a37">own SN65HVD230, mid-bus</text>
+  <text x="640" y="450" text-anchor="middle" font-size="10" fill="#6b7280">on-board 120 Ω removed/open</text>
+  <!-- Pi -->
+  <line x1="926" y1="347" x2="926" y2="400" stroke="#175cd3" stroke-width="2"/>
+  <rect x="846" y="400" width="150" height="56" rx="4" fill="#f9fafb" stroke="#1f2a37"/>
+  <text x="921" y="422" text-anchor="middle" font-weight="600" fill="#1f2a37">Raspi 5 can1</text>
+  <text x="921" y="438" text-anchor="middle" font-size="11" fill="#1f2a37">MCP2515, J1 = 120 Ω</text>
+  <text x="921" y="450" text-anchor="middle" font-size="10" fill="#6b7280">fit J1 only if it is the far end</text>
+  <!-- rules -->
+  <rect x="40" y="340" width="300" height="120" rx="6" fill="#f8fafc" stroke="#1f2a37"/>
+  <text x="52" y="362" font-weight="600" fill="#1f2a37">Rules</text>
+  <g font-size="11" fill="#1f2a37">
+    <text x="52" y="382">• Platform bus length is not limited by a stub rule:</text>
+    <text x="52" y="396">  it is a proper bus with two ends. Keep drops short.</text>
+    <text x="52" y="414">• Whichever node is physically last carries the 2nd</text>
+    <text x="52" y="428">  120 Ω; a mid-bus node carries none.</text>
+    <text x="52" y="446">• CAN error counters + can_bus_off_count show pickup.</text>
+  </g>
+  <text x="380" y="472" font-size="11" fill="#6b7280">Classic CAN because the ESP32-S3 TWAI and the HIL F103 have no FD. ID plan and E2E: ARCHITECTURE §4.</text>
+</svg>

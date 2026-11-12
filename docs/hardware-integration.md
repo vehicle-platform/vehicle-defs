@@ -1,6 +1,26 @@
 # Hardware integration — Phase 0 data-collection build (CL250)
 
-**Status:** working guide, started 2026-10-03; parts on hand and the phone-only display recorded 2026-10-11 (user). **Scope:** the first on-vehicle build that collects data with the code that exists today. It does not change any decision. Authority: `DECISIONS.md` > `ARCHITECTURE.md` > `vehicle-work-plan.md` / `phase0-data-collection-plan.md` > this file. Items marked **CONFIRM** are not documented anywhere yet. Fill them in from the bike or the parts on the desk; never guess them.
+**Status:** working guide, started 2026-10-03; parts on hand and the phone-only display recorded 2026-10-11 (user); figures and the connector/cable plan added 2026-11-12 (Claude). **Scope:** the first on-vehicle build that collects data with the code that exists today, plus the H755 target build it grows into (§3.4, §4.1, §4.2, §11). It does not change any decision. Authority: `DECISIONS.md` > `ARCHITECTURE.md` > `vehicle-work-plan.md` / `phase0-data-collection-plan.md` > this file. Items marked **CONFIRM** are not documented anywhere yet. Fill them in from the bike or the parts on the desk; never guess them.
+
+## 0. Figures (`docs/img/hardware/`)
+
+Every figure draws only what the text and the decisions already say; a value that has no source is marked CONFIRM or TBD in the drawing too. Open them on GitHub or in the editor; they are plain SVG with no external resources.
+
+| Fig. | File | Shows | Used in |
+|---|---|---|---|
+| 1 | [`01-system-overview.svg`](img/hardware/01-system-overview.svg) | Nodes, the two CAN buses, mailbox, BLE/Wi-Fi paths of the target build | §1, §11, ARCHITECTURE §3 |
+| 2 | [`02-power-chain.svg`](img/hardware/02-power-chain.svg) | Board A power chain, the C1/C2/Pi branches, battery divider, ground rules, gate B1 | §3.2 |
+| 3 | [`03-main-box-layout.svg`](img/hardware/03-main-box-layout.svg) | 170×120×55 Main Box: Nucleo layer 1, Boards A/B mezzanine, C1-IO, six glands, stack heights | §4.2 |
+| 4 | [`04-h755-pin-map.svg`](img/hardware/04-h755-pin-map.svg) | Pin plan v0.1 per core (proposal, `h755-pin-plan.md`) | §10 item 10 |
+| 5 | [`05-can-topology.svg`](img/hardware/05-can-topology.svg) | Vehicle-bus stub vs. terminated platform bus, where the 120 Ω are | §3.1 |
+| 6 | [`06-cl250-placement.svg`](img/hardware/06-cl250-placement.svg) | Side view with the candidates (a)–(h), heat zone, IMU zone, DLC, wheel-travel line | §4.1, Q-034 |
+| 7 | [`07-imu-boxes.svg`](img/hardware/07-imu-boxes.svg) | C1-IMU and C2 frame boxes, cables, axis convention to record | §3.4, §4.1, §9 |
+| 8 | [`08-phase0-wiring.svg`](img/hardware/08-phase0-wiring.svg) | Today's ESP32-S3 unit, pin by pin | §1, §3.3, §5 |
+| 9 | [`09-immobilizer.svg`](img/hardware/09-immobilizer.svg) | Latching contact in the starter-relay coil line, bypass, C1-IO drivers, fail state | §3.4 (D-097) |
+| 10 | [`10-led-ring-deadman.svg`](img/hardware/10-led-ring-deadman.svg) | Ring data/buffer/330 Ω chain, 74HC123 dead-man on the ring supply, mirror LEDs, IND_L/R inputs | §3.4, §4.1 |
+| 11 | [`11-pi5-box.svg`](img/hardware/11-pi5-box.svg) | Pi 5 box stack, S5 connections, open items before the Pi rides | §4.1 option 2 |
+| 12 | [`12-bringup-gates.svg`](img/hardware/12-bringup-gates.svg) | B0 → B2 → §7.1 capture → V0 → V3 → T2/T3 with pass criteria | §6 |
+| 13 | [`13-harness.svg`](img/hardware/13-harness.svg) | Harness rules by signal class and the anatomy of one shielded run | §3.4, §4 |
 
 ## 1. What this build is
 
@@ -105,6 +125,31 @@ To suppress magnetic induction (EMF = -dΦ/dt, from the ignition coil/HT lead, r
   4. **Board C2 (`3×7 cm` cut to ~`30×40 mm` — `M7` chassis IMU carrier):** the M7 chassis IMU only (the on-hand board marked "MPU-6590", chip **CONFIRM**, §2). Separate cable, separate supply branch.
 - **Why C1 and C2 are separate (D-082):** separate supply branches, connectors and cables (D-042, invariant 3; prototype, no dependent-failure analysis). A fault on C2 or its cable cannot remove an M4 function. A fault on C1-IMU or its cable removes only the M4's own IMU (cornering UNAVAILABLE, shown on the ring); a fault on C1-IO removes its functions together and must show as a dark ring / UNAVAILABLE (D-042 item 4, D-072 item 5). Remaining common causes: the protected 12 V chain and buck on Board A (which also feeds C1's 5 V), the star ground, the H755 supply/clock/reset, the mounting point and loom route, and two IMUs of the same family (no diversity). Both IMUs sit rigidly on the main frame near the centre of mass (§4.1). Boxes: the `DT-0508` / `DT-0505` named so far are `126×136×54` / `126×136×48 mm` ABS boxes with no IP rating stated (store pages, 2026-10-24; corrected in `hardware-procurement-list.md` v2.8). They are far too large for the ~`30×40 mm` IMU boards; C1-IMU and C2 use the same small IP65/IP67 box, product and position **CONFIRM** with Q-034. C1-IO sits in the H755 box.
 
+### 3.5 Connector and cable plan (H755 build; every type is a proposal until bought)
+
+One row per cable that leaves a board or a box. Pin orders are fixed in the Fusion sheets (SCHEMATIC §8); this table fixes what each cable carries, so the gland count, the cable stock and the Deutsch kit can be ordered. Lengths are "measure on the bike" (§4.1) except where a rule caps them. Fig. 3 numbers the Main Box glands G1–G6; Fig. 13 gives the harness rules.
+
+| # | From → to | Cores (signal list) | Cable | Connector | Length rule | Shield / notes |
+|---|---|---|---|---|---|---|
+| G1 | Bike harness → Board A | 2: `+12V_IGN`, `GND` (to battery negative) | 22 AWG silicone, twisted | waterproof blade-fuse holder in line; 5.0 mm screw terminal on Board A | fuse within ~15 cm of the tap (**CONFIRM** practice) | fuse 2 A at the unit input; GND never via chassis |
+| G2 | DLC Y-cable → Board A (`SN65HVD230 #1`) | 3: `VCAN_H`, `VCAN_L`, `GND` | FLRY-B 0.35–0.50 twisted pair + GND | Honda DLC adapter (4- or 6-pin, **CONFIRM**) → 3.81 mm pluggable terminal | **< 50 cm** total stub, non-negotiable | no termination ever; this stub decides the box position (§4.1) |
+| G3 | Board A (`SN65HVD230 #2`) → platform bus | 2 (+ GND optional): `PCAN_H`, `PCAN_L` | FLRY-B twisted pair | 3.81 mm pluggable terminal; Deutsch DT 2-pin at the box wall (proposal) | no stub limit (terminated bus); keep drops short | 120 Ω on Board A (end 1); the far node carries end 2 |
+| G4 | C1-IO → C1-IMU box (M4 SPI4) | 8: `SPI_M4_SCK`, `MOSI`, `MISO`, `CS_IMU_M4`, `IMU_INT_M4`, `+12V_PROT` (C1 fuse), `GND`, spare | LiYCY 8×0.22 shielded | Deutsch DT 8-pin (proposal; type **CONFIRM**) | **≤ ~30 cm** (check longer on the desk with the logic analyzer) | shield → GND at the Main Box only; 33–100 Ω series on the four SPI lines (C1-IMU side) |
+| G5 | Board A → Board C2 box (M7 I2C1) | 4: `I2C_M7_SDA`, `GND`, `+12V_PROT` (C2 fuse) or `+3V3_C2`, `GND`; SCL as 5th if the pairs stay (**CONFIRM** 4 vs 6 cores) | LiYCY 4×0.22 or 6×0.22 shielded | Deutsch DT 4/6-pin (proposal) | **≤ ~30 cm**; longer → PCA9615 pair | SDA+GND, SCL+GND, VCC+GND pairs; never SDA with SCL |
+| G6 | Board B / C1-IO → Scale 1B harness and front/rear lines | per sub-harness below | mixed | Board B "Scale 1B expansion port" header (JST-XH) + Deutsch DT at the wall | — | unplugging Board B reverts to Scale 1A |
+| G6a | C1-IO → LED ring L / R (front) | 3 each: `LED_RING_x_DIN`, `+5V_RING`, `GND` | LiYCY 4×0.22 (Data+GND pair, 5V+GND pair) | Deutsch DT 3-pin each | long (gauge); slack at the head stock | 330 Ω at the buffer; dead-man-switched 5 V; desk test at full length |
+| G6b | C1-IO → mirror LEDs L / R | 2 each: `MIRROR_LED_x`, `+V` (per MOSFET stage, TBD) | 22 AWG twisted | DT 2-pin each | long (mirrors) | low-side N-MOSFET on C1-IO |
+| G6c | C1-IO → radar L / R boxes (rear) | 4 each: `UART_RAD_x_TX`, `RX`, `+5V`, `GND` | LiYCY 4×0.22 | DT 4-pin each | short (rear box) | UART level and supply **CONFIRM** (datasheet) |
+| G6d | rear indicator feeds → C1-IO | 2 each: `IND_L` / `IND_R` 12 V signal, return | 22 AWG | harness tap connector, not a cut (**CONFIRM** tap) | short (rear) | PC817 input with series R ≥ 16 V and reverse diode |
+| G6e | C1-IO → immobilizer relay box (near the starter relay) | 4: `IMMO_SET`, `IMMO_RESET` coil drives (+12V side per driver topology), `GND`; plus 2 power contacts of the relay in the starter-relay coil line | 22 AWG for the coils; harness-gauge for the contact | DT 4-pin + the two contact leads | relay box as close to the starter relay as the harness allows (**CONFIRM** location) | contact only in the coil line (invariant 6); bypass switch wired across the contact |
+| G6f | Board B → chassis sensors (Scale 1B) | `ADXL345` ×2 (SPI: 6 cores each), `MAX31856` probe (2 + CJ amp local), NTC ×3–5 (2 each, Signal+AGND), `ACS758` (3: VOUT, 5V, GND), `LJ12A3` ×2 (3 each), spark clip (2) | LiYCY 4/6×0.22 for digital; twisted pairs for analog | DT per sensor box | engine-bay runs: ferrite before the gland; ≥ 15 cm from coil/HT lead | shields float at the sensor; AGND meets GND once |
+| P1 | Board A → Pi 5 box | 2: `+12V_PROT` (own fuse), `GND` | 22 AWG twisted | DT 2-pin | any (not a CAN stub) | HCW-P715 inside the Pi box |
+| P2 | Pi 5 box ↔ platform bus | 2: `PCAN_H`, `PCAN_L` | FLRY-B twisted pair | DT 2-pin | any; J1 120 Ω only if the Pi is the far end | MCP2515 SO/INT level-shifted |
+| P3 | Pi 5 box → camera (front) | 22-pin CSI flex | Pi 15→22 pin cable | — | as short as the mount allows | shielded sleeve if it passes the engine (**proposal**) |
+| E1 | ESP32 conn box ↔ platform bus | 2: `PCAN_H`, `PCAN_L` | FLRY-B twisted pair | DT 2-pin | mid-bus node: no 120 Ω | the on-board 120 Ω of its SN65HVD230 removed/open |
+
+Counts this table implies for Wave 1 (check against the procurement list before ordering): Main Box glands 6 (G1–G6) plus up to 4 more if G6a–G6e enter through their own PG7 instead of one multi-core harness (**decide at the box**), Pi box 4, ESP32 box 2, each sensor/IMU/radar/relay box 1–2. Deutsch DT: about 12 pairs (2–8 pin). LiYCY: 5 m 4-core, 2 m 8-core, 5 m 2-core; FLRY-B pair 3 m.
+
 ## 4. Mechanical integration
 
 | Item | Rule | Source |
@@ -146,7 +191,39 @@ Rules across the candidates:
 - **Rear-end lines get shorter:** both `HLK-LD2451` blind-spot radars (`DT-0508` boxes facing rear-left and rear-right, mounting angle from the radar datasheet), the Q-033 indicator inputs (D-075 item 4, opto-isolated on C1-IO) and the GPS antenna (on top under plastic, never under metal, clear of the ESP32 antenna) are close to a rear box. The immobilizer relay (`DT-0508`) goes next to the starter relay wherever that is (**CONFIRM**), coil circuit only (invariant 6).
 - **Noise sources to keep the boxes and cables away from:** ignition coil and plug lead (`≥ 15 cm`), regulator/rectifier, starter motor cable (high cranking current; the `ACS758LCB-200B` is a series element in it, with its own mounting and fuse/cable plan, **CONFIRM** on the bike), fuel pump and injector wiring. Magnetic near-field coupling falls off steeply with distance, so a rear box is quieter than one near the engine.
 
-**Measure on the bike before Q-034 is decided** (photos + dimensions; never commit photos showing the plate or the location): free volume under the tail/rear fender and between the subframe rails (c); whether the left-side carrier bosses exist, their spacing and thread depth (d); cavity dimensions behind the left side cover (h); muffler distance on both sides; DLC position and its cable path to each candidate (run lengths); battery, starter relay, fuse box and regulator/rectifier positions; the indicator feed wires at the rear; a rigid steel frame point near the centre of mass for the C1 and C2 boxes.
+**Measure on the bike before Q-034 is decided** (photos + dimensions; never commit photos showing the plate or the location): free volume under the tail/rear fender and between the subframe rails (c); whether the left-side carrier bosses exist, their spacing and thread depth (d); cavity dimensions behind the left side cover (h); muffler distance on both sides; DLC position and its cable path to each candidate (run lengths); battery, starter relay, fuse box and regulator/rectifier positions; the indicator feed wires at the rear; a rigid steel frame point near the centre of mass for the C1 and C2 boxes. Fig. 6 is the sketch to annotate with the numbers; Fig. 7 the IMU boxes.
+
+**Measurement sheet (fill in on the bike, keep the photos out of the repos):**
+
+| # | Measure | Unit | Needed by | Value |
+|---|---|---|---|---|
+| M1 | DLC position (which side, under the seat?), connector pin count and type | — | §3.1, G2 | |
+| M2 | DLC → candidate (c) tray: shortest cable path | cm | the < 50 cm stub rule | |
+| M3 | DLC → candidate (d) plate | cm | same | |
+| M4 | DLC → candidate (e) rack | cm | same | |
+| M5 | Free volume under the tail between the subframe rails: L × W × H | mm | (c), 170×120×55 box + dampers | |
+| M6 | Rear wheel at full bottoming: lowest point of the free volume above the tyre | mm | (c) clearance (travel ~150 mm) | |
+| M7 | Left carrier bosses: present? pitch, thread, depth | mm | (d) | |
+| M8 | Muffler/header distance from (c), (d), (e) | cm | ≥ 15 cm rule | |
+| M9 | Cavity behind the left side cover: L × W × depth | mm | (h) small boxes | |
+| M10 | Frame point for the IMU boxes: location, flat area, bolt option; distance to the Main Box candidate | mm / cm | Fig. 7, ≤ ~30 cm runs | |
+| M11 | Ignition-switched tap point and the fuse-box location | — | §3.2, G1 | |
+| M12 | Starter relay location; coil-wire access without cutting | — | Fig. 9, G6e | |
+| M13 | Rear indicator feed wires: colour, connector, access | — | G6d | |
+| M14 | Battery negative terminal access for the star ground | — | §3.2 | |
+| M15 | Gauge area for the LED rings: free arc, cable path to the rear | cm | G6a | |
+| M16 | Mirror stem: LED fixing option, cable path | — | G6b | |
+
+### 4.2 Main Box internal layout (H755 build; Fig. 3)
+
+Proposal derived from the procurement list v2.9 design rule and the board sizes; nothing here is bought yet, so measure the real box before drilling.
+
+- **Layer 1 (box floor):** the `NUCLEO-H745ZI-Q` (133.3×70 mm) on M3 6–8 mm standoffs, ST-LINK USB end toward a box side that stays reachable when mounted. Beside the Nucleo a free strip of roughly 170×43 mm takes **C1-IO** (60×40 mm laid flat, its own fused branch and its own connector to the M4 pins), the screw terminals and the Deutsch tails. Whether C1-IO really fits there with the gland bodies is **CONFIRM** (§10 item 11).
+- **Layer 2 (mezzanine, M3 18–20 mm hex columns over the Nucleo):** **Board A** (50×70) and **Board B** (70×90) side by side on long-pin stacking headers from CN7–CN10. Together they are 160×70 mm over a 133×70 board, so Board B overhangs the Nucleo end opposite the ST-LINK; support that end with its own columns to the floor. A ↔ B by JST-XH; Board B's Scale 1B port is a separate connector. Unplugging Board B reverts the hardware to Scale 1A.
+- **Height check:** 8 (standoff) + 1.6 (Nucleo) + 20 (column) + 1.6 (mezzanine) ≈ 31 mm of structure in a 55 mm box, so mezzanine parts may stand at most ~12–13 mm under the lid gasket (the procurement list's "~42 mm total stack" leaves ~13 mm). Lay the 470 µF capacitor flat and keep the buck module's inductor low; measure before committing.
+- **Glands:** six PG7 on the edge that points down when mounted (Fig. 3 G1–G6, listed in §3.5); a ferrite clamp outside each. The box must not collect spray on the cable side; the lid gasket faces up.
+- **Mounting:** the box sits on silicone dampers (bobbins) on the tray/plate chosen by Q-034. The IMUs are **not** in it (§4.1, Fig. 7).
+- **Keep out:** 12 V return currents never share a trace or wire with `AGND`; the immobilizer latching relay is in its own box near the starter relay (only its coil drivers are on C1-IO, Fig. 9).
 
 ## 5. Firmware and software setup
 
@@ -165,7 +242,7 @@ What the tester does on its own, with no setting to change (conn README, Q-018, 
 - It sends only what `tester_policy` allows, through `vehicle_cl250_frame_allowed()` (D-020).
 - It latches off when it sees another tester or repeated bus-offs. The latch survives resets until the next power cycle.
 
-## 6. Bring-up sequence (each gate passes before the next)
+## 6. Bring-up sequence (each gate passes before the next; Fig. 12)
 
 | Gate | Where | Do | Pass when |
 |---|---|---|---|
@@ -321,7 +398,8 @@ Pass: the effective rate matches the serial `pvt/s`; lost or MTU-skipped near 0 
 | 8 | vehicle-mobile has no iOS project yet (Android only), so the D-062 bonding check on iOS waits for one | §7.3 step 3 on iOS |
 | 9 | Main enclosure placement for the H755 build (Q-034): the measurements of §4.1 | §4.1, Wave 1 on-bike build |
 | 10 | Schematic CONFIRM/TBD items (vehicle-workspace `models/fusion-lib/SCHEMATIC-README.md`, D-082): `L1` value; `+3V3` source for off-box sensors; Nucleo `AGND` tie (UM2408); `ACS758LCB-200B` mounting and fuse/cable plan; `LJ12A3` unloaded output voltage; `HLK-LD2451` supply and UART level; `IND_L/IND_R` tap point on the harness; H755 pin map (CubeMX) | S1-S3 schematics, Wave 1/2 build |
-| 11 | C1-IMU and C2 boxes: one small IP65/IP67 box type for both (the `DT-0505`/`DT-0508` are `126×136` mm, no IP rating stated, §3.4), product **CONFIRM** with Q-034; C1-IO fit on the 2nd story **CONFIRM**; D-082 item 6 (immobilizer fail state) waits for the user | C1/C2 build, §4.1 |
+| 11 | C1-IMU and C2 boxes: one small IP65/IP67 box type for both (the `DT-0505`/`DT-0508` are `126×136` mm, no IP rating stated, §3.4), product **CONFIRM** with Q-034; C1-IO fit beside the Nucleo (§4.2) **CONFIRM**; ~~D-082 item 6 (immobilizer fail state)~~ confirmed by D-097 | C1/C2 build, §4.1 |
+| 12 | Connector and cable plan (§3.5): Deutsch DT as the box-wall connector (type), G5 core count (4 vs 6), whether G6a–G6e share one harness gland or get their own, the relay-box location, the measurement sheet M1–M16 (§4.1) | Wave 1 order, S1–S4 |
 
 ## 11. Later: moving to rt-core
 

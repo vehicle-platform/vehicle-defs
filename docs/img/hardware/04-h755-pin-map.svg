@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 720" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" role="img" aria-label="STM32H755 pin plan proposal v0.1: the M7 owns ports A B C D H with FDCAN1 and FDCAN2, I2C1, SPI1, USART2, TIM4 capture, SDMMC1 and the ADC pins; the M4 owns ports E F G with SPI4 for its IMU, UART7 and USART6 for the radars, TIM1 for the LED rings and GPIOs for mirror LEDs, dead-man, indicators and immobilizer">
+  <rect width="1000" height="720" fill="#ffffff"/>
+  <text x="20" y="28" font-size="16" font-weight="600" fill="#1f2a37">Fig. 4 — H755 pin plan by core (h755-pin-plan.md v0.1, PROPOSAL, not a decision)</text>
+  <text x="20" y="46" fill="#6b7280">No GPIO port is shared by the two cores (D-072 item 4a). Board-reserved pins (ETH, USB, SWD, VCP, LEDs) are never assigned. User checks in CubeMX + UM2408 before it becomes a D-xxx.</text>
+
+  <!-- chip -->
+  <rect x="400" y="80" width="200" height="600" rx="10" fill="#f8fafc" stroke="#1f2a37" stroke-width="2"/>
+  <text x="500" y="106" text-anchor="middle" font-weight="600" fill="#1f2a37">STM32H745ZIT6</text>
+  <text x="500" y="122" text-anchor="middle" fill="#6b7280">LQFP144 (NUCLEO-H745ZI-Q)</text>
+  <rect x="415" y="140" width="80" height="520" rx="6" fill="#eff6ff" stroke="#175cd3"/>
+  <text x="455" y="162" text-anchor="middle" font-weight="600" fill="#175cd3">M7</text>
+  <text x="455" y="178" text-anchor="middle" font-size="10" fill="#175cd3">rt-core</text>
+  <text x="455" y="200" text-anchor="middle" font-size="10" fill="#1f2a37">ports</text>
+  <text x="455" y="214" text-anchor="middle" font-size="11" font-weight="600" fill="#1f2a37">A B C D H</text>
+  <text x="455" y="236" text-anchor="middle" font-size="10" fill="#6b7280">DMA1</text>
+  <rect x="505" y="140" width="80" height="520" rx="6" fill="#fef3f2" stroke="#b42318"/>
+  <text x="545" y="162" text-anchor="middle" font-weight="600" fill="#b42318">M4</text>
+  <text x="545" y="178" text-anchor="middle" font-size="10" fill="#b42318">safety</text>
+  <text x="545" y="200" text-anchor="middle" font-size="10" fill="#1f2a37">ports</text>
+  <text x="545" y="214" text-anchor="middle" font-size="11" font-weight="600" fill="#1f2a37">E F G</text>
+  <text x="545" y="236" text-anchor="middle" font-size="10" fill="#6b7280">DMA2</text>
+  <rect x="440" y="400" width="120" height="40" rx="4" fill="#ffffff" stroke="#1f2a37" stroke-dasharray="4 2"/>
+  <text x="500" y="417" text-anchor="middle" font-size="10" fill="#1f2a37">SRAM4 mailbox</text>
+  <text x="500" y="431" text-anchor="middle" font-size="10" fill="#6b7280">HSEM · BDMA unused</text>
+  <text x="500" y="640" text-anchor="middle" font-size="10" fill="#6b7280">M7 MPU denies E/F/G</text>
+
+  <!-- M7 rows (left) -->
+  <g font-size="11">
+    <g transform="translate(20,150)">
+      <rect width="360" height="38" rx="3" fill="#ecfdf3" stroke="#067647"/>
+      <text x="8" y="15" font-weight="600" fill="#067647">FDCAN1 · vehicle bus (sole tester)</text>
+      <text x="8" y="30" fill="#1f2a37">PD0 RX · PD1 TX (AF9) → SN65HVD230 #1, no termination</text>
+    </g>
+    <g transform="translate(20,194)">
+      <rect width="360" height="38" rx="3" fill="#eff6ff" stroke="#175cd3"/>
+      <text x="8" y="15" font-weight="600" fill="#175cd3">FDCAN2 · platform bus</text>
+      <text x="8" y="30" fill="#1f2a37">PB5 RX · PB6 TX (AF9) → SN65HVD230 #2 (PB12/13 avoided: ETH)</text>
+    </g>
+    <g transform="translate(20,238)">
+      <rect width="360" height="38" rx="3" fill="#f9fafb" stroke="#6b7280"/>
+      <text x="8" y="15" font-weight="600" fill="#1f2a37">I2C1 · C2 IMU 0x68, INA226 0x40, MLX90614, BME280</text>
+      <text x="8" y="30" fill="#1f2a37">PB8 SCL · PB9 SDA (AF4) · 2.2–4.7 kΩ pull-ups at the controller</text>
+    </g>
+    <g transform="translate(20,282)">
+      <rect width="360" height="38" rx="3" fill="#f9fafb" stroke="#6b7280"/>
+      <text x="8" y="15" font-weight="600" fill="#1f2a37">SPI1 · MAX31856 EGT, ADXL345 ×2 (Board B)</text>
+      <text x="8" y="30" fill="#1f2a37">PA5 SCK · PA6 MISO · PD7 MOSI · CS PD11/PD4/PD3 · PB7 DRDY PB4 FLT</text>
+    </g>
+    <g transform="translate(20,326)">
+      <rect width="360" height="38" rx="3" fill="#f9fafb" stroke="#6b7280"/>
+      <text x="8" y="15" font-weight="600" fill="#1f2a37">USART2 · GPS NEO-M8N (3.3 V UART)</text>
+      <text x="8" y="30" fill="#1f2a37">PD5 TX · PD6 RX (AF7) · PPS → TIM4_CH4 PD15</text>
+    </g>
+    <g transform="translate(20,370)">
+      <rect width="360" height="38" rx="3" fill="#f9fafb" stroke="#6b7280"/>
+      <text x="8" y="15" font-weight="600" fill="#1f2a37">TIM4 input capture · SPARK_IN, WHEEL_F, WHEEL_R, GPS_PPS</text>
+      <text x="8" y="30" fill="#1f2a37">PD12 CH1 · PD13 CH2 · PD14 CH3 · PD15 CH4 (AF2), 16-bit + overflow count</text>
+    </g>
+    <g transform="translate(20,414)">
+      <rect width="360" height="38" rx="3" fill="#f9fafb" stroke="#6b7280"/>
+      <text x="8" y="15" font-weight="600" fill="#1f2a37">SDMMC1 4-bit · microSD logging (D-072 item 2)</text>
+      <text x="8" y="30" fill="#1f2a37">PC8 D0 · PC9 D1 · PC10 D2 · PC11 D3 · PC12 CK · PD2 CMD (AF12)</text>
+    </g>
+    <g transform="translate(20,458)">
+      <rect width="360" height="38" rx="3" fill="#fffaeb" stroke="#b54708"/>
+      <text x="8" y="15" font-weight="600" fill="#b54708">ADC · 1 kHz DMA</text>
+      <text x="8" y="30" fill="#1f2a37">PA3 V_BAT · PA4 I_BAT (ACS758) · NTC PA0 PB1 PC0 PC2_C PC3_C</text>
+    </g>
+    <g transform="translate(20,502)">
+      <rect width="360" height="38" rx="3" fill="#f9fafb" stroke="#6b7280"/>
+      <text x="8" y="15" font-weight="600" fill="#1f2a37">GPIO in · TAP_CLUTCH / TAP_BRAKE / TAP_FAN (PC817, Board B)</text>
+      <text x="8" y="30" fill="#1f2a37">PB10 · PB11 · PB12 — not connected before Q-031 (c)</text>
+    </g>
+    <g transform="translate(20,546)">
+      <rect width="360" height="38" rx="3" fill="#f9fafb" stroke="#6b7280"/>
+      <text x="8" y="15" font-weight="600" fill="#1f2a37">TIM3_CH1 + DMA · optional gear/shift-light WS2812B</text>
+      <text x="8" y="30" fill="#1f2a37">PC6 (AF2) · separate buffer, never the C1-IO 74AHCT125</text>
+    </g>
+    <g transform="translate(20,590)">
+      <rect width="360" height="38" rx="3" fill="#f9fafb" stroke="#6b7280"/>
+      <text x="8" y="15" font-weight="600" fill="#1f2a37">Debug / board</text>
+      <text x="8" y="30" fill="#1f2a37">USART3 PD8/PD9 VCP · LD1 PB0, LD3 PB14 · B1 PC13 · free: PA10 PA15 PB2 PB15 PC7</text>
+    </g>
+  </g>
+  <!-- connectors from rows to chip -->
+  <g stroke="#6b7280" stroke-width="1">
+    <line x1="380" y1="169" x2="415" y2="169"/><line x1="380" y1="213" x2="415" y2="213"/><line x1="380" y1="257" x2="415" y2="257"/>
+    <line x1="380" y1="301" x2="415" y2="301"/><line x1="380" y1="345" x2="415" y2="345"/><line x1="380" y1="389" x2="415" y2="389"/>
+    <line x1="380" y1="433" x2="415" y2="433"/><line x1="380" y1="477" x2="415" y2="477"/><line x1="380" y1="521" x2="415" y2="521"/>
+    <line x1="380" y1="565" x2="415" y2="565"/><line x1="380" y1="609" x2="415" y2="609"/>
+  </g>
+
+  <!-- M4 rows (right) -->
+  <g font-size="11">
+    <g transform="translate(620,150)">
+      <rect width="360" height="38" rx="3" fill="#fef3f2" stroke="#b42318"/>
+      <text x="8" y="15" font-weight="600" fill="#b42318">SPI4 · own IMU MPU-6500 on C1-IMU (D-042)</text>
+      <text x="8" y="30" fill="#1f2a37">PE12 SCK · PE13 MISO · PE14 MOSI (AF5) · PE10 CS · PE15 INT · 33–100 Ω series</text>
+    </g>
+    <g transform="translate(620,194)">
+      <rect width="360" height="38" rx="3" fill="#fef3f2" stroke="#b42318"/>
+      <text x="8" y="15" font-weight="600" fill="#b42318">UART7 · radar left HLK-LD2451</text>
+      <text x="8" y="30" fill="#1f2a37">PE7 RX · PE8 TX (AF7) · supply and UART level CONFIRM</text>
+    </g>
+    <g transform="translate(620,238)">
+      <rect width="360" height="38" rx="3" fill="#fef3f2" stroke="#b42318"/>
+      <text x="8" y="15" font-weight="600" fill="#b42318">USART6 · radar right HLK-LD2451</text>
+      <text x="8" y="30" fill="#1f2a37">PG9 RX · PG14 TX (AF7) · UART8 avoided (PE1 is LD2)</text>
+    </g>
+    <g transform="translate(620,282)">
+      <rect width="360" height="38" rx="3" fill="#fef3f2" stroke="#b42318"/>
+      <text x="8" y="15" font-weight="600" fill="#b42318">TIM1_CH1 / CH2 + DMA · LED ring left / right DIN</text>
+      <text x="8" y="30" fill="#1f2a37">PE9 · PE11 (AF1) → 74AHCT125 on C1-IO; DMA never touches SRAM4</text>
+    </g>
+    <g transform="translate(620,326)">
+      <rect width="360" height="38" rx="3" fill="#fef3f2" stroke="#b42318"/>
+      <text x="8" y="15" font-weight="600" fill="#b42318">GPIO out · mirror LEDs L / R</text>
+      <text x="8" y="30" fill="#1f2a37">PF8 · PF9 → logic-level N-MOSFET; "side clear" is never a static output</text>
+    </g>
+    <g transform="translate(620,370)">
+      <rect width="360" height="38" rx="3" fill="#fef3f2" stroke="#b42318"/>
+      <text x="8" y="15" font-weight="600" fill="#b42318">GPIO out · DEADMAN_KICK (D-072 item 5)</text>
+      <text x="8" y="30" fill="#1f2a37">PF10 → 74HC123 trigger (ext. pull-down); edge from the main loop only</text>
+    </g>
+    <g transform="translate(620,414)">
+      <rect width="360" height="38" rx="3" fill="#fef3f2" stroke="#b42318"/>
+      <text x="8" y="15" font-weight="600" fill="#b42318">GPIO in · IND_L / IND_R (Q-033, D-075 item 4)</text>
+      <text x="8" y="30" fill="#1f2a37">PE2 · PE3 ← PC817; dead input reads "not signalling"</text>
+    </g>
+    <g transform="translate(620,458)">
+      <rect width="360" height="38" rx="3" fill="#fef3f2" stroke="#b42318"/>
+      <text x="8" y="15" font-weight="600" fill="#b42318">GPIO out · IMMO_SET / IMMO_RESET (D-097)</text>
+      <text x="8" y="30" fill="#1f2a37">PE4 · PE5 → coil drivers, gate pull-downs, pulse only, never SET at boot</text>
+    </g>
+    <g transform="translate(620,502)">
+      <rect width="360" height="38" rx="3" fill="#f9fafb" stroke="#6b7280"/>
+      <text x="8" y="15" font-weight="600" fill="#1f2a37">I2C4 · PN532 NFC (interface TBD)</text>
+      <text x="8" y="30" fill="#1f2a37">PF14 SCL · PF15 SDA (AF4)</text>
+    </g>
+    <g transform="translate(620,546)">
+      <rect width="360" height="38" rx="3" fill="#f9fafb" stroke="#6b7280"/>
+      <text x="8" y="15" font-weight="600" fill="#1f2a37">GPIO in · PIN input (hardware TBD)</text>
+      <text x="8" y="30" fill="#1f2a37">PG10 · PG12</text>
+    </g>
+    <g transform="translate(620,590)">
+      <rect width="360" height="38" rx="3" fill="#f9fafb" stroke="#6b7280"/>
+      <text x="8" y="15" font-weight="600" fill="#1f2a37">Board</text>
+      <text x="8" y="30" fill="#1f2a37">LD2 PE1 status · free: PE0 PE6 PF6 PF7 PF11 PG6 PG8</text>
+    </g>
+  </g>
+  <g stroke="#6b7280" stroke-width="1">
+    <line x1="585" y1="169" x2="620" y2="169"/><line x1="585" y1="213" x2="620" y2="213"/><line x1="585" y1="257" x2="620" y2="257"/>
+    <line x1="585" y1="301" x2="620" y2="301"/><line x1="585" y1="345" x2="620" y2="345"/><line x1="585" y1="389" x2="620" y2="389"/>
+    <line x1="585" y1="433" x2="620" y2="433"/><line x1="585" y1="477" x2="620" y2="477"/><line x1="585" y1="521" x2="620" y2="521"/>
+    <line x1="585" y1="565" x2="620" y2="565"/><line x1="585" y1="609" x2="620" y2="609"/>
+  </g>
+  <text x="20" y="668" fill="#6b7280">Reserved, never assigned: PA1 PA2 PA7 PB13 PC1 PC4 PC5 PG11 PG13 (ETH RMII) · PA8 PA9 PA11 PA12 PD10 PG7 (USB OTG) · PA13 PA14 PB3 (SWD/SWO) · PC14 PC15 PH0 PH1 (oscillators).</text>
+  <text x="20" y="686" fill="#6b7280">Package note: the dual-core LQFP144 has no PF0–PF5, PF12, PF13, PG0–PG5, PG15. Checks before a decision: CubeMX conflicts per core, UM2408 header positions and solder bridges (PB5, PB6, PA5, PA6, PD7, PC8–PC12, PD2), SDMMC clock.</text>
+</svg>

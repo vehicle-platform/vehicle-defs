@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 620" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" role="img" aria-label="Main Box layout: top view of the 170 by 120 mm IP67 box with the Nucleo-144 on layer 1, Boards A and B on an 18 to 20 mm mezzanine, C1-IO beside the Nucleo, six PG7 glands on the downward edge, and a side section showing the two standoff heights inside the 55 mm height">
+  <defs>
+    <marker id="d" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 5L10 0L10 10z" fill="#6b7280"/></marker>
+  </defs>
+  <rect width="1000" height="620" fill="#ffffff"/>
+  <text x="20" y="28" font-size="16" font-weight="600" fill="#1f2a37">Fig. 3 — Main Box, proposed layout (170×120×55 mm gasketed IP67, D-082 split perfboards)</text>
+  <text x="20" y="46" fill="#6b7280">Scale 3 px = 1 mm in the top view. Board sizes from the procurement list v2.9; positions are a proposal until the boards are cut. C1-IO fit beside the Nucleo is CONFIRM.</text>
+
+  <!-- TOP VIEW: 170 x 120 mm -> 510 x 360 px, origin (60,90) -->
+  <text x="60" y="80" font-weight="600" fill="#1f2a37">Top view (lid off)</text>
+  <rect x="60" y="90" width="510" height="360" rx="8" fill="#f9fafb" stroke="#1f2a37" stroke-width="2"/>
+  <!-- Nucleo 133.3 x 70 -> 400 x 210, placed at (90,110) -->
+  <rect x="90" y="110" width="400" height="210" rx="3" fill="#ffffff" stroke="#175cd3" stroke-width="1.5"/>
+  <text x="100" y="128" fill="#175cd3" font-weight="600">Layer 1 · NUCLEO-H745ZI-Q 133.3×70 (M3 6–8 mm)</text>
+  <!-- ST-LINK end at left -->
+  <rect x="90" y="150" width="30" height="60" fill="#e5e7eb" stroke="#6b7280"/>
+  <text x="105" y="184" text-anchor="middle" font-size="9" fill="#1f2a37" transform="rotate(-90 105 184)">ST-LINK USB</text>
+  <!-- Zio headers -->
+  <rect x="140" y="118" width="330" height="12" fill="#e5e7eb" stroke="#6b7280"/>
+  <rect x="140" y="300" width="330" height="12" fill="#e5e7eb" stroke="#6b7280"/>
+  <text x="305" y="146" text-anchor="middle" font-size="10" fill="#6b7280">Zio CN7–CN10 / morpho CN11–CN12 → long-pin stacking headers up to layer 2</text>
+  <!-- Layer 2: Board A 50x70 -> 150x210; Board B 70x90 -> 210x270 ; drawn as translucent over Nucleo -->
+  <rect x="150" y="150" width="150" height="150" rx="3" fill="#fffaeb" fill-opacity="0.9" stroke="#b54708" stroke-width="1.5"/>
+  <text x="225" y="190" text-anchor="middle" font-weight="600" fill="#b54708">Board A 50×70</text>
+  <text x="225" y="208" text-anchor="middle" font-size="11" fill="#1f2a37">power chain · 2× SN65HVD230</text>
+  <text x="225" y="224" text-anchor="middle" font-size="11" fill="#1f2a37">INA226 · V_BAT divider · microSD</text>
+  <text x="225" y="240" text-anchor="middle" font-size="11" fill="#6b7280">Scale 1A, always fitted</text>
+  <text x="225" y="256" text-anchor="middle" font-size="10" fill="#6b7280">(shown 50 wide × 50 tall of its 70)</text>
+  <rect x="310" y="150" width="210" height="150" rx="3" fill="#f0fdf4" fill-opacity="0.9" stroke="#067647" stroke-width="1.5" stroke-dasharray="6 3"/>
+  <text x="415" y="190" text-anchor="middle" font-weight="600" fill="#067647">Board B 70×90 (detachable)</text>
+  <text x="415" y="208" text-anchor="middle" font-size="11" fill="#1f2a37">MAX31856 · PC817 TAP_* · NTC dividers</text>
+  <text x="415" y="224" text-anchor="middle" font-size="11" fill="#1f2a37">spark pickup · LJ12A3 level · 1B port</text>
+  <text x="415" y="240" text-anchor="middle" font-size="11" fill="#6b7280">Scale 1B QM, no safety input</text>
+  <text x="415" y="256" text-anchor="middle" font-size="10" fill="#6b7280">(shown 70 wide × 50 tall of its 90)</text>
+  <text x="305" y="336" text-anchor="middle" font-size="11" fill="#6b7280">Layer 2 · M3 18–20 mm hex columns · A ↔ B by JST-XH; B's expansion port is its own connector</text>
+  <!-- C1-IO 40x60 -> 120 x 180 in the strip right of... strip below the Nucleo: y 320..450 = 130 px = 43 mm. 40x60 board laid flat 60 wide (180px) x 40 tall (120px) -> fits in 43 mm strip -->
+  <rect x="90" y="326" width="180" height="114" rx="3" fill="#fef3f2" stroke="#b42318" stroke-width="1.5"/>
+  <text x="180" y="356" text-anchor="middle" font-weight="600" fill="#b42318">C1-IO 60×40 (M4)</text>
+  <text x="180" y="374" text-anchor="middle" font-size="11" fill="#1f2a37">74AHCT125 · 74HC123 dead-man</text>
+  <text x="180" y="390" text-anchor="middle" font-size="11" fill="#1f2a37">radar headers · immobilizer drivers</text>
+  <text x="180" y="406" text-anchor="middle" font-size="11" fill="#1f2a37">2× PC817 IND_L/R · own fuse+LDO</text>
+  <text x="180" y="424" text-anchor="middle" font-size="10" fill="#b42318">layer 1 beside the Nucleo, fit CONFIRM</text>
+  <!-- free area note -->
+  <text x="420" y="380" text-anchor="middle" font-size="11" fill="#6b7280">free strip ≈ 170×43 mm:</text>
+  <text x="420" y="396" text-anchor="middle" font-size="11" fill="#6b7280">C1-IO + screw terminals</text>
+  <text x="420" y="412" text-anchor="middle" font-size="11" fill="#6b7280">+ Deutsch tails inside</text>
+  <!-- glands along bottom edge (y=450) -->
+  <g fill="#e5e7eb" stroke="#1f2a37">
+    <rect x="100" y="444" width="24" height="14" rx="2"/>
+    <rect x="170" y="444" width="24" height="14" rx="2"/>
+    <rect x="240" y="444" width="24" height="14" rx="2"/>
+    <rect x="320" y="444" width="24" height="14" rx="2"/>
+    <rect x="400" y="444" width="24" height="14" rx="2"/>
+    <rect x="480" y="444" width="24" height="14" rx="2"/>
+  </g>
+  <g font-size="10" fill="#1f2a37" text-anchor="middle">
+    <text x="112" y="476">G1 12 V in</text>
+    <text x="112" y="488">+ GND to batt −</text>
+    <text x="182" y="476">G2 vehicle CAN</text>
+    <text x="182" y="488">DLC stub &lt;50 cm</text>
+    <text x="252" y="476">G3 platform CAN</text>
+    <text x="252" y="488">to ESP32 / Pi</text>
+    <text x="332" y="476">G4 C1-IMU</text>
+    <text x="332" y="488">6–8 core LiYCY</text>
+    <text x="412" y="476">G5 C2 IMU</text>
+    <text x="412" y="488">4-core LiYCY</text>
+    <text x="492" y="476">G6 Board B</text>
+    <text x="492" y="488">1B harness / rings</text>
+  </g>
+  <text x="315" y="508" text-anchor="middle" fill="#6b7280">6× PG7 (3–6.5 mm) on the edge that points DOWN when mounted; ferrite clamps just outside each gland; box must not collect spray on the cable side.</text>
+  <!-- dimension lines -->
+  <line x1="60" y1="530" x2="570" y2="530" stroke="#6b7280" marker-start="url(#d)" marker-end="url(#d)"/>
+  <text x="315" y="546" text-anchor="middle" fill="#6b7280">170 mm</text>
+  <line x1="590" y1="90" x2="590" y2="450" stroke="#6b7280" marker-start="url(#d)" marker-end="url(#d)"/>
+  <text x="604" y="274" fill="#6b7280">120 mm</text>
+
+  <!-- SIDE SECTION: height 55 mm -> 165 px at 3px/mm, origin (660,250) width 170mm->... use 300 px wide not to scale horizontally -->
+  <text x="660" y="80" font-weight="600" fill="#1f2a37">Side section (height to scale, width compressed)</text>
+  <rect x="660" y="90" width="300" height="165" fill="#f9fafb" stroke="#1f2a37" stroke-width="2"/>
+  <!-- floor at y=255; layer1 standoff 8mm=24px; nucleo pcb 1.6mm ~5px; components 18mm total stack height to 18mm -> nucleo top of parts at 255-24-54=177 -->
+  <rect x="690" y="226" width="240" height="5" fill="#175cd3"/>
+  <text x="810" y="222" text-anchor="middle" font-size="10" fill="#175cd3">Nucleo PCB (parts up to ~18 mm incl. headers)</text>
+  <g stroke="#6b7280" stroke-width="3">
+    <line x1="700" y1="231" x2="700" y2="255"/><line x1="920" y1="231" x2="920" y2="255"/>
+  </g>
+  <text x="940" y="246" font-size="10" fill="#6b7280">6–8</text>
+  <!-- mezzanine 18-20 mm above nucleo pcb: 20mm=60px -> y=166 -->
+  <rect x="720" y="161" width="200" height="5" fill="#b54708"/>
+  <text x="820" y="156" text-anchor="middle" font-size="10" fill="#b54708">Boards A + B (parts up to ~15 mm)</text>
+  <g stroke="#6b7280" stroke-width="3">
+    <line x1="730" y1="166" x2="730" y2="226"/><line x1="910" y1="166" x2="910" y2="226"/>
+  </g>
+  <text x="940" y="200" font-size="10" fill="#6b7280">18–20</text>
+  <!-- stacking header -->
+  <rect x="760" y="166" width="8" height="60" fill="#e5e7eb" stroke="#6b7280"/>
+  <text x="772" y="200" font-size="9" fill="#6b7280">long-pin header</text>
+  <!-- lid clearance -->
+  <line x1="820" y1="161" x2="820" y2="90" stroke="#6b7280" stroke-dasharray="3 3"/>
+  <text x="826" y="128" font-size="10" fill="#6b7280">≈ 13 mm left under the lid</text>
+  <text x="826" y="140" font-size="10" fill="#6b7280">for mezzanine parts (tight)</text>
+  <line x1="975" y1="90" x2="975" y2="255" stroke="#6b7280" marker-start="url(#d)" marker-end="url(#d)"/>
+  <text x="985" y="176" font-size="10" fill="#6b7280" transform="rotate(90 985 176)">55 mm</text>
+  <text x="660" y="280" fill="#1f2a37">Stack check: 8 + 1.6 + 20 + 1.6 ≈ 31 mm of structure; procurement says the</text>
+  <text x="660" y="296" fill="#1f2a37">total 2-story stack is ~42 mm, so tall mezzanine parts (electrolytic, buck</text>
+  <text x="660" y="312" fill="#1f2a37">module) must stay ≤ ~12 mm or lie flat. Verify with the real box.</text>
+
+  <!-- Rules box -->
+  <rect x="660" y="340" width="300" height="250" rx="6" fill="#f8fafc" stroke="#1f2a37"/>
+  <text x="672" y="362" font-weight="600" fill="#1f2a37">Layout rules carried into this drawing</text>
+  <g fill="#1f2a37" font-size="11">
+    <text x="672" y="384">• Never one 9×15 cm perfboard over the Nucleo (drumhead,</text>
+    <text x="672" y="398">  noise coupling, blocks ST-LINK and LEDs).</text>
+    <text x="672" y="418">• Board B unplugs → hardware reverts to Scale 1A.</text>
+    <text x="672" y="438">• C1-IO never sits on Board B; own fused branch, own</text>
+    <text x="672" y="452">  connector to the M4 pins (ports E/F/G).</text>
+    <text x="672" y="472">• C1-IMU and C2 are NOT in this box: rigid frame boxes.</text>
+    <text x="672" y="492">• Box on silicone dampers; ST-LINK USB and microSD</text>
+    <text x="672" y="506">  reachable from the side.</text>
+    <text x="672" y="526">• 12 V return current never shares a trace with AGND.</text>
+    <text x="672" y="546">• Immobilizer latching relay lives in its own box next to</text>
+    <text x="672" y="560">  the starter relay; only its coil drivers are on C1-IO.</text>
+  </g>
+  <text x="672" y="582" font-size="10" fill="#6b7280">Sources: procurement list v2.9 design rule, HI §3.4, SCHEMATIC §8.</text>
+</svg>

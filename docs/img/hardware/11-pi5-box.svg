@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 440" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" role="img" aria-label="Raspberry Pi 5 box: the Pi on layer 1 and a 60 by 80 mm perfboard on 18 to 20 mm columns carrying the HCW-P715 5 V 5 A buck, INA226 number 2 and the MCP2515 CAN module with level shifting of SO and INT; camera on CSI, INMP441 on I2S, four PG7 glands, in its own 170 by 120 by 55 box">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#1f2a37"/></marker>
+  </defs>
+  <rect width="1000" height="440" fill="#ffffff"/>
+  <text x="20" y="28" font-size="16" font-weight="600" fill="#1f2a37">Fig. 11 — Raspberry Pi 5 box (Part 5A; SCHEMATIC S5): own box, own 5 V, platform CAN only</text>
+  <text x="20" y="46" fill="#6b7280">Placement: left crash bar (f), rear rack (e) or beside the Main Box on a plate (d). The platform bus has no stub limit, so the Pi may sit far from the DLC.</text>
+
+  <!-- box top view: 170x120 -> 340x240 at 2px/mm -->
+  <rect x="40" y="80" width="340" height="240" rx="6" fill="#f9fafb" stroke="#1f2a37" stroke-width="2"/>
+  <text x="50" y="98" font-size="10" fill="#6b7280">170×120×55 IP67, 4× PG7</text>
+  <!-- Pi 85x56 -> 170x112 -->
+  <rect x="70" y="120" width="170" height="112" rx="3" fill="#ffffff" stroke="#175cd3" stroke-width="1.5"/>
+  <text x="155" y="140" text-anchor="middle" font-weight="600" fill="#175cd3">Pi 5 85×56 (layer 1, M2.5 6 mm)</text>
+  <text x="155" y="156" text-anchor="middle" font-size="10" fill="#6b7280">holes 58×49 mm</text>
+  <!-- perfboard 80x60 -> 160x120 over it -->
+  <rect x="80" y="130" width="160" height="120" rx="3" fill="#fffaeb" fill-opacity="0.85" stroke="#b54708" stroke-width="1.5"/>
+  <text x="160" y="178" text-anchor="middle" font-weight="600" fill="#b54708">6×8 cm perfboard (layer 2)</text>
+  <text x="160" y="194" text-anchor="middle" font-size="10" fill="#1f2a37">HCW-P715 · INA226 #2 · MCP2515</text>
+  <text x="160" y="208" text-anchor="middle" font-size="10" fill="#1f2a37">level shift SO/INT · screw terminals</text>
+  <text x="160" y="222" text-anchor="middle" font-size="10" fill="#6b7280">M2.5 × 18–20 mm brass columns</text>
+  <text x="160" y="240" text-anchor="middle" font-size="10" fill="#6b7280">stack ≈ 85×60×44 mm</text>
+  <!-- free area -->
+  <text x="310" y="170" text-anchor="middle" font-size="10" fill="#6b7280">free: USB-A,</text>
+  <text x="310" y="184" text-anchor="middle" font-size="10" fill="#6b7280">CSI tail, airflow</text>
+  <text x="310" y="198" text-anchor="middle" font-size="10" fill="#b54708">thermal: §5b.8</text>
+  <!-- glands -->
+  <g fill="#e5e7eb" stroke="#1f2a37">
+    <rect x="70" y="314" width="22" height="12" rx="2"/><rect x="150" y="314" width="22" height="12" rx="2"/>
+    <rect x="230" y="314" width="22" height="12" rx="2"/><rect x="310" y="314" width="22" height="12" rx="2"/>
+  </g>
+  <g font-size="10" fill="#1f2a37" text-anchor="middle">
+    <text x="81" y="342">12 V in + GND</text><text x="161" y="342">platform CAN</text><text x="241" y="342">camera CSI</text><text x="321" y="342">mic / tap can0</text>
+  </g>
+
+  <!-- connections -->
+  <rect x="440" y="80" width="540" height="240" rx="6" fill="#f8fafc" stroke="#1f2a37"/>
+  <text x="452" y="100" font-weight="600" fill="#1f2a37">Connections (S5)</text>
+  <g font-size="11" fill="#1f2a37">
+    <text x="452" y="124"><tspan font-weight="600">Power:</tspan> +12V_PROT (Board A, own fuse) → HCW-P715 → +5V_PI → Pi 5 V (GPIO 2/4); INA226 #2 on +5V_PI, Pi I2C 0x40.</text>
+    <text x="452" y="140">The Pi is never powered from the LM2596. Current and brown-out behaviour on cold crank: measure (T0).</text>
+    <text x="452" y="166"><tspan font-weight="600">Platform CAN (can1):</tspan> MCP2515 SI/SCK/CS ← GPIO10/11/8 (SPI0); SO → GPIO9 and INT → GPIO25</text>
+    <text x="452" y="182">both <tspan font-weight="600">level-shifted 5 V → 3.3 V</tspan> (divider 1k/2k, or 74LVC1T45, or 3.3 V mod; CONFIRM per module). J1 120 Ω only at the bus end.</text>
+    <text x="452" y="208"><tspan font-weight="600">Vehicle CAN (can0, optional):</tspan> listen-only tap for raw logging; `vehicle-linux-node-can` sets CAN_CTRLMODE_LISTENONLY; never TX.</text>
+    <text x="452" y="234"><tspan font-weight="600">Camera:</tspan> Pi Camera Module 3 on CSI, 15→22-pin cable, front box (g) with lens window; LDW classic CV (§5b.5). Action-camera model: user.</text>
+    <text x="452" y="260"><tspan font-weight="600">Microphone:</tspan> INMP441 I2S SCK GPIO18, WS GPIO19, SD GPIO20, L/R→GND (D-044; USB vs I2S still open).</text>
+    <text x="452" y="286"><tspan font-weight="600">Software:</tspan> Kuksa databroker 0.7.1 + kuksa-can-provider (receive-only), black-box recorder, systemd units (linux-node#14).</text>
+    <text x="452" y="306" fill="#6b7280">Ferrites on the 12 V, CAN and camera cables outside the glands. Shielded camera lead if the run passes the engine.</text>
+  </g>
+
+  <rect x="40" y="340" width="940" height="88" rx="6" fill="#fffaeb" stroke="#b54708"/>
+  <text x="52" y="360" font-weight="600" fill="#b54708">Open before the Pi rides</text>
+  <g font-size="11" fill="#1f2a37">
+    <text x="52" y="380">• L3 live source Kuksa → vehicle-server (D-077 leaves MQTT/Zenoh/HTTP open; Claude recommends MQTT) · L2 node-health panel needs Q-016 per-node signal names (defs#159, user).</text>
+    <text x="52" y="396">• Thermal and power budget of the Pi 5 in a sealed box in summer (hardware-architecture §5b.8): measure CPU temperature on the desk in the closed box before the first ride.</text>
+    <text x="52" y="412">• Safe shutdown on ignition off (supercap/UPS or journal-safe mounts): not decided; the black-box recorder closes files on the trigger today.</text>
+  </g>
+</svg>

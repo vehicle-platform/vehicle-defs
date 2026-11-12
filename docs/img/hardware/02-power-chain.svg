@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 520" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" role="img" aria-label="Power chain on Board A: ignition-switched 12 V through a 2 A fuse, series Schottky, bidirectional TVS, LC filter and input capacitor to the protected 12 V rail, then the 5 V buck; separate fused branches for C1-IO, C2 and the Pi 5; battery voltage divider; star ground to the battery negative">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#1f2a37"/></marker>
+  </defs>
+  <rect width="1000" height="520" fill="#ffffff"/>
+  <text x="20" y="28" font-size="16" font-weight="600" fill="#1f2a37">Fig. 2 — Power chain (Board A, SCHEMATIC S1; hardware-integration §3.2)</text>
+  <text x="20" y="46" fill="#6b7280">Left to right along the main rail. Values in grey are proposals or TBD; CONFIRM items are not documented anywhere yet.</text>
+
+  <!-- main rail -->
+  <g stroke="#b54708" stroke-width="3" fill="none">
+    <line x1="40" y1="120" x2="120" y2="120"/>
+    <line x1="180" y1="120" x2="240" y2="120"/>
+    <line x1="300" y1="120" x2="360" y2="120"/>
+    <line x1="420" y1="120" x2="480" y2="120"/>
+    <line x1="540" y1="120" x2="640" y2="120"/>
+    <line x1="700" y1="120" x2="760" y2="120"/>
+    <line x1="840" y1="120" x2="960" y2="120"/>
+  </g>
+  <text x="40" y="106" fill="#b54708" font-weight="600">+12V_IGN</text>
+  <text x="40" y="140" fill="#6b7280">ignition-switched tap</text>
+  <text x="40" y="154" fill="#b54708" font-weight="600">tap point CONFIRM</text>
+  <text x="40" y="168" fill="#6b7280">never the always-on line</text>
+
+  <rect x="120" y="104" width="60" height="32" rx="3" fill="#fffaeb" stroke="#b54708"/>
+  <text x="150" y="124" text-anchor="middle" font-weight="600" fill="#1f2a37">F1 2 A</text>
+  <text x="150" y="156" text-anchor="middle" fill="#6b7280">blade, waterproof holder</text>
+
+  <rect x="240" y="104" width="60" height="32" rx="3" fill="#fffaeb" stroke="#b54708"/>
+  <text x="270" y="124" text-anchor="middle" font-weight="600" fill="#1f2a37">1N5822</text>
+  <text x="270" y="156" text-anchor="middle" fill="#6b7280">series Schottky, 40 V</text>
+  <text x="270" y="170" text-anchor="middle" fill="#6b7280">SS36/SB360 60 V proposal</text>
+
+  <!-- TVS to ground -->
+  <line x1="390" y1="120" x2="390" y2="176" stroke="#b54708" stroke-width="2"/>
+  <rect x="360" y="104" width="60" height="32" rx="3" fill="#fffaeb" stroke="#b54708"/>
+  <text x="390" y="124" text-anchor="middle" font-weight="600" fill="#1f2a37">SMBJ30CA</text>
+  <text x="390" y="196" text-anchor="middle" fill="#6b7280">bidir. TVS to GND</text>
+  <text x="390" y="210" text-anchor="middle" fill="#6b7280">V_BR 33–37 V, V_C ≤ 48 V</text>
+
+  <rect x="480" y="104" width="60" height="32" rx="3" fill="#fffaeb" stroke="#b54708"/>
+  <text x="510" y="124" text-anchor="middle" font-weight="600" fill="#1f2a37">L1</text>
+  <text x="510" y="156" text-anchor="middle" fill="#6b7280">≥ 3 A inductor</text>
+  <text x="510" y="170" text-anchor="middle" fill="#b54708" font-weight="600">value TBD</text>
+
+  <!-- caps to ground -->
+  <line x1="590" y1="120" x2="590" y2="176" stroke="#b54708" stroke-width="2"/>
+  <rect x="560" y="140" width="60" height="30" rx="3" fill="#fffaeb" stroke="#b54708"/>
+  <text x="590" y="159" text-anchor="middle" font-size="11" fill="#1f2a37">470 µF ≥50 V ∥ 100 nF</text>
+  <text x="590" y="196" text-anchor="middle" fill="#6b7280">35 V is under-rated</text>
+
+  <text x="670" y="106" text-anchor="middle" fill="#b54708" font-weight="600">+12V_PROT</text>
+  <circle cx="670" cy="120" r="4" fill="#b54708"/>
+  <line x1="640" y1="120" x2="700" y2="120" stroke="#b54708" stroke-width="3"/>
+
+  <rect x="760" y="100" width="80" height="40" rx="3" fill="#fffaeb" stroke="#b54708"/>
+  <text x="800" y="117" text-anchor="middle" font-weight="600" fill="#1f2a37">Buck 5 V</text>
+  <text x="800" y="132" text-anchor="middle" font-size="11" fill="#1f2a37">in ≥ 53 V, 2–3 A</text>
+  <text x="800" y="160" text-anchor="middle" fill="#6b7280">HW-788 or LM2596HVS</text>
+  <text x="800" y="174" text-anchor="middle" fill="#6b7280">not MP1584 (28 V max)</text>
+  <text x="900" y="106" text-anchor="middle" fill="#b54708" font-weight="600">+5V</text>
+  <text x="900" y="140" text-anchor="middle" fill="#1f2a37">Nucleo 5 V in · C1-IO 5 V</text>
+  <text x="900" y="154" text-anchor="middle" fill="#1f2a37">(LED buffer, radars, rings)</text>
+  <text x="900" y="168" text-anchor="middle" fill="#6b7280">INA226 #1 high side, 0x40</text>
+
+  <!-- Branches from +12V_PROT -->
+  <line x1="670" y1="120" x2="670" y2="440" stroke="#b54708" stroke-width="2"/>
+  <g>
+    <line x1="670" y1="260" x2="740" y2="260" stroke="#b54708" stroke-width="2" marker-end="url(#a)"/>
+    <rect x="740" y="242" width="60" height="36" rx="3" fill="#fef3f2" stroke="#b42318"/>
+    <text x="770" y="257" text-anchor="middle" font-size="11" fill="#1f2a37">fuse</text>
+    <text x="770" y="271" text-anchor="middle" font-size="11" fill="#1f2a37">+ LDO</text>
+    <line x1="800" y1="260" x2="850" y2="260" stroke="#b42318" stroke-width="2" marker-end="url(#a)"/>
+    <text x="856" y="256" fill="#b42318" font-weight="600">+3V3_C1 → C1-IO, C1-IMU</text>
+    <text x="856" y="272" fill="#6b7280">M4 branch; C1-IMU LDO fed via its cable</text>
+  </g>
+  <g>
+    <line x1="670" y1="320" x2="740" y2="320" stroke="#b54708" stroke-width="2" marker-end="url(#a)"/>
+    <rect x="740" y="302" width="60" height="36" rx="3" fill="#eff6ff" stroke="#175cd3"/>
+    <text x="770" y="317" text-anchor="middle" font-size="11" fill="#1f2a37">fuse</text>
+    <text x="770" y="331" text-anchor="middle" font-size="11" fill="#1f2a37">+ LDO</text>
+    <line x1="800" y1="320" x2="850" y2="320" stroke="#175cd3" stroke-width="2" marker-end="url(#a)"/>
+    <text x="856" y="316" fill="#175cd3" font-weight="600">+3V3_C2 → Board C2 (M7 IMU)</text>
+    <text x="856" y="332" fill="#6b7280">own branch, own cable (D-082 item 2)</text>
+  </g>
+  <g>
+    <line x1="670" y1="380" x2="740" y2="380" stroke="#b54708" stroke-width="2" marker-end="url(#a)"/>
+    <rect x="740" y="362" width="60" height="36" rx="3" fill="#fffaeb" stroke="#b54708"/>
+    <text x="770" y="377" text-anchor="middle" font-size="11" fill="#1f2a37">HCW-P715</text>
+    <text x="770" y="391" text-anchor="middle" font-size="11" fill="#1f2a37">5 V 5 A</text>
+    <line x1="800" y1="380" x2="850" y2="380" stroke="#b54708" stroke-width="2" marker-end="url(#a)"/>
+    <text x="856" y="376" fill="#1f2a37" font-weight="600">+5V_PI → Raspberry Pi 5</text>
+    <text x="856" y="392" fill="#6b7280">never from the LM2596; INA226 #2</text>
+  </g>
+  <g>
+    <line x1="670" y1="440" x2="740" y2="440" stroke="#b54708" stroke-width="2"/>
+    <rect x="740" y="422" width="60" height="36" rx="3" fill="#f9fafb" stroke="#6b7280"/>
+    <text x="770" y="437" text-anchor="middle" font-size="11" fill="#1f2a37">100 k / 22 k</text>
+    <text x="770" y="451" text-anchor="middle" font-size="11" fill="#1f2a37">+10 nF +3V3 Z</text>
+    <line x1="800" y1="440" x2="850" y2="440" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+    <text x="856" y="436" fill="#1f2a37" font-weight="600">V_BAT_SENSE → M7 ADC1 PA3</text>
+    <text x="856" y="452" fill="#6b7280">1 kHz DMA (D-079, D-082 item 4)</text>
+  </g>
+
+  <!-- Ground block -->
+  <rect x="40" y="250" width="560" height="120" rx="6" fill="#f8fafc" stroke="#1f2a37"/>
+  <text x="52" y="272" font-weight="600" fill="#1f2a37">Ground rules</text>
+  <text x="52" y="294" fill="#1f2a37">• GND on its own wire straight to the battery negative: a star point, no chassis return, no second ground path per unit.</text>
+  <text x="52" y="312" fill="#1f2a37">• AGND ↔ GND tied once, at the H755 analog reference (0 Ω net-tie) — unless the Nucleo already ties it on board (UM2408, CONFIRM).</text>
+  <text x="52" y="330" fill="#1f2a37">• Cable shields drain to GND at the Main Box end only; the sensor end floats.</text>
+  <text x="52" y="348" fill="#1f2a37">• Sleep current target &lt; 1 mA with the ignition off (T0, INA226 or multimeter); otherwise switch the supply with the ignition.</text>
+
+  <rect x="40" y="390" width="560" height="110" rx="6" fill="#fffaeb" stroke="#b54708"/>
+  <text x="52" y="412" font-weight="600" fill="#b54708">Gate B1 (bench, 12–14 V) before Board A touches the Nucleo</text>
+  <text x="52" y="434" fill="#1f2a37">5 V stable under load · no heat on the buck · reversed input once: must not conduct.</text>
+  <text x="52" y="452" fill="#1f2a37">+3V3 for off-box sensors: option (b) separate LDO on Board A + PTC per sensor lead is the proposal (S1, decision TBD).</text>
+  <text x="52" y="470" fill="#1f2a37">Common causes that remain (D-082): this rail and buck, the star ground, the H755 supply/clock/reset. Stated, not removed.</text>
+  <text x="52" y="490" fill="#6b7280">Figure is schematic-level: component orientation and layout belong to the Fusion sheet S1.</text>
+</svg>

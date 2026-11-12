@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 620" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" role="img" aria-label="Side view sketch of the CL250 with the eight enclosure candidates a to h from hardware-integration section 4.1, the IMU zone near the centre of mass, the DLC under the seat, the heat zones around the engine and the right-side muffler, and the verdict for each candidate">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#1f2a37"/></marker>
+    <pattern id="heat" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" stroke="#f04438" stroke-width="2" stroke-opacity="0.35"/></pattern>
+  </defs>
+  <rect width="1000" height="620" fill="#ffffff"/>
+  <text x="20" y="28" font-size="16" font-weight="600" fill="#1f2a37">Fig. 6 — Where the boxes can go on the CL250 (Q-034 open; HI §4.1 candidates a–h)</text>
+  <text x="20" y="46" fill="#6b7280">Left side view, front to the right. Sketch, not to scale; wheelbase 1485 mm (official). Hatched = heat/ignition zone (≥ 15 cm rule). Every distance is "measure on the bike".</text>
+
+  <!-- ground -->
+  <line x1="40" y1="400" x2="960" y2="400" stroke="#6b7280" stroke-dasharray="4 4"/>
+  <!-- wheels -->
+  <circle cx="220" cy="330" r="70" fill="none" stroke="#1f2a37" stroke-width="3"/>
+  <circle cx="220" cy="330" r="40" fill="none" stroke="#6b7280"/>
+  <circle cx="800" cy="320" r="80" fill="none" stroke="#1f2a37" stroke-width="3"/>
+  <circle cx="800" cy="320" r="46" fill="none" stroke="#6b7280"/>
+  <text x="220" y="420" text-anchor="middle" font-size="10" fill="#6b7280">rear 17"</text>
+  <text x="800" y="420" text-anchor="middle" font-size="10" fill="#6b7280">front 19"</text>
+  <!-- frame -->
+  <path d="M300 300 L360 180 L560 160 L660 170 L720 200 L740 260" fill="none" stroke="#1f2a37" stroke-width="4"/>
+  <path d="M360 180 L300 300 L420 310 L520 300 L560 160" fill="none" stroke="#1f2a37" stroke-width="3"/>
+  <line x1="300" y1="300" x2="220" y2="330" stroke="#1f2a37" stroke-width="4"/>
+  <text x="258" y="306" font-size="10" fill="#6b7280">swingarm</text>
+  <path d="M740 260 L770 240 L800 320" fill="none" stroke="#1f2a37" stroke-width="4"/>
+  <text x="790" y="236" font-size="10" fill="#6b7280">fork / head stock</text>
+  <!-- tank & seat -->
+  <path d="M560 160 Q600 130 680 165 L720 200 L560 185 Z" fill="#e5e7eb" stroke="#1f2a37"/>
+  <text x="630" y="158" text-anchor="middle" font-size="11" fill="#1f2a37">fuel tank</text>
+  <path d="M360 180 L560 185 L560 160 L500 150 L380 160 Z" fill="#d1d5db" stroke="#1f2a37"/>
+  <text x="460" y="174" text-anchor="middle" font-size="11" fill="#1f2a37">seat</text>
+  <!-- subframe/tail -->
+  <path d="M360 180 L290 190 L300 240" fill="none" stroke="#1f2a37" stroke-width="3"/>
+  <!-- engine -->
+  <rect x="440" y="215" width="140" height="95" rx="10" fill="url(#heat)" stroke="#f04438" stroke-width="2"/>
+  <text x="510" y="252" text-anchor="middle" font-weight="600" fill="#b42318">engine</text>
+  <text x="510" y="268" text-anchor="middle" font-size="10" fill="#b42318">cylinder, ignition coil, HT lead</text>
+  <text x="510" y="282" text-anchor="middle" font-size="10" fill="#b42318">strongest vibration</text>
+  <!-- exhaust, right side upswept muffler drawn faint since left view -->
+  <path d="M560 300 Q640 330 620 360 L380 360 Q330 350 330 300" fill="none" stroke="#f04438" stroke-width="6" stroke-opacity="0.4"/>
+  <text x="470" y="378" text-anchor="middle" font-size="10" fill="#b42318">header + upswept muffler on the RIGHT side (shown faint; distance CONFIRM)</text>
+  <!-- battery + DLC -->
+  <rect x="380" y="212" width="46" height="30" rx="3" fill="#fffaeb" stroke="#b54708"/>
+  <text x="403" y="231" text-anchor="middle" font-size="10" fill="#1f2a37">battery</text>
+  <circle cx="365" cy="236" r="6" fill="#067647"/>
+  <text x="352" y="258" font-size="10" fill="#067647">DLC (CONFIRM)</text>
+  <!-- CG / IMU zone -->
+  <circle cx="500" cy="200" r="18" fill="none" stroke="#175cd3" stroke-width="2" stroke-dasharray="3 3"/>
+  <circle cx="500" cy="200" r="3" fill="#175cd3"/>
+  <text x="500" y="128" text-anchor="middle" font-size="11" font-weight="600" fill="#175cd3">IMU zone: C1-IMU + C2 boxes, rigid, near the CG</text>
+  <text x="500" y="142" text-anchor="middle" font-size="10" fill="#6b7280">between tank rear and seat front (frame point CONFIRM), run ≤ ~30 cm to the box</text>
+  <line x1="500" y1="146" x2="500" y2="180" stroke="#175cd3" marker-end="url(#a)"/>
+
+  <!-- candidates -->
+  <g font-size="11">
+    <!-- a engine -->
+    <circle cx="440" cy="215" r="11" fill="#fef3f2" stroke="#b42318"/><text x="440" y="219" text-anchor="middle" font-weight="600" fill="#b42318">a</text>
+    <!-- b clutch cover (right) -->
+    <circle cx="580" cy="300" r="11" fill="#fef3f2" stroke="#b42318"/><text x="580" y="304" text-anchor="middle" font-weight="600" fill="#b42318">b</text>
+    <!-- c subframe tray -->
+    <rect x="296" y="200" width="56" height="32" rx="3" fill="#ecfdf3" stroke="#067647" stroke-width="1.5"/>
+    <circle cx="300" cy="200" r="11" fill="#ecfdf3" stroke="#067647"/><text x="300" y="204" text-anchor="middle" font-weight="600" fill="#067647">c</text>
+    <text x="326" y="220" text-anchor="middle" font-size="10" fill="#067647">tray</text>
+    <!-- d pannier plate left -->
+    <rect x="268" y="236" width="60" height="42" rx="3" fill="#eff6ff" stroke="#175cd3" stroke-width="1.5" stroke-dasharray="4 2"/>
+    <circle cx="268" cy="236" r="11" fill="#eff6ff" stroke="#175cd3"/><text x="268" y="240" text-anchor="middle" font-weight="600" fill="#175cd3">d</text>
+    <text x="300" y="262" text-anchor="middle" font-size="10" fill="#175cd3">plate</text>
+    <!-- e rack -->
+    <rect x="290" y="150" width="70" height="14" rx="2" fill="#eff6ff" stroke="#175cd3" stroke-dasharray="4 2"/>
+    <circle cx="290" cy="150" r="11" fill="#eff6ff" stroke="#175cd3"/><text x="290" y="154" text-anchor="middle" font-weight="600" fill="#175cd3">e</text>
+    <!-- f crash bar / downtube -->
+    <rect x="600" y="236" width="40" height="50" rx="3" fill="#eff6ff" stroke="#175cd3" stroke-dasharray="4 2"/>
+    <circle cx="600" cy="236" r="11" fill="#eff6ff" stroke="#175cd3"/><text x="600" y="240" text-anchor="middle" font-weight="600" fill="#175cd3">f</text>
+    <!-- g headlight cowl -->
+    <rect x="820" y="200" width="40" height="40" rx="3" fill="#eff6ff" stroke="#175cd3" stroke-dasharray="4 2"/>
+    <circle cx="820" cy="200" r="11" fill="#eff6ff" stroke="#175cd3"/><text x="820" y="204" text-anchor="middle" font-weight="600" fill="#175cd3">g</text>
+    <!-- h left side cover -->
+    <circle cx="400" cy="270" r="11" fill="#eff6ff" stroke="#175cd3"/><text x="400" y="274" text-anchor="middle" font-weight="600" fill="#175cd3">h</text>
+  </g>
+  <!-- rear wheel travel line -->
+  <line x1="150" y1="260" x2="330" y2="260" stroke="#b54708" stroke-dasharray="6 3"/>
+  <text x="150" y="254" font-size="10" fill="#b54708">rear wheel travel ~150 mm: nothing below this line at full bottoming (CONFIRM)</text>
+
+  <!-- Verdict table -->
+  <g font-size="11">
+    <rect x="40" y="440" width="920" height="170" rx="6" fill="#f8fafc" stroke="#1f2a37"/>
+    <text x="52" y="460" font-weight="600" fill="#1f2a37">Verdicts (HI §4.1)</text>
+    <text x="52" y="480" fill="#b42318"><tspan font-weight="600">a</tspan> around the engine — rejected for boxes (heat, vibration, ignition). Only the engine ADXL345 goes here.</text>
+    <text x="52" y="496" fill="#b42318"><tspan font-weight="600">b</tspan> E-Clutch place / right clutch cover — rejected, same reasons; hot crankcase next to the upswept exhaust.</text>
+    <text x="52" y="512" fill="#067647"><tspan font-weight="600">c</tspan> rear subframe tray under the fender, left of centre — Claude's recommendation: rigid tray, box on silicone mounts, glands down; check tyre clearance and the DLC run.</text>
+    <text x="52" y="528" fill="#175cd3"><tspan font-weight="600">d</tspan> left pannier-carrier plate (~127 mm bosses, CONFIRM) — candidate: cool side, rigid, side access to ST-LINK/microSD; depends on unverified bosses.</text>
+    <text x="52" y="544" fill="#175cd3"><tspan font-weight="600">e</tspan> rear rack plate (~23×23 cm, CONFIRM) — candidate: airflow, clear sky for GPS/BLE/Wi-Fi; rack stiffness and run length unverified.</text>
+    <text x="52" y="560" fill="#175cd3"><tspan font-weight="600">f</tspan> left crash bar / downtube — DLC run likely &gt; 50 cm: not for the H755 box; suits the Pi 5 (platform CAN has no stub limit) or a front hub.</text>
+    <text x="52" y="576" fill="#175cd3"><tspan font-weight="600">g</tspan> behind the headlight / cowl — front satellites only (&lt; 400 g on the steering head): camera, NFC, BME280, cornering LEDs.</text>
+    <text x="52" y="592" fill="#175cd3"><tspan font-weight="600">h</tspan> behind the left side cover (&lt; 45 mm deep, CONFIRM) — small boxes only: a C1/C2 box, the ACS758 box or the immobilizer relay box.</text>
+  </g>
+</svg>

@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 520" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" role="img" aria-label="The two IMU frame boxes C1-IMU for the M4 and C2 for the M7, each bolted rigidly to the main frame on brass standoffs, each with its own fused supply branch and its own shielded cable to the Main Box with the shield drained at the box end only, and the bike axis convention to record in the session metadata">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#1f2a37"/></marker>
+  </defs>
+  <rect width="1000" height="520" fill="#ffffff"/>
+  <text x="20" y="28" font-size="16" font-weight="600" fill="#1f2a37">Fig. 7 — IMU frame boxes C1-IMU (M4) and C2 (M7): separate, rigid, short cables (D-082 item 2, HI §4.1)</text>
+  <text x="20" y="46" fill="#6b7280">Both boards ~30×40 mm, cut from 3×7 cm perfboard. Same small IP65/IP67 box type for both: product and frame point CONFIRM with Q-034 (the DT-0505/0508 are 126×136 mm and unsuitable).</text>
+
+  <!-- frame tube -->
+  <rect x="60" y="250" width="560" height="26" rx="13" fill="#d1d5db" stroke="#1f2a37"/>
+  <text x="340" y="296" text-anchor="middle" fill="#6b7280">main steel frame spine near the centre of mass (never a damped tray, pannier plate, rack or extension)</text>
+
+  <!-- C1-IMU box -->
+  <g>
+    <rect x="120" y="150" width="150" height="80" rx="4" fill="#fef3f2" stroke="#b42318" stroke-width="1.5"/>
+    <text x="195" y="172" text-anchor="middle" font-weight="600" fill="#b42318">C1-IMU · M4 own IMU</text>
+    <text x="195" y="190" text-anchor="middle" font-size="11" fill="#1f2a37">MPU-6500 SPI · LDO +3V3_C1</text>
+    <text x="195" y="206" text-anchor="middle" font-size="11" fill="#1f2a37">33–100 Ω series on SCK/MOSI/MISO/CS</text>
+    <text x="195" y="222" text-anchor="middle" font-size="10" fill="#6b7280">bought (Wave 1)</text>
+    <g stroke="#b54708" stroke-width="4"><line x1="150" y1="230" x2="150" y2="250"/><line x1="240" y1="230" x2="240" y2="250"/></g>
+    <text x="195" y="245" text-anchor="middle" font-size="9" fill="#b54708">M3 × 6 mm brass</text>
+  </g>
+  <!-- C2 box -->
+  <g>
+    <rect x="400" y="150" width="150" height="80" rx="4" fill="#eff6ff" stroke="#175cd3" stroke-width="1.5"/>
+    <text x="475" y="172" text-anchor="middle" font-weight="600" fill="#175cd3">Board C2 · M7 chassis IMU</text>
+    <text x="475" y="190" text-anchor="middle" font-size="11" fill="#1f2a37">"MPU-6590" board, I2C 0x68</text>
+    <text x="475" y="206" text-anchor="middle" font-size="11" fill="#1f2a37">chip CONFIRM via WHO_AM_I 0x75</text>
+    <text x="475" y="222" text-anchor="middle" font-size="10" fill="#6b7280">on hand; Phase 0 IMU today</text>
+    <g stroke="#b54708" stroke-width="4"><line x1="430" y1="230" x2="430" y2="250"/><line x1="520" y1="230" x2="520" y2="250"/></g>
+    <text x="475" y="245" text-anchor="middle" font-size="9" fill="#b54708">M3 × 6 mm brass</text>
+  </g>
+
+  <!-- main box -->
+  <rect x="740" y="120" width="220" height="150" rx="6" fill="#f9fafb" stroke="#1f2a37" stroke-width="1.5"/>
+  <text x="850" y="142" text-anchor="middle" font-weight="600" fill="#1f2a37">Main Box (on dampers)</text>
+  <text x="850" y="160" text-anchor="middle" font-size="11" fill="#b42318">C1-IO → M4 SPI4 PE10/12/13/14/15</text>
+  <text x="850" y="176" text-anchor="middle" font-size="11" fill="#175cd3">Board A → M7 I2C1 PB8/PB9</text>
+  <text x="850" y="196" text-anchor="middle" font-size="11" fill="#1f2a37">shield drains to GND HERE only</text>
+  <text x="850" y="212" text-anchor="middle" font-size="11" fill="#1f2a37">PG7 glands G4 (C1-IMU), G5 (C2)</text>
+  <text x="850" y="228" text-anchor="middle" font-size="11" fill="#1f2a37">ferrite clamp just outside each gland</text>
+  <text x="850" y="248" text-anchor="middle" font-size="10" fill="#6b7280">two fuses, two LDO branches, two connectors</text>
+
+  <!-- cables -->
+  <path d="M270 190 C 340 110, 640 110, 740 170" fill="none" stroke="#b42318" stroke-width="3" marker-end="url(#a)"/>
+  <text x="520" y="104" text-anchor="middle" font-size="11" fill="#b42318">LiYCY 6–8 × 0.22 shielded, ≤ ~30 cm: SCK, MOSI, MISO, CS, INT, +12V_PROT(C1 branch), GND · Deutsch DT (proposal)</text>
+  <path d="M550 200 C 620 240, 680 240, 740 200" fill="none" stroke="#175cd3" stroke-width="3" marker-end="url(#a)"/>
+  <text x="645" y="250" text-anchor="middle" font-size="11" fill="#175cd3">LiYCY 4 × 0.22 shielded, ≤ ~30 cm: SDA+GND, VCC+GND pairs</text>
+  <text x="645" y="264" text-anchor="middle" font-size="10" fill="#6b7280">longer → PCA9615 differential I2C extender (CONFIRM)</text>
+
+  <!-- axes -->
+  <g transform="translate(120,360)">
+    <rect x="-80" y="-40" width="420" height="150" rx="6" fill="#f8fafc" stroke="#1f2a37"/>
+    <text x="-68" y="-20" font-weight="600" fill="#1f2a37">Axis convention to record in the session metadata</text>
+    <line x1="60" y1="60" x2="160" y2="60" stroke="#1f2a37" stroke-width="2" marker-end="url(#a)"/>
+    <text x="166" y="64" font-size="11" fill="#1f2a37">x = longitudinal (forward)</text>
+    <line x1="60" y1="60" x2="60" y2="0" stroke="#1f2a37" stroke-width="2" marker-end="url(#a)"/>
+    <text x="52" y="-6" text-anchor="end" font-size="11" fill="#1f2a37">z = vertical</text>
+    <circle cx="60" cy="60" r="7" fill="none" stroke="#1f2a37" stroke-width="2"/><circle cx="60" cy="60" r="2" fill="#1f2a37"/>
+    <text x="30" y="86" font-size="11" fill="#1f2a37">y = lateral (sign CONFIRM)</text>
+    <text x="-68" y="104" font-size="10" fill="#6b7280">Record per box: frame point, offset r from the CG, sensor axes vs bike axes. Both aligned with the bike axes; offset corrected in software.</text>
+  </g>
+  <g transform="translate(520,360)">
+    <rect x="-20" y="-40" width="460" height="150" rx="6" fill="#fffaeb" stroke="#b54708"/>
+    <text x="-8" y="-20" font-weight="600" fill="#b54708">Why rigid and why two boxes</text>
+    <g font-size="11" fill="#1f2a37">
+      <text x="-8" y="0">• A gyro reads the same rate anywhere on a rigid body; an accelerometer at</text>
+      <text x="-8" y="14">  offset r also reads ω×(ω×r) + α×r, and a flexing bracket adds its own resonance.</text>
+      <text x="-8" y="34">• C2 fault → M4 unaffected. C1-IMU fault → only the M4 IMU lost: cornering</text>
+      <text x="-8" y="48">  UNAVAILABLE on the ring (WHO_AM_I / self-test). C1-IO fault → dark ring.</text>
+      <text x="-8" y="68">• Honest limits (D-082): same IMU family, same frame point, same 12 V rail.</text>
+      <text x="-8" y="88">• ADXL345 engine/swingarm pickups (Board B) follow the same rigid rule, own boxes.</text>
+    </g>
+  </g>
+</svg>
