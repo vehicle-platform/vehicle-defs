@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 480" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" role="img" aria-label="Immobilizer: a latching relay contact in series with the starter-relay coil circuit only, with a hidden passive bypass switch across that contact; the M4 drives SET and RESET coil pulses through drivers with gate pull-downs and flyback diodes; the relay keeps its state on power loss and can never stop a running engine">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#1f2a37"/></marker>
+  </defs>
+  <rect width="1000" height="480" fill="#ffffff"/>
+  <text x="20" y="28" font-size="16" font-weight="600" fill="#1f2a37">Fig. 9 — Immobilizer: starter-relay coil circuit only (invariant 6, D-082 item 6, D-097)</text>
+  <text x="20" y="46" fill="#6b7280">Left: the bike's own starter circuit with our latching contact inserted in the COIL line, never in the motor line. Right: the drivers on C1-IO. Relay box next to the starter relay (location CONFIRM).</text>
+
+  <!-- Bike starter circuit -->
+  <rect x="30" y="80" width="560" height="260" rx="6" fill="#f8fafc" stroke="#1f2a37"/>
+  <text x="42" y="100" font-weight="600" fill="#1f2a37">CL250 starter circuit (simplified; harness never cut, tap by connector)</text>
+  <!-- battery -->
+  <text x="50" y="140" font-size="11" fill="#1f2a37">+12 V (ignition on,</text>
+  <text x="50" y="154" font-size="11" fill="#1f2a37">starter button pressed)</text>
+  <line x1="60" y1="170" x2="60" y2="200" stroke="#b54708" stroke-width="2"/>
+  <line x1="60" y1="200" x2="150" y2="200" stroke="#b54708" stroke-width="2"/>
+  <!-- starter button -->
+  <line x1="150" y1="200" x2="185" y2="186" stroke="#1f2a37" stroke-width="2"/>
+  <circle cx="150" cy="200" r="3" fill="#1f2a37"/><circle cx="190" cy="200" r="3" fill="#1f2a37"/>
+  <text x="170" y="222" text-anchor="middle" font-size="10" fill="#6b7280">starter button</text>
+  <line x1="190" y1="200" x2="260" y2="200" stroke="#b54708" stroke-width="2"/>
+  <!-- our latching contact -->
+  <rect x="260" y="176" width="110" height="48" rx="4" fill="#fef3f2" stroke="#b42318" stroke-width="1.5"/>
+  <line x1="275" y1="200" x2="305" y2="188" stroke="#1f2a37" stroke-width="2"/>
+  <circle cx="275" cy="200" r="3" fill="#1f2a37"/><circle cx="310" cy="200" r="3" fill="#1f2a37"/>
+  <text x="340" y="196" text-anchor="middle" font-size="10" fill="#b42318">latching</text>
+  <text x="340" y="208" text-anchor="middle" font-size="10" fill="#b42318">contact</text>
+  <text x="315" y="166" text-anchor="middle" font-size="10" fill="#b42318">OURS · default UNLOCKED (closed)</text>
+  <!-- bypass -->
+  <path d="M275 224 L275 250 L310 250 L310 224" fill="none" stroke="#1f2a37" stroke-width="1.5" stroke-dasharray="4 2"/>
+  <line x1="282" y1="250" x2="300" y2="238" stroke="#1f2a37" stroke-width="2"/>
+  <text x="292" y="268" text-anchor="middle" font-size="10" fill="#1f2a37">hidden passive bypass switch</text>
+  <text x="292" y="280" text-anchor="middle" font-size="10" fill="#6b7280">across the contact (D-097)</text>
+  <line x1="370" y1="200" x2="430" y2="200" stroke="#b54708" stroke-width="2"/>
+  <!-- starter relay coil -->
+  <rect x="430" y="184" width="60" height="32" rx="3" fill="#fffaeb" stroke="#b54708"/>
+  <text x="460" y="204" text-anchor="middle" font-size="10" fill="#1f2a37">starter relay</text>
+  <text x="460" y="232" text-anchor="middle" font-size="10" fill="#6b7280">COIL (small current)</text>
+  <line x1="490" y1="200" x2="540" y2="200" stroke="#b54708" stroke-width="2"/>
+  <line x1="540" y1="200" x2="540" y2="230" stroke="#1f2a37" stroke-width="2"/>
+  <text x="540" y="246" text-anchor="middle" font-size="10" fill="#6b7280">GND</text>
+  <!-- motor line -->
+  <line x1="60" y1="300" x2="430" y2="300" stroke="#1f2a37" stroke-width="5"/>
+  <rect x="430" y="284" width="60" height="32" rx="3" fill="#e5e7eb" stroke="#6b7280"/>
+  <text x="460" y="304" text-anchor="middle" font-size="10" fill="#1f2a37">contact</text>
+  <line x1="490" y1="300" x2="560" y2="300" stroke="#1f2a37" stroke-width="5"/>
+  <text x="575" y="304" font-size="10" fill="#1f2a37">M</text>
+  <text x="240" y="322" text-anchor="middle" font-size="10" fill="#6b7280">starter MOTOR line, 60–90 A (ACS758LCB-200B measures here) — we never touch it</text>
+  <line x1="460" y1="216" x2="460" y2="284" stroke="#6b7280" stroke-dasharray="3 3"/>
+
+  <!-- C1-IO drivers -->
+  <rect x="620" y="80" width="360" height="260" rx="6" fill="#fef3f2" stroke="#b42318"/>
+  <text x="632" y="100" font-weight="600" fill="#b42318">C1-IO coil drivers (M4, ports E)</text>
+  <g font-size="11" fill="#1f2a37">
+    <text x="632" y="128">IMMO_SET  PE4  → pull-down → NPN/MOSFET → SET coil</text>
+    <text x="632" y="146">IMMO_RESET PE5 → pull-down → NPN/MOSFET → RESET coil</text>
+    <text x="632" y="164">flyback diode across each coil · pulse-only drive</text>
+  </g>
+  <!-- small schematic -->
+  <line x1="640" y1="200" x2="700" y2="200" stroke="#b42318" stroke-width="2"/>
+  <text x="640" y="194" font-size="10" fill="#b42318">PE4</text>
+  <rect x="700" y="190" width="30" height="20" fill="#ffffff" stroke="#1f2a37"/>
+  <text x="715" y="204" text-anchor="middle" font-size="9" fill="#1f2a37">R</text>
+  <line x1="730" y1="200" x2="770" y2="200" stroke="#1f2a37" stroke-width="2"/>
+  <line x1="750" y1="200" x2="750" y2="230" stroke="#1f2a37" stroke-width="1.5"/>
+  <rect x="740" y="230" width="20" height="14" fill="#ffffff" stroke="#1f2a37"/>
+  <text x="750" y="258" text-anchor="middle" font-size="9" fill="#1f2a37">pull-down</text>
+  <polygon points="770,190 790,200 770,210" fill="#1f2a37"/>
+  <line x1="790" y1="200" x2="790" y2="170" stroke="#1f2a37" stroke-width="2"/>
+  <rect x="780" y="140" width="20" height="30" fill="#fffaeb" stroke="#b54708"/>
+  <text x="820" y="160" font-size="10" fill="#1f2a37">SET coil ← +12V_PROT (C1 fuse)</text>
+  <line x1="790" y1="210" x2="790" y2="240" stroke="#1f2a37" stroke-width="2"/>
+  <text x="790" y="256" text-anchor="middle" font-size="9" fill="#6b7280">GND</text>
+  <text x="632" y="290" font-size="11" fill="#1f2a37">Same stage again for RESET. Driver part and R values: TBD in S4.</text>
+  <text x="632" y="312" font-size="11" fill="#1f2a37">10 s unlock timer and the unlock logic run on the M4 (safety-node); 0x120</text>
+  <text x="632" y="328" font-size="11" fill="#1f2a37">lock request from rt-core is QM, never a safety input.</text>
+
+  <!-- rules -->
+  <rect x="30" y="360" width="950" height="108" rx="6" fill="#f8fafc" stroke="#1f2a37"/>
+  <text x="42" y="380" font-weight="600" fill="#1f2a37">Fail state and the rules the drawing must keep</text>
+  <g font-size="11" fill="#1f2a37">
+    <text x="42" y="400">• Latching relay keeps its position when C1 or the M4 loses power. An M4 boot never pulses SET. Pins floating in reset cannot drive a coil (pull-downs).</text>
+    <text x="42" y="416">• It sits only in the starter-relay COIL line, so it can never stop a running engine. Default state unlocked; 10 s timeout to unlock; a missing 0x120 frame changes nothing.</text>
+    <text x="42" y="432">• A dead M4 while LOCKED or AUTH_PENDING needs the hidden bypass (the timer cannot run without the M4).</text>
+    <text x="42" y="448">• HIL checks still open: M4 halted in LOCKED / AUTH_PENDING (relay holds, bypass works, no SET at next boot); 6 V cold-crank dip. Code change → safety-reviewer (invariant 8).</text>
+  </g>
+</svg>

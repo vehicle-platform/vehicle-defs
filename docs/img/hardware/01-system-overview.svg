@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" role="img" aria-label="System overview: the CL250 ECU on the vehicle CAN with one read-only tester, the STM32H755 with M7 rt-core and M4 safety partition joined by a mailbox, the platform CAN with the bike ESP32 and the Raspberry Pi 5, BLE to the phone and helmet, and the laptop server">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#1f2a37"/></marker>
+  </defs>
+  <rect width="1000" height="560" fill="#ffffff"/>
+  <text x="20" y="28" font-size="16" font-weight="600" fill="#1f2a37">Fig. 1 — System overview (target build, D-072 / D-073 / D-082)</text>
+  <text x="20" y="46" fill="#6b7280">Solid = CAN · dashed = radio · dotted = USB/laptop. Bus rules: ARCHITECTURE §3. Vehicle bus: one tester, it only reads (D-037).</text>
+
+  <!-- Vehicle CAN -->
+  <line x1="40" y1="110" x2="960" y2="110" stroke="#067647" stroke-width="4"/>
+  <text x="40" y="98" fill="#067647" font-weight="600">VEHICLE CAN — CL250 OEM bus, 500 kbps classic, 29-bit UDS 0x18DA10F1 → 0x18DAF110 (D-019). Terminated by the OEM at both ends; we add none.</text>
+  <rect x="60" y="130" width="150" height="54" rx="4" fill="#ecfdf3" stroke="#067647"/>
+  <text x="135" y="152" text-anchor="middle" font-weight="600" fill="#1f2a37">CL250 ECU</text>
+  <text x="135" y="170" text-anchor="middle" fill="#6b7280">answers 0x22 reads only</text>
+  <line x1="135" y1="110" x2="135" y2="130" stroke="#067647" stroke-width="2"/>
+  <rect x="250" y="130" width="110" height="54" rx="4" fill="#f9fafb" stroke="#6b7280"/>
+  <text x="305" y="152" text-anchor="middle" font-weight="600" fill="#1f2a37">DLC Y-cable</text>
+  <text x="305" y="170" text-anchor="middle" fill="#6b7280">stub &lt; 50 cm</text>
+  <line x1="305" y1="110" x2="305" y2="130" stroke="#067647" stroke-width="2"/>
+
+  <!-- H755 -->
+  <rect x="250" y="220" width="420" height="150" rx="6" fill="#f8fafc" stroke="#1f2a37" stroke-width="1.5"/>
+  <text x="262" y="240" font-weight="600" fill="#1f2a37">STM32H755 — NUCLEO-H745ZI-Q (D-094), Main Box 170×120×55</text>
+  <rect x="268" y="256" width="170" height="96" rx="4" fill="#eff6ff" stroke="#175cd3"/>
+  <text x="353" y="276" text-anchor="middle" font-weight="600" fill="#175cd3">Cortex-M7 · rt-core</text>
+  <text x="353" y="294" text-anchor="middle" fill="#1f2a37">FDCAN1 tester · FDCAN2</text>
+  <text x="353" y="310" text-anchor="middle" fill="#1f2a37">SDMMC log · GPS · ADC 1 kHz</text>
+  <text x="353" y="326" text-anchor="middle" fill="#1f2a37">EKF lean · derived · DTC</text>
+  <text x="353" y="342" text-anchor="middle" fill="#6b7280">ports A B C D H</text>
+  <rect x="482" y="256" width="170" height="96" rx="4" fill="#fef3f2" stroke="#b42318"/>
+  <text x="567" y="276" text-anchor="middle" font-weight="600" fill="#b42318">Cortex-M4 · safety partition</text>
+  <text x="567" y="294" text-anchor="middle" fill="#1f2a37">cornering · blind spot</text>
+  <text x="567" y="310" text-anchor="middle" fill="#1f2a37">own IMU (SPI4) · 2 radars</text>
+  <text x="567" y="326" text-anchor="middle" fill="#1f2a37">LED rings · immobilizer</text>
+  <text x="567" y="342" text-anchor="middle" fill="#6b7280">ports E F G · no CAN</text>
+  <line x1="438" y1="304" x2="482" y2="304" stroke="#1f2a37" stroke-width="1.5" marker-start="url(#a)" marker-end="url(#a)"/>
+  <text x="460" y="296" text-anchor="middle" font-size="10" fill="#1f2a37">mailbox</text>
+  <text x="460" y="320" text-anchor="middle" font-size="10" fill="#6b7280">SRAM4+HSEM, E2E</text>
+  <line x1="305" y1="184" x2="305" y2="220" stroke="#067647" stroke-width="2" marker-end="url(#a)"/>
+  <text x="312" y="206" font-size="11" fill="#067647">FDCAN1 (only tester, D-021)</text>
+
+  <!-- Platform CAN -->
+  <line x1="40" y1="430" x2="960" y2="430" stroke="#175cd3" stroke-width="4"/>
+  <text x="40" y="452" fill="#175cd3" font-weight="600">PLATFORM CAN — ours, 500 kbps classic, 11-bit, 120 Ω at both physical ends (D-009). 0x020/0x022 lean+µ, 0x021 speed, 0x023/0x082 M4 status, 0x081 heartbeat, 0x110 vehicle signals, 0x120 QM requests.</text>
+  <line x1="353" y1="370" x2="353" y2="430" stroke="#175cd3" stroke-width="2" marker-end="url(#a)"/>
+  <text x="360" y="400" font-size="11" fill="#175cd3">FDCAN2</text>
+
+  <!-- Raspi -->
+  <rect x="740" y="220" width="200" height="150" rx="6" fill="#f8fafc" stroke="#1f2a37" stroke-width="1.5"/>
+  <text x="840" y="242" text-anchor="middle" font-weight="600" fill="#1f2a37">Raspberry Pi 5 · linux-node</text>
+  <text x="840" y="262" text-anchor="middle" fill="#1f2a37">Kuksa databroker · CAN→VSS</text>
+  <text x="840" y="280" text-anchor="middle" fill="#1f2a37">LDW camera · black box</text>
+  <text x="840" y="298" text-anchor="middle" fill="#1f2a37">vehicle-server (edge) · MCP</text>
+  <text x="840" y="320" text-anchor="middle" fill="#6b7280">own box 170×120×55, HCW-P715 5 A</text>
+  <text x="840" y="338" text-anchor="middle" fill="#6b7280">can1 MCP2515 · can0 optional tap</text>
+  <line x1="800" y1="370" x2="800" y2="430" stroke="#175cd3" stroke-width="2" marker-end="url(#a)"/>
+  <text x="806" y="400" font-size="11" fill="#175cd3">can1</text>
+  <line x1="900" y1="110" x2="900" y2="220" stroke="#067647" stroke-width="2" stroke-dasharray="2 4" marker-end="url(#a)"/>
+  <text x="906" y="170" font-size="11" fill="#067647">can0 listen-only</text>
+  <text x="906" y="184" font-size="11" fill="#067647">(optional, never TX)</text>
+
+  <!-- ESP32 conn -->
+  <rect x="60" y="470" width="190" height="70" rx="6" fill="#f8fafc" stroke="#1f2a37" stroke-width="1.5"/>
+  <text x="155" y="492" text-anchor="middle" font-weight="600" fill="#1f2a37">ESP32-S3 · bike conn</text>
+  <text x="155" y="510" text-anchor="middle" fill="#1f2a37">BLE · Wi-Fi · own SN65HVD230</text>
+  <text x="155" y="528" text-anchor="middle" fill="#6b7280">no-tester env once rt-core runs</text>
+  <line x1="155" y1="430" x2="155" y2="470" stroke="#175cd3" stroke-width="2" marker-end="url(#a)"/>
+
+  <!-- Phone / helmet / laptop -->
+  <rect x="330" y="470" width="130" height="70" rx="6" fill="#f9fafb" stroke="#6b7280"/>
+  <text x="395" y="492" text-anchor="middle" font-weight="600" fill="#1f2a37">Phone</text>
+  <text x="395" y="510" text-anchor="middle" fill="#1f2a37">vehicle-mobile</text>
+  <text x="395" y="528" text-anchor="middle" fill="#6b7280">session zip → server</text>
+  <line x1="250" y1="505" x2="330" y2="505" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#a)"/>
+  <text x="290" y="498" text-anchor="middle" font-size="10" fill="#6b7280">BLE</text>
+  <rect x="520" y="470" width="150" height="70" rx="6" fill="#f9fafb" stroke="#6b7280"/>
+  <text x="595" y="492" text-anchor="middle" font-weight="600" fill="#1f2a37">Helmet ESP32-S3</text>
+  <text x="595" y="510" text-anchor="middle" fill="#1f2a37">HUD · mic · voice (D-073)</text>
+  <text x="595" y="528" text-anchor="middle" fill="#6b7280">LiPo + TP4056</text>
+  <path d="M250 480 C 300 455, 470 455, 520 480" fill="none" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#a)"/>
+  <text x="385" y="462" text-anchor="middle" font-size="10" fill="#6b7280">BLE</text>
+  <rect x="740" y="470" width="200" height="70" rx="6" fill="#f9fafb" stroke="#6b7280"/>
+  <text x="840" y="492" text-anchor="middle" font-weight="600" fill="#1f2a37">Laptop / remote (D-077)</text>
+  <text x="840" y="510" text-anchor="middle" fill="#1f2a37">vehicle-server · analyzer · ML</text>
+  <text x="840" y="528" text-anchor="middle" fill="#6b7280">ride data never in a repo (D-033)</text>
+  <line x1="460" y1="505" x2="740" y2="505" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="2 4" marker-end="url(#a)"/>
+  <text x="600" y="555" text-anchor="middle" font-size="10" fill="#6b7280">Wi-Fi / HTTP upload (local server only while D-063 holds)</text>
+</svg>

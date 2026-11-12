@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 540" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" role="img" aria-label="Phase 0 wiring: the ESP32-S3 DevKitC-1 with the SN65HVD230 on GPIO4 and 5 to the DLC Y-cable, the MPU-6500 on I2C GPIO6 and 7, the NEO-M8N on UART1 GPIO15 and 16 pending confirmation, GPIO8 as the loop pulse test point, the power chain into the 5 V pin, and BLE to the phone">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#1f2a37"/></marker>
+  </defs>
+  <rect width="1000" height="540" fill="#ffffff"/>
+  <text x="20" y="28" font-size="16" font-weight="600" fill="#1f2a37">Fig. 8 — Phase 0 data-collection unit (ESP32-S3, today's build; HI §1, §3; SCHEMATIC §3)</text>
+  <text x="20" y="46" fill="#6b7280">Pins are the ones in conn `src/main.cpp`. GPS pins are CONFIRM until §7.3 passes. One 5×7 cm perfboard, ESP32 + transceiver socketed, in an IP65 box with 2 glands.</text>
+
+  <!-- ESP32 -->
+  <rect x="380" y="120" width="240" height="300" rx="6" fill="#f8fafc" stroke="#1f2a37" stroke-width="2"/>
+  <text x="500" y="144" text-anchor="middle" font-weight="600" fill="#1f2a37">ESP32-S3 DevKitC-1 (N16R8)</text>
+  <text x="500" y="160" text-anchor="middle" font-size="11" fill="#6b7280">conn firmware, temporary sole tester (D-023)</text>
+  <g font-size="11" fill="#1f2a37">
+    <text x="392" y="196">GPIO4 TWAI TX</text>
+    <text x="392" y="216">GPIO5 TWAI RX</text>
+    <text x="392" y="256">GPIO7 SDA</text>
+    <text x="392" y="276">GPIO6 SCL</text>
+    <text x="392" y="316">GPIO15 UART1 RX</text>
+    <text x="392" y="336">GPIO16 UART1 TX</text>
+    <text x="392" y="376">GPIO8 loop pulse</text>
+    <text x="392" y="404">GPIO17/18 UART2 (Nextion, later)</text>
+    <text x="608" y="196" text-anchor="end">5V in</text>
+    <text x="608" y="216" text-anchor="end">3V3 out</text>
+    <text x="608" y="236" text-anchor="end">GND</text>
+    <text x="608" y="300" text-anchor="end">BLE</text>
+    <text x="608" y="316" text-anchor="end">"Honda-CL250-Telemetry"</text>
+    <text x="608" y="360" text-anchor="end">USB (FT232R)</text>
+    <text x="608" y="376" text-anchor="end">flash + 921600 serial</text>
+  </g>
+
+  <!-- CAN -->
+  <rect x="150" y="176" width="140" height="56" rx="4" fill="#ecfdf3" stroke="#067647" stroke-width="1.5"/>
+  <text x="220" y="198" text-anchor="middle" font-weight="600" fill="#1f2a37">SN65HVD230</text>
+  <text x="220" y="214" text-anchor="middle" font-size="10" fill="#b54708">on-board 120 Ω: remove/open (CONFIRM)</text>
+  <line x1="290" y1="192" x2="380" y2="192" stroke="#067647" stroke-width="2" marker-end="url(#a)"/>
+  <text x="335" y="186" text-anchor="middle" font-size="10" fill="#6b7280">CTX ← TX</text>
+  <line x1="380" y1="212" x2="290" y2="212" stroke="#067647" stroke-width="2" marker-end="url(#a)"/>
+  <text x="335" y="226" text-anchor="middle" font-size="10" fill="#6b7280">CRX → RX</text>
+  <rect x="20" y="166" width="100" height="76" rx="4" fill="#ecfdf3" stroke="#067647"/>
+  <text x="70" y="186" text-anchor="middle" font-weight="600" fill="#1f2a37">DLC Y-cable</text>
+  <text x="70" y="202" text-anchor="middle" font-size="10" fill="#1f2a37">CANH · CANL · GND</text>
+  <text x="70" y="216" text-anchor="middle" font-size="10" fill="#1f2a37">J1962: 6 / 14 / 4+5</text>
+  <text x="70" y="232" text-anchor="middle" font-size="10" fill="#b54708">connector CONFIRM</text>
+  <line x1="120" y1="204" x2="150" y2="204" stroke="#067647" stroke-width="3"/>
+  <text x="135" y="256" text-anchor="middle" font-size="10" fill="#6b7280">twisted, &lt; 50 cm</text>
+
+  <!-- IMU -->
+  <rect x="150" y="246" width="140" height="46" rx="4" fill="#eff6ff" stroke="#175cd3" stroke-width="1.5"/>
+  <text x="220" y="264" text-anchor="middle" font-weight="600" fill="#1f2a37">MPU-6500 (I2C 0x68)</text>
+  <text x="220" y="280" text-anchor="middle" font-size="10" fill="#6b7280">AD0 → GND · 400 kHz · 100 Hz ±8 g ±500 dps</text>
+  <line x1="290" y1="252" x2="380" y2="252" stroke="#175cd3" stroke-width="2" marker-start="url(#a)" marker-end="url(#a)"/>
+  <line x1="380" y1="272" x2="290" y2="272" stroke="#175cd3" stroke-width="2" marker-end="url(#a)"/>
+  <text x="220" y="306" text-anchor="middle" font-size="10" fill="#b54708">solder the header; a pushed-in header lost contact (2026-10-15)</text>
+
+  <!-- GPS -->
+  <rect x="150" y="320" width="140" height="46" rx="4" fill="#f9fafb" stroke="#6b7280" stroke-width="1.5"/>
+  <text x="220" y="338" text-anchor="middle" font-weight="600" fill="#1f2a37">NEO-M8N GPS</text>
+  <text x="220" y="354" text-anchor="middle" font-size="10" fill="#6b7280">UBX NAV-PVT 10 Hz · 3.3 V UART</text>
+  <line x1="290" y1="312" x2="380" y2="312" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+  <text x="335" y="306" text-anchor="middle" font-size="10" fill="#6b7280">module TX →</text>
+  <line x1="380" y1="332" x2="290" y2="332" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+  <text x="335" y="346" text-anchor="middle" font-size="10" fill="#6b7280">← module RX</text>
+  <text x="220" y="384" text-anchor="middle" font-size="10" fill="#b54708">pins CONFIRM (§7.3) · antenna under plastic, clear sky</text>
+  <text x="220" y="398" text-anchor="middle" font-size="10" fill="#6b7280">only speed/heading/accuracy/fix/sv leave the node (D-060)</text>
+
+  <!-- test point -->
+  <circle cx="330" cy="372" r="5" fill="none" stroke="#1f2a37" stroke-width="2"/>
+  <line x1="335" y1="372" x2="380" y2="372" stroke="#1f2a37" stroke-width="1.5"/>
+  <text x="318" y="376" text-anchor="end" font-size="10" fill="#6b7280">TP scope: step time</text>
+
+  <!-- Power chain -->
+  <rect x="660" y="120" width="320" height="130" rx="6" fill="#fffaeb" stroke="#b54708" stroke-width="1.5"/>
+  <text x="820" y="142" text-anchor="middle" font-weight="600" fill="#b54708">Power chain (same as Fig. 2, single rail)</text>
+  <text x="820" y="162" text-anchor="middle" font-size="11" fill="#1f2a37">+12V_IGN → F 2 A → 1N5822 → SMBJ30CA → L1 → 470 µF/50 V</text>
+  <text x="820" y="178" text-anchor="middle" font-size="11" fill="#1f2a37">→ buck (in ≥ 53 V) set to 5.0 V → DevKitC 5V pin</text>
+  <text x="820" y="198" text-anchor="middle" font-size="11" fill="#1f2a37">GND straight to battery negative</text>
+  <text x="820" y="218" text-anchor="middle" font-size="10" fill="#b54708">tap point, fuse holder, TVS, buck, box: all CONFIRM</text>
+  <text x="820" y="236" text-anchor="middle" font-size="10" fill="#6b7280">Gate B1 on a bench supply 12–14 V first</text>
+  <line x1="660" y1="192" x2="620" y2="192" stroke="#b54708" stroke-width="3" marker-end="url(#a)"/>
+
+  <!-- phone -->
+  <rect x="700" y="280" width="120" height="60" rx="6" fill="#f9fafb" stroke="#6b7280"/>
+  <text x="760" y="302" text-anchor="middle" font-weight="600" fill="#1f2a37">Phone</text>
+  <text x="760" y="318" text-anchor="middle" font-size="10" fill="#1f2a37">vehicle-mobile APK</text>
+  <text x="760" y="332" text-anchor="middle" font-size="10" fill="#6b7280">bonded for the gps block</text>
+  <line x1="620" y1="306" x2="700" y2="306" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#a)"/>
+  <rect x="860" y="280" width="120" height="60" rx="6" fill="#f9fafb" stroke="#6b7280"/>
+  <text x="920" y="302" text-anchor="middle" font-weight="600" fill="#1f2a37">Laptop</text>
+  <text x="920" y="318" text-anchor="middle" font-size="10" fill="#1f2a37">vehicle-server import</text>
+  <text x="920" y="332" text-anchor="middle" font-size="10" fill="#6b7280">report · bringup --gate</text>
+  <line x1="820" y1="310" x2="860" y2="310" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="2 4" marker-end="url(#a)"/>
+  <text x="840" y="358" text-anchor="middle" font-size="10" fill="#6b7280">session zip (local server only, D-063)</text>
+
+  <!-- what the tester does -->
+  <rect x="20" y="430" width="960" height="96" rx="6" fill="#f8fafc" stroke="#1f2a37"/>
+  <text x="32" y="450" font-weight="600" fill="#1f2a37">What this unit does on its own (no setting to change)</text>
+  <g font-size="11" fill="#1f2a37">
+    <text x="32" y="470">• Listens only for 2 s of clean traffic after boot (no lost frames, no other tester, no unsolicited ECU answer) before the first request.</text>
+    <text x="32" y="486">• Sends only what `tester_policy` allows through `vehicle_cl250_frame_allowed()` (D-020); latches off on a foreign tester or repeated bus-off until the next power cycle.</text>
+    <text x="32" y="502">• Envs: `esp32-s3-devkitc-1` tester · `-listen-only` (no TX at all, Q-001 capture) · `-probe` (D-059 discovery, VIN never committed) · `-gps` · `-mock` · later `-no-tester` once rt-core is the tester.</text>
+    <text x="32" y="518">• No on-vehicle storage: BLE gaps are accepted and shown in the server report (D-045).</text>
+  </g>
+</svg>
