@@ -8437,6 +8437,308 @@
             "description": "State of the lean angle estimate. There is no default lean angle (D-029).",
             "type": "sensor"
           },
+          "Nodes": {
+            "children": {
+              "Conn": {
+                "children": {
+                  "ErrorCount": {
+                    "datatype": "uint8",
+                    "dbc2vss": {
+                      "interval_ms": 100,
+                      "signal": "CONN_ERROR_COUNT"
+                    },
+                    "description": "Faults detected by the CONN node since boot; saturates at 255. Display only, not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).",
+                    "max": 255,
+                    "min": 0,
+                    "type": "sensor"
+                  },
+                  "Mode": {
+                    "allowed": [
+                      "INIT",
+                      "NORMAL",
+                      "DEGRADED",
+                      "SAFE_STATE",
+                      "BOOTLOADER",
+                      "DIAGNOSTIC"
+                    ],
+                    "datatype": "string",
+                    "dbc2vss": {
+                      "interval_ms": 100,
+                      "signal": "CONN_NODE_MODE",
+                      "transform": {
+                        "mapping": [
+                          {
+                            "from": "INIT",
+                            "to": "INIT"
+                          },
+                          {
+                            "from": "NORMAL",
+                            "to": "NORMAL"
+                          },
+                          {
+                            "from": "DEGRADED",
+                            "to": "DEGRADED"
+                          },
+                          {
+                            "from": "SAFE_STATE",
+                            "to": "SAFE_STATE"
+                          },
+                          {
+                            "from": "BOOTLOADER",
+                            "to": "BOOTLOADER"
+                          },
+                          {
+                            "from": "DIAGNOSTIC",
+                            "to": "DIAGNOSTIC"
+                          }
+                        ]
+                      }
+                    },
+                    "description": "Node mode from the CONN heartbeat (CONN_NODE_MODE). Display only, not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).",
+                    "type": "sensor"
+                  },
+                  "UptimeSeconds": {
+                    "datatype": "uint16",
+                    "dbc2vss": {
+                      "interval_ms": 100,
+                      "signal": "CONN_UPTIME"
+                    },
+                    "description": "Seconds since the CONN node booted; saturates at 65535. A decrease means the node restarted. Display only, not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).",
+                    "max": 65535,
+                    "min": 0,
+                    "type": "sensor",
+                    "unit": "s"
+                  }
+                },
+                "description": "Heartbeat of the CONN node.",
+                "type": "branch"
+              },
+              "Linux": {
+                "children": {
+                  "ErrorCount": {
+                    "datatype": "uint8",
+                    "dbc2vss": {
+                      "interval_ms": 100,
+                      "signal": "LINUX_ERROR_COUNT"
+                    },
+                    "description": "Faults detected by the LINUX node since boot; saturates at 255. Display only, not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).",
+                    "max": 255,
+                    "min": 0,
+                    "type": "sensor"
+                  },
+                  "Mode": {
+                    "allowed": [
+                      "INIT",
+                      "NORMAL",
+                      "DEGRADED",
+                      "SAFE_STATE",
+                      "BOOTLOADER",
+                      "DIAGNOSTIC"
+                    ],
+                    "datatype": "string",
+                    "dbc2vss": {
+                      "interval_ms": 100,
+                      "signal": "LINUX_NODE_MODE",
+                      "transform": {
+                        "mapping": [
+                          {
+                            "from": "INIT",
+                            "to": "INIT"
+                          },
+                          {
+                            "from": "NORMAL",
+                            "to": "NORMAL"
+                          },
+                          {
+                            "from": "DEGRADED",
+                            "to": "DEGRADED"
+                          },
+                          {
+                            "from": "SAFE_STATE",
+                            "to": "SAFE_STATE"
+                          },
+                          {
+                            "from": "BOOTLOADER",
+                            "to": "BOOTLOADER"
+                          },
+                          {
+                            "from": "DIAGNOSTIC",
+                            "to": "DIAGNOSTIC"
+                          }
+                        ]
+                      }
+                    },
+                    "description": "Node mode from the LINUX heartbeat (LINUX_NODE_MODE). Display only, not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).",
+                    "type": "sensor"
+                  },
+                  "UptimeSeconds": {
+                    "datatype": "uint16",
+                    "dbc2vss": {
+                      "interval_ms": 100,
+                      "signal": "LINUX_UPTIME"
+                    },
+                    "description": "Seconds since the LINUX node booted; saturates at 65535. A decrease means the node restarted. Display only, not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).",
+                    "max": 65535,
+                    "min": 0,
+                    "type": "sensor",
+                    "unit": "s"
+                  }
+                },
+                "description": "Heartbeat of the LINUX node.",
+                "type": "branch"
+              },
+              "RtCore": {
+                "children": {
+                  "ErrorCount": {
+                    "datatype": "uint8",
+                    "dbc2vss": {
+                      "interval_ms": 100,
+                      "signal": "RT_CORE_ERROR_COUNT"
+                    },
+                    "description": "Faults detected by the RT_CORE node since boot; saturates at 255. Display only, not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).",
+                    "max": 255,
+                    "min": 0,
+                    "type": "sensor"
+                  },
+                  "Mode": {
+                    "allowed": [
+                      "INIT",
+                      "NORMAL",
+                      "DEGRADED",
+                      "SAFE_STATE",
+                      "BOOTLOADER",
+                      "DIAGNOSTIC"
+                    ],
+                    "datatype": "string",
+                    "dbc2vss": {
+                      "interval_ms": 100,
+                      "signal": "RT_CORE_NODE_MODE",
+                      "transform": {
+                        "mapping": [
+                          {
+                            "from": "INIT",
+                            "to": "INIT"
+                          },
+                          {
+                            "from": "NORMAL",
+                            "to": "NORMAL"
+                          },
+                          {
+                            "from": "DEGRADED",
+                            "to": "DEGRADED"
+                          },
+                          {
+                            "from": "SAFE_STATE",
+                            "to": "SAFE_STATE"
+                          },
+                          {
+                            "from": "BOOTLOADER",
+                            "to": "BOOTLOADER"
+                          },
+                          {
+                            "from": "DIAGNOSTIC",
+                            "to": "DIAGNOSTIC"
+                          }
+                        ]
+                      }
+                    },
+                    "description": "Node mode from the RT_CORE heartbeat (RT_CORE_NODE_MODE). Display only, not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).",
+                    "type": "sensor"
+                  },
+                  "UptimeSeconds": {
+                    "datatype": "uint16",
+                    "dbc2vss": {
+                      "interval_ms": 100,
+                      "signal": "RT_CORE_UPTIME"
+                    },
+                    "description": "Seconds since the RT_CORE node booted; saturates at 65535. A decrease means the node restarted. Display only, not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).",
+                    "max": 65535,
+                    "min": 0,
+                    "type": "sensor",
+                    "unit": "s"
+                  }
+                },
+                "description": "Heartbeat of the RT_CORE node.",
+                "type": "branch"
+              },
+              "Safety": {
+                "children": {
+                  "ErrorCount": {
+                    "datatype": "uint8",
+                    "dbc2vss": {
+                      "interval_ms": 100,
+                      "signal": "SAFETY_ERROR_COUNT"
+                    },
+                    "description": "Faults detected by the SAFETY node since boot; saturates at 255. Display only, not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).",
+                    "max": 255,
+                    "min": 0,
+                    "type": "sensor"
+                  },
+                  "Mode": {
+                    "allowed": [
+                      "INIT",
+                      "NORMAL",
+                      "DEGRADED",
+                      "SAFE_STATE",
+                      "BOOTLOADER",
+                      "DIAGNOSTIC"
+                    ],
+                    "datatype": "string",
+                    "dbc2vss": {
+                      "interval_ms": 100,
+                      "signal": "SAFETY_NODE_MODE",
+                      "transform": {
+                        "mapping": [
+                          {
+                            "from": "INIT",
+                            "to": "INIT"
+                          },
+                          {
+                            "from": "NORMAL",
+                            "to": "NORMAL"
+                          },
+                          {
+                            "from": "DEGRADED",
+                            "to": "DEGRADED"
+                          },
+                          {
+                            "from": "SAFE_STATE",
+                            "to": "SAFE_STATE"
+                          },
+                          {
+                            "from": "BOOTLOADER",
+                            "to": "BOOTLOADER"
+                          },
+                          {
+                            "from": "DIAGNOSTIC",
+                            "to": "DIAGNOSTIC"
+                          }
+                        ]
+                      }
+                    },
+                    "description": "Node mode from the SAFETY heartbeat (SAFETY_NODE_MODE). Display only, not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).",
+                    "type": "sensor"
+                  },
+                  "UptimeSeconds": {
+                    "datatype": "uint16",
+                    "dbc2vss": {
+                      "interval_ms": 100,
+                      "signal": "SAFETY_UPTIME"
+                    },
+                    "description": "Seconds since the SAFETY node booted; saturates at 65535. A decrease means the node restarted. Display only, not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).",
+                    "max": 65535,
+                    "min": 0,
+                    "type": "sensor",
+                    "unit": "s"
+                  }
+                },
+                "description": "Heartbeat of the SAFETY node.",
+                "type": "branch"
+              }
+            },
+            "description": "Health of the platform-bus nodes, from their heartbeats 0x081-0x085 (D-108, provisional).",
+            "type": "branch"
+          },
           "ThrottlePosition": {
             "datatype": "float",
             "dbc2vss": {
@@ -8448,6 +8750,96 @@
             "min": 0,
             "type": "sensor",
             "unit": "percent"
+          },
+          "Validity": {
+            "children": {
+              "BatteryVoltage": {
+                "datatype": "boolean",
+                "dbc2vss": {
+                  "interval_ms": 50,
+                  "signal": "BATTERY_VOLTAGE_VALID",
+                  "transform": {
+                    "mapping": [
+                      {
+                        "from": "INVALID",
+                        "to": false
+                      },
+                      {
+                        "from": "VALID",
+                        "to": true
+                      }
+                    ]
+                  }
+                },
+                "description": "True if BATTERY_VOLTAGE holds a valid ECU sample (DBC BATTERY_VOLTAGE_VALID). Display only, not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).",
+                "type": "sensor"
+              },
+              "CoolantTemp": {
+                "datatype": "boolean",
+                "dbc2vss": {
+                  "interval_ms": 50,
+                  "signal": "COOLANT_TEMP_VALID",
+                  "transform": {
+                    "mapping": [
+                      {
+                        "from": "INVALID",
+                        "to": false
+                      },
+                      {
+                        "from": "VALID",
+                        "to": true
+                      }
+                    ]
+                  }
+                },
+                "description": "True if COOLANT_TEMP holds a valid ECU sample (DBC COOLANT_TEMP_VALID). Display only, not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).",
+                "type": "sensor"
+              },
+              "EngineSpeed": {
+                "datatype": "boolean",
+                "dbc2vss": {
+                  "interval_ms": 50,
+                  "signal": "ENGINE_SPEED_VALID",
+                  "transform": {
+                    "mapping": [
+                      {
+                        "from": "INVALID",
+                        "to": false
+                      },
+                      {
+                        "from": "VALID",
+                        "to": true
+                      }
+                    ]
+                  }
+                },
+                "description": "True if ENGINE_SPEED holds a valid ECU sample (DBC ENGINE_SPEED_VALID). Display only, not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).",
+                "type": "sensor"
+              },
+              "ThrottlePosition": {
+                "datatype": "boolean",
+                "dbc2vss": {
+                  "interval_ms": 50,
+                  "signal": "THROTTLE_POS_VALID",
+                  "transform": {
+                    "mapping": [
+                      {
+                        "from": "INVALID",
+                        "to": false
+                      },
+                      {
+                        "from": "VALID",
+                        "to": true
+                      }
+                    ]
+                  }
+                },
+                "description": "True if THROTTLE_POS holds a valid ECU sample (DBC THROTTLE_POS_VALID). Display only, not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).",
+                "type": "sensor"
+              }
+            },
+            "description": "Validity bits of the rt-core VehicleEngine frame (D-108, provisional). kuksa-can-provider cannot gate a value on them, so each is its own leaf; consumers that care read both.",
+            "type": "branch"
           }
         },
         "description": "Motorcycle-specific signals (vehicle-platform extension, D-028).",

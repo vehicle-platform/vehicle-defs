@@ -37,7 +37,7 @@
 
 /* CRC-32 of the resolved layout (gen_mailbox.layout_id()): each core writes its own
  * header word at boot, and a reader takes no frame while the peer's word differs. */
-#define PLATFORM_MAILBOX_LAYOUT_ID (0x61F4B364u)
+#define PLATFORM_MAILBOX_LAYOUT_ID (0x9B315454u)
 
 /* Direction and class codes of the slot macros below. */
 #define PLATFORM_MAILBOX_DIR_M7_TO_M4 (1u)
