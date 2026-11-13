@@ -1,0 +1,61 @@
+# Platform bus E2E and heartbeats.
+# Schema: requirements/schema.yaml. Location per D-113 (provisional).
+
+domain: platform_bus
+requirements:
+  - id: REQ-PLATFORM_BUS-001
+    text: "Every platform message in the safety range 0x010-0x08F shall carry E2E protection."
+    type: TSR
+    derives_from: [SG-007, D-005]
+    allocated_to: "vehicle-defs tools/codegen"
+    verification: "host test"
+    status: implemented
+    tests: ["tools/codegen/tests/test_e2e.py::test_safety_range_requires_e2e"]
+  - id: REQ-PLATFORM_BUS-002
+    text: "The E2E receiver shall use CRC-8 J1850 and a 4-bit counter, max delta 1 and timeout 3 x cycle, and shall treat INITIAL as not usable."
+    type: TSR
+    derives_from: [SG-007, D-026]
+    allocated_to: "vehicle-defs gen/c (generated E2E)"
+    verification: "host test"
+    status: implemented
+    tests: ["tools/codegen/tests/test_e2e.py::test_happy_path_then_repeated_then_timeout"]
+  - id: REQ-PLATFORM_BUS-003
+    text: "Every value table of an E2E message shall make raw 0 mean no information, so a zeroed field reads as unavailable, never GREEN, CLEAR or UNLOCKED."
+    type: TSR
+    derives_from: [SG-002, D-072]
+    allocated_to: "vehicle-defs tools/codegen"
+    verification: "host test"
+    status: implemented
+    tests: []
+  - id: REQ-PLATFORM_BUS-004
+    text: "The rt-core heartbeat 0x081 shall report NODE_MODE DEGRADED while a heartbeat-class DTC is active, the vehicle tester is latched or the EKF is stalled."
+    type: TSR
+    derives_from: [SG-002, D-064, D-065]
+    allocated_to: "vehicle-rt-core src/features/heartbeat"
+    verification: "host test"
+    status: implemented
+    tests: ["test_heartbeat_core.c::test_any_single_fault_condition_degrades"]
+  - id: REQ-PLATFORM_BUS-005
+    text: "The safety-node heartbeat 0x082 shall report DEGRADED whenever the cornering source is not the rt-core lean or an own fault occurred, and shall never name rt-core as the cause."
+    type: TSR
+    derives_from: [SG-002, D-101]
+    allocated_to: "vehicle-safety-node src/app/node_health_core.c"
+    verification: "host test"
+    status: implemented
+    tests: ["test_safety_app.c::test_boot_init_degraded_then_normal", "test_safety_app.c::test_rt_core_inputs_lost_is_not_an_own_fault"]
+  - id: REQ-PLATFORM_BUS-006
+    text: "rt-core shall forward 0x023 and 0x082 verbatim, never recompute their counter or CRC, and stop forwarding when the slot is not updated."
+    type: TSR
+    derives_from: [SG-007, D-072]
+    allocated_to: "vehicle-rt-core src/features/comms (mailbox forwarding)"
+    verification: "host test"
+    status: implemented
+    tests: ["test_comms_mailbox.c::test_the_m4_gets_exactly_the_committed_frames_and_its_own_reach_the_bus_verbatim"]
+  - id: REQ-PLATFORM_BUS-007
+    text: "A release rt-core image shall fill 0x120 from its own state only, never from a frame received on the platform bus."
+    type: constraint
+    derives_from: [SG-008, D-072]
+    allocated_to: "vehicle-rt-core src/features/comms"
+    verification: review
+    status: planned
+    tests: []

@@ -1,0 +1,101 @@
+# Cornering warning and LED ring output (safety-node, M4).
+# Schema: requirements/schema.yaml. Location per D-113 (provisional).
+
+domain: cornering
+requirements:
+  - id: REQ-CORNERING-001
+    text: "The cornering decision shall output GREEN only if sin|theta| < k_yellow * mu_eff * cos|theta|, and YELLOW only if sin|theta| < k_red * mu_eff * cos|theta|, otherwise RED."
+    type: FSR
+    derives_from: [SG-001, D-041, D-100]
+    allocated_to: "vehicle-safety-node src/features/cornering/cornering_core.c"
+    verification: "host test"
+    status: implemented
+    tests: ["test_cornering_core.c::test_decision_levels"]
+  - id: REQ-CORNERING-002
+    text: "The cornering decision shall output RED for any non-finite intermediate value."
+    type: TSR
+    derives_from: [SG-001, D-041]
+    allocated_to: "vehicle-safety-node src/features/cornering/cornering_core.c"
+    verification: "host test"
+    status: implemented
+    tests: ["test_cornering_core.c::test_decision_non_finite_is_red"]
+  - id: REQ-CORNERING-003
+    text: "The cornering decision shall treat 0x020 as usable only if its E2E status is OK, LEAN_ANGLE_STATE is ESTIMATED or CLAMPED, the raw value is in the DBC range and the angle is finite."
+    type: TSR
+    derives_from: [SG-002, D-041, D-026]
+    allocated_to: "vehicle-safety-node src/features/cornering/cornering_core.c"
+    verification: "host test"
+    status: implemented
+    tests: ["test_cornering_core.c::test_lean_states", "test_cornering_core.c::test_lean_dbc_range"]
+  - id: REQ-CORNERING-004
+    text: "The cornering decision shall treat an ESTIMATED lean above the clamp, or a CLAMPED lean below the clamp minus one 0.01 degree step, as not usable."
+    type: TSR
+    derives_from: [SG-002, D-075]
+    allocated_to: "vehicle-safety-node src/features/cornering/cornering_core.c"
+    verification: "host test"
+    status: implemented
+    tests: ["test_cornering_core.c::test_q029_clamp_check"]
+  - id: REQ-CORNERING-005
+    text: "While 0x022 is not usable, mu_eff shall be at most min(the last valid D-029 result, friction_coeff_default), and never higher."
+    type: TSR
+    derives_from: [SG-001, D-101, D-029]
+    allocated_to: "vehicle-safety-node src/features/cornering/cornering_core.c"
+    verification: "host test"
+    status: implemented
+    tests: ["test_cornering_core.c::test_mu_lost_never_raises"]
+  - id: REQ-CORNERING-006
+    text: "When no lean source is usable the cornering output shall be UNAVAILABLE with source NONE, never GREEN."
+    type: FSR
+    derives_from: [SG-002, D-042, D-100]
+    allocated_to: "vehicle-safety-node src/features/cornering/cornering.c"
+    verification: "host test"
+    status: implemented
+    tests: ["test_cornering.c::test_boot_is_unavailable_until_ten_usable_frames", "test_cornering.c::test_lean_timeout_is_unavailable_and_named_inputs_lost"]
+  - id: REQ-CORNERING-007
+    text: "The source shall drop from the rt-core lean to NONE on the first not-usable 0x020, on a 0x020 timeout, or on a heartbeat that is not E2E OK and NORMAL."
+    type: TSR
+    derives_from: [SG-002, D-042, D-101]
+    allocated_to: "vehicle-safety-node src/features/cornering/cornering_core.c"
+    verification: "host test"
+    status: implemented
+    tests: ["test_cornering_core.c::test_select_drops_at_once", "test_cornering.c::test_heartbeat_not_normal_drops"]
+  - id: REQ-CORNERING-008
+    text: "The source shall return to the rt-core lean only after 10 consecutive usable 0x020 frames received while the heartbeat is OK and NORMAL, boot included."
+    type: TSR
+    derives_from: [SG-002, D-101, D-075]
+    allocated_to: "vehicle-safety-node src/features/cornering/cornering_core.c"
+    verification: "host test"
+    status: implemented
+    tests: ["test_cornering_core.c::test_select_return_needs_ten_frames"]
+  - id: REQ-CORNERING-009
+    text: "A more severe level shall be taken at once; a less severe level only after u stayed 0.05 below the lower threshold for 100 ms on the M4 timebase."
+    type: TSR
+    derives_from: [SG-001, D-100]
+    allocated_to: "vehicle-safety-node src/features/cornering/cornering_core.c"
+    verification: "host test"
+    status: implemented
+    tests: ["test_cornering_core.c::test_hyst_first_and_escalation", "test_cornering_core.c::test_hyst_red_to_yellow_after_hold"]
+  - id: REQ-CORNERING-010
+    text: "The own-IMU fallback estimate shall never show GREEN before it is validated on HIL and in T4."
+    type: FSR
+    derives_from: [SG-002, D-075, D-100]
+    allocated_to: "vehicle-safety-node src/features/cornering (own-IMU estimator, not written yet)"
+    verification: HIL
+    status: planned
+    tests: []
+  - id: REQ-CORNERING-011
+    text: "The LED ring shall show GREEN only with a moving alive pixel or behind a hardware dead-man kept alive by the M4, so that a dark or frozen ring means no warning available."
+    type: FSR
+    derives_from: [SG-006, D-072]
+    allocated_to: "vehicle-safety-node LED ring driver (with the board)"
+    verification: HIL
+    status: planned
+    tests: []
+  - id: REQ-CORNERING-012
+    text: "The LED ring and the warning output shall be driven by the safety partition only, never by rt-core."
+    type: constraint
+    derives_from: [SG-008, D-041, D-072]
+    allocated_to: "vehicle-safety-node src/app/safety_app.c"
+    verification: review
+    status: implemented
+    tests: []

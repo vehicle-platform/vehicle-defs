@@ -1,0 +1,53 @@
+# Immobilizer (safety-node, M4; no code yet).
+# Schema: requirements/schema.yaml. Location per D-113 (provisional).
+
+domain: immobilizer
+requirements:
+  - id: REQ-IMMOBILIZER-001
+    text: "The immobilizer shall act only on the starter-relay coil circuit and shall never be able to stop a running engine."
+    type: constraint
+    derives_from: [SG-004, invariant-6, D-082]
+    allocated_to: "vehicle-safety-node src/features/immobilizer (not written yet)"
+    verification: review
+    status: planned
+    tests: []
+  - id: REQ-IMMOBILIZER-002
+    text: "The immobilizer shall default to unlocked, and an M4 boot shall never pulse the relay SET input."
+    type: FSR
+    derives_from: [SG-005, invariant-6, D-097]
+    allocated_to: "vehicle-safety-node src/features/immobilizer (not written yet)"
+    verification: HIL
+    status: planned
+    tests: []
+  - id: REQ-IMMOBILIZER-003
+    text: "The immobilizer shall count a lock request only on a NONE to LOCK transition with E2E OK, after it saw NONE since its boot, with IGNITION_STATE OFF and its own IMU stationary for a set time."
+    type: TSR
+    derives_from: [SG-004, D-072]
+    allocated_to: "vehicle-safety-node src/features/immobilizer (not written yet)"
+    verification: "host test"
+    status: planned
+    tests: []
+  - id: REQ-IMMOBILIZER-004
+    text: "A missing or invalid 0x120 frame shall never change the immobilizer state."
+    type: TSR
+    derives_from: [SG-008, D-097, D-072]
+    allocated_to: "vehicle-safety-node src/features/immobilizer (not written yet)"
+    verification: "host test"
+    status: planned
+    tests: []
+  - id: REQ-IMMOBILIZER-005
+    text: "A hidden bypass switch shall be wired passively in parallel with the relay contact, with no electronics and no firmware path."
+    type: constraint
+    derives_from: [SG-005, D-097]
+    allocated_to: "hardware (starter-relay coil wiring, docs/hardware-integration.md)"
+    verification: HIL
+    status: planned
+    tests: []
+  - id: REQ-IMMOBILIZER-006
+    text: "A decision not reached within 10 s, timed by an M4-owned timer, shall end unlocked."
+    type: FSR
+    derives_from: [SG-005, invariant-6, D-072]
+    allocated_to: "vehicle-safety-node src/features/immobilizer (not written yet)"
+    verification: "host test"
+    status: planned
+    tests: []
