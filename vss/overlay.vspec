@@ -212,7 +212,7 @@ Vehicle.Motorcycle.Nodes.RtCore.Mode:
   type: sensor
   datatype: string
   allowed: [INIT, NORMAL, DEGRADED, SAFE_STATE, BOOTLOADER, DIAGNOSTIC]
-  description: Node mode from the RT_CORE heartbeat (NODE_MODE).
+  description: Node mode from the RT_CORE heartbeat (RT_CORE_NODE_MODE). Display only: not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).
   dbc2vss:
     signal: RT_CORE_NODE_MODE
     interval_ms: 100
@@ -236,7 +236,7 @@ Vehicle.Motorcycle.Nodes.RtCore.ErrorCount:
   datatype: uint8
   min: 0
   max: 255
-  description: Faults detected by the RT_CORE node since boot; saturates at 255.
+  description: Faults detected by the RT_CORE node since boot; saturates at 255. Display only: not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).
   dbc2vss:
     signal: RT_CORE_ERROR_COUNT
     interval_ms: 100
@@ -247,7 +247,7 @@ Vehicle.Motorcycle.Nodes.RtCore.UptimeSeconds:
   unit: s
   min: 0
   max: 65535
-  description: Seconds since the RT_CORE node booted; saturates at 65535. A decrease means the node restarted.
+  description: Seconds since the RT_CORE node booted; saturates at 65535. A decrease means the node restarted. Display only: not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).
   dbc2vss:
     signal: RT_CORE_UPTIME
     interval_ms: 100
@@ -260,7 +260,7 @@ Vehicle.Motorcycle.Nodes.Safety.Mode:
   type: sensor
   datatype: string
   allowed: [INIT, NORMAL, DEGRADED, SAFE_STATE, BOOTLOADER, DIAGNOSTIC]
-  description: Node mode from the SAFETY heartbeat (NODE_MODE).
+  description: Node mode from the SAFETY heartbeat (SAFETY_NODE_MODE). Display only: not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).
   dbc2vss:
     signal: SAFETY_NODE_MODE
     interval_ms: 100
@@ -284,7 +284,7 @@ Vehicle.Motorcycle.Nodes.Safety.ErrorCount:
   datatype: uint8
   min: 0
   max: 255
-  description: Faults detected by the SAFETY node since boot; saturates at 255.
+  description: Faults detected by the SAFETY node since boot; saturates at 255. Display only: not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).
   dbc2vss:
     signal: SAFETY_ERROR_COUNT
     interval_ms: 100
@@ -295,7 +295,7 @@ Vehicle.Motorcycle.Nodes.Safety.UptimeSeconds:
   unit: s
   min: 0
   max: 65535
-  description: Seconds since the SAFETY node booted; saturates at 65535. A decrease means the node restarted.
+  description: Seconds since the SAFETY node booted; saturates at 65535. A decrease means the node restarted. Display only: not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).
   dbc2vss:
     signal: SAFETY_UPTIME
     interval_ms: 100
@@ -308,7 +308,7 @@ Vehicle.Motorcycle.Nodes.Conn.Mode:
   type: sensor
   datatype: string
   allowed: [INIT, NORMAL, DEGRADED, SAFE_STATE, BOOTLOADER, DIAGNOSTIC]
-  description: Node mode from the CONN heartbeat (NODE_MODE).
+  description: Node mode from the CONN heartbeat (CONN_NODE_MODE). Display only: not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).
   dbc2vss:
     signal: CONN_NODE_MODE
     interval_ms: 100
@@ -332,7 +332,7 @@ Vehicle.Motorcycle.Nodes.Conn.ErrorCount:
   datatype: uint8
   min: 0
   max: 255
-  description: Faults detected by the CONN node since boot; saturates at 255.
+  description: Faults detected by the CONN node since boot; saturates at 255. Display only: not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).
   dbc2vss:
     signal: CONN_ERROR_COUNT
     interval_ms: 100
@@ -343,7 +343,7 @@ Vehicle.Motorcycle.Nodes.Conn.UptimeSeconds:
   unit: s
   min: 0
   max: 65535
-  description: Seconds since the CONN node booted; saturates at 65535. A decrease means the node restarted.
+  description: Seconds since the CONN node booted; saturates at 65535. A decrease means the node restarted. Display only: not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).
   dbc2vss:
     signal: CONN_UPTIME
     interval_ms: 100
@@ -356,7 +356,7 @@ Vehicle.Motorcycle.Nodes.Linux.Mode:
   type: sensor
   datatype: string
   allowed: [INIT, NORMAL, DEGRADED, SAFE_STATE, BOOTLOADER, DIAGNOSTIC]
-  description: Node mode from the LINUX heartbeat (NODE_MODE).
+  description: Node mode from the LINUX heartbeat (LINUX_NODE_MODE). Display only: not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).
   dbc2vss:
     signal: LINUX_NODE_MODE
     interval_ms: 100
@@ -380,7 +380,7 @@ Vehicle.Motorcycle.Nodes.Linux.ErrorCount:
   datatype: uint8
   min: 0
   max: 255
-  description: Faults detected by the LINUX node since boot; saturates at 255.
+  description: Faults detected by the LINUX node since boot; saturates at 255. Display only: not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).
   dbc2vss:
     signal: LINUX_ERROR_COUNT
     interval_ms: 100
@@ -391,7 +391,7 @@ Vehicle.Motorcycle.Nodes.Linux.UptimeSeconds:
   unit: s
   min: 0
   max: 65535
-  description: Seconds since the LINUX node booted; saturates at 65535. A decrease means the node restarted.
+  description: Seconds since the LINUX node booted; saturates at 65535. A decrease means the node restarted. Display only: not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).
   dbc2vss:
     signal: LINUX_UPTIME
     interval_ms: 100
@@ -403,7 +403,7 @@ Vehicle.Motorcycle.Validity:
 Vehicle.Motorcycle.Validity.EngineSpeed:
   type: sensor
   datatype: boolean
-  description: True if ENGINE_SPEED holds a valid ECU sample (DBC ENGINE_SPEED_VALID).
+  description: True if ENGINE_SPEED holds a valid ECU sample (DBC ENGINE_SPEED_VALID). Display only: not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).
   dbc2vss:
     signal: ENGINE_SPEED_VALID
     interval_ms: 50
@@ -417,7 +417,7 @@ Vehicle.Motorcycle.Validity.EngineSpeed:
 Vehicle.Motorcycle.Validity.BatteryVoltage:
   type: sensor
   datatype: boolean
-  description: True if BATTERY_VOLTAGE holds a valid ECU sample (DBC BATTERY_VOLTAGE_VALID).
+  description: True if BATTERY_VOLTAGE holds a valid ECU sample (DBC BATTERY_VOLTAGE_VALID). Display only: not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).
   dbc2vss:
     signal: BATTERY_VOLTAGE_VALID
     interval_ms: 50
@@ -431,7 +431,7 @@ Vehicle.Motorcycle.Validity.BatteryVoltage:
 Vehicle.Motorcycle.Validity.CoolantTemp:
   type: sensor
   datatype: boolean
-  description: True if COOLANT_TEMP holds a valid ECU sample (DBC COOLANT_TEMP_VALID).
+  description: True if COOLANT_TEMP holds a valid ECU sample (DBC COOLANT_TEMP_VALID). Display only: not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).
   dbc2vss:
     signal: COOLANT_TEMP_VALID
     interval_ms: 50
@@ -445,7 +445,7 @@ Vehicle.Motorcycle.Validity.CoolantTemp:
 Vehicle.Motorcycle.Validity.ThrottlePosition:
   type: sensor
   datatype: boolean
-  description: True if THROTTLE_POS holds a valid ECU sample (DBC THROTTLE_POS_VALID).
+  description: True if THROTTLE_POS holds a valid ECU sample (DBC THROTTLE_POS_VALID). Display only: not E2E-checked by kuksa-can-provider, stale after 3 frame cycles (judge by the value timestamp), and must never feed a decision (D-108, provisional).
   dbc2vss:
     signal: THROTTLE_POS_VALID
     interval_ms: 50
