@@ -207,8 +207,8 @@ def test_layout_id_follows_signal_names(doc, platform_db, platform_text):
     """
     from conftest import parse_dbc
 
-    a = " SG_ E2E_CRC : 0|8@1+ (1,0) [0|255] \"\" SAFETY,CONN,LINUX\n"
-    b = " SG_ RT_CORE_ERROR_COUNT : 16|8@1+ (1,0) [0|255] \"\" SAFETY,CONN,LINUX\n"
+    a = ' SG_ E2E_CRC : 0|8@1+ (1,0) [0|255] "" SAFETY,CONN,LINUX\n'
+    b = ' SG_ RT_CORE_ERROR_COUNT : 16|8@1+ (1,0) [0|255] "" SAFETY,CONN,LINUX\n'
     assert a in platform_text and b in platform_text, "DBC text changed, update the variant"
     swapped = platform_text.replace(a, a.replace("E2E_CRC", "RT_CORE_ERROR_COUNT"))
     swapped = swapped.replace(b, b.replace("RT_CORE_ERROR_COUNT", "E2E_CRC"))
