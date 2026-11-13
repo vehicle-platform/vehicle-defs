@@ -1,0 +1,19 @@
+# Requirement file schema (DRAFT, Q-006). Checked by scripts/check_requirements.py.
+# One file per domain: requirements/<domain>.yaml
+#   domain: <name>
+#   requirements: [ ... ]
+# Requirement fields (all required):
+#   id            REQ-<DOMAIN>-NNN, DOMAIN upper-case (A-Z and _), unique across all files,
+#                 and DOMAIN must equal the file's `domain` upper-cased (ARCHITECTURE section 8)
+#   text          one testable sentence containing "shall"
+#   type          FSR | TSR | constraint
+#   derives_from  non-empty list of D-xxx | Q-xxx | SG-xxx | invariant-1..8
+#                 (D-/Q- ids must occur in docs/DECISIONS.md, SG- ids in safety/hara.yaml)
+#   allocated_to  repo + module path (free text)
+#   verification  host test | HIL | review | analysis
+#   status        implemented | planned   (implemented only if a README or decision says it exists today)
+#   tests         list of existing test names (may be empty)
+allowed:
+  type: [FSR, TSR, constraint]
+  verification: [host test, HIL, review, analysis]
+  status: [implemented, planned]

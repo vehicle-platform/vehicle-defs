@@ -1,0 +1,69 @@
+# M7 to M4 mailbox (D-093).
+# Schema: requirements/schema.yaml. Draft for Q-006.
+
+domain: mailbox
+requirements:
+  - id: REQ-MAILBOX-001
+    text: "Each core shall write only the fields it owns, with 32-bit stores, and rewrite its own layout word every pass."
+    type: TSR
+    derives_from: [SG-007, D-093]
+    allocated_to: "vehicle-safety-node src/services/mailbox_core.c; vehicle-rt-core src/services/mailbox.c"
+    verification: "host test"
+    status: implemented
+    tests: ["test_mailbox_core.c::test_commit_is_a_read_modify_write_that_wraps"]
+  - id: REQ-MAILBOX-002
+    text: "A reader shall take no frame while the peer layout word differs from its own layout ID."
+    type: TSR
+    derives_from: [SG-007, D-093]
+    allocated_to: "vehicle-safety-node src/services/mailbox_core.c"
+    verification: "host test"
+    status: implemented
+    tests: ["test_mailbox_core.c::test_a_layout_mismatch_drops_and_absorbs_the_frame"]
+  - id: REQ-MAILBOX-003
+    text: "A writer shall drop, and count as write_dropped, every pending frame while the peer layout word differs, never defer it."
+    type: TSR
+    derives_from: [SG-007, D-093]
+    allocated_to: "vehicle-rt-core src/services/mailbox.c"
+    verification: "host test"
+    status: implemented
+    tests: []
+  - id: REQ-MAILBOX-004
+    text: "Every slot message shall have E2E max delta 1, asserted at compile time in both images."
+    type: TSR
+    derives_from: [SG-007, D-093, D-026]
+    allocated_to: "vehicle-rt-core src/services/mailbox.c"
+    verification: review
+    status: implemented
+    tests: []
+  - id: REQ-MAILBOX-005
+    text: "A frame whose write_seq does not change within its timeout shall read as stale, and a length mismatch shall deliver no frame."
+    type: TSR
+    derives_from: [SG-007, D-093, D-026]
+    allocated_to: "vehicle-safety-node src/services/mailbox_core.c"
+    verification: "host test"
+    status: implemented
+    tests: ["test_mailbox_core.c::test_a_stuck_sequence_reads_as_stale", "test_mailbox_core.c::test_a_len_mismatch_is_no_frame_and_is_never_delivered_later"]
+  - id: REQ-MAILBOX-006
+    text: "Codegen shall refuse a mailbox slot whose message has no E2E protection, and a slot set that differs from the messages SAFETY sends and receives."
+    type: TSR
+    derives_from: [SG-007, D-093]
+    allocated_to: "vehicle-defs tools/codegen"
+    verification: "host test"
+    status: implemented
+    tests: ["tools/codegen/tests/test_mailbox.py::test_slot_message_must_be_e2e_protected"]
+  - id: REQ-MAILBOX-007
+    text: "The M4 shall never spin-wait on a hardware semaphore: try-lock, else no new frame."
+    type: TSR
+    derives_from: [SG-008, D-072]
+    allocated_to: "vehicle-safety-node src/hal/hsem.h; src/services/mailbox.c"
+    verification: review
+    status: implemented
+    tests: []
+  - id: REQ-MAILBOX-008
+    text: "The HIL forwarder image shall be a separate build target that reports a distinct build ID, and CI shall reject it in a release image."
+    type: constraint
+    derives_from: [SG-007, D-072]
+    allocated_to: "vehicle-rt-core build and CI"
+    verification: review
+    status: planned
+    tests: []

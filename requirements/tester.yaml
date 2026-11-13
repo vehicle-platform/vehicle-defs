@@ -1,0 +1,37 @@
+# Vehicle-bus tester policy (invariant 1).
+# Schema: requirements/schema.yaml. Draft for Q-006.
+
+domain: tester
+requirements:
+  - id: REQ-TESTER-001
+    text: "The vehicle-bus tester shall send only the services allowed by tester_policy in uds/vehicle_cl250.yaml, through the generated gates."
+    type: FSR
+    derives_from: [invariant-1, D-020, D-037]
+    allocated_to: "vehicle-rt-core src/features/uds_client; vehicle-defs gen/c"
+    verification: "host test"
+    status: implemented
+    tests: ["tools/codegen/tests/test_uds.py::test_request_allow_list_matches_policy_exhaustively"]
+  - id: REQ-TESTER-002
+    text: "The generated gates shall refuse session 0x02, 0x11, 0x14, 0x27, 0x2E, 0x2F, 0x31, 0x34, 0x36 and 0x37 toward the vehicle."
+    type: TSR
+    derives_from: [invariant-1, D-020]
+    allocated_to: "vehicle-defs tools/codegen"
+    verification: "host test"
+    status: implemented
+    tests: ["tools/codegen/tests/test_uds.py::test_forbidden_list_must_match_d020"]
+  - id: REQ-TESTER-003
+    text: "Codegen shall fail on a tester_policy wider than its golden copy, so the policy can only be narrowed."
+    type: TSR
+    derives_from: [invariant-1, D-027]
+    allocated_to: "vehicle-defs tools/codegen"
+    verification: "host test"
+    status: implemented
+    tests: ["tools/codegen/tests/test_uds.py::test_policy_wider_than_d020_fails"]
+  - id: REQ-TESTER-004
+    text: "The vehicle bus shall have exactly one tester; every other node shall stay off it or strictly listen-only."
+    type: constraint
+    derives_from: [invariant-1, D-037, D-021]
+    allocated_to: "vehicle-rt-core src/features/uds_client"
+    verification: review
+    status: implemented
+    tests: []

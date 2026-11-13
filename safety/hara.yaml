@@ -1,0 +1,230 @@
+# HARA scaffold (DRAFT, Q-006). Ratings are TBD for the user (D-046: no ASIL assigned yet).
+#
+# Schema (checked by scripts/check_requirements.py):
+#   schema_version: 1
+#   items:        [{id, name, description}]
+#   safety_goals: [{id SG-NNN, text, derives_from: [D-xxx | Q-xxx | invariant-N]}]
+#   hazards:      [{id HZ-NNN, item, hazard, operational_situation, effect, S, E, C, asil,
+#                   safety_goal_id, source: [D-xxx | Q-xxx | invariant-N], candidate?}]
+#     S in TBD|S0..S3, E in TBD|E0..E4, C in TBD|C0..C3, asil in TBD|QM|A|B|C|D.
+#     candidate: true = plausible, but its mitigation is not recorded in a decision yet.
+
+schema_version: 1
+
+items:
+  - {id: cornering_warning, name: "Cornering warning", description: "Layer 1 decision (tan theta against mu) on the M4 safety partition, D-041"}
+  - {id: blind_spot_warning, name: "Blind-spot warning", description: "Radar based decision on the M4 with mirror LEDs, D-072 item 3"}
+  - {id: immobilizer, name: "Immobilizer", description: "Latching relay in the starter-relay coil line, M4 owned, invariant 6"}
+  - {id: led_ring_output, name: "LED ring output", description: "Safety output of the cornering warning, never driven by rt-core, D-072 item 5"}
+  - {id: inter_core_mailbox, name: "Inter-core mailbox", description: "SRAM4 mailbox between the M7 (rt-core) and the M4, D-093"}
+
+safety_goals:
+  - {id: SG-001, text: "The cornering warning shall not show GREEN while the friction utilisation tan(theta)/mu is at or above the yellow threshold.", derives_from: [D-041, D-100, D-101]}
+  - {id: SG-002, text: "When no usable lean source exists the cornering warning shall show UNAVAILABLE or DEGRADED, never GREEN.", derives_from: [D-042, D-100, invariant-3]}
+  - {id: SG-003, text: "The blind-spot output shall not show side clear when the radar data is unavailable, and its turn-signal input shall not depend on a slow or QM channel.", derives_from: [D-072, D-075, invariant-3]}
+  - {id: SG-004, text: "The immobilizer shall never lock or hold the starter while the engine runs.", derives_from: [invariant-6, D-082, D-097]}
+  - {id: SG-005, text: "The immobilizer shall always be recoverable: default unlocked, a passive hidden bypass and a 10 s timeout to unlock.", derives_from: [invariant-6, D-097]}
+  - {id: SG-006, text: "A dark or frozen LED ring shall never be readable as GREEN.", derives_from: [D-072]}
+  - {id: SG-007, text: "A stale, mismatched or corrupted mailbox frame shall never be used as a fresh safety input.", derives_from: [D-093, D-026, D-005]}
+  - {id: SG-008, text: "No QM, slow-channel or rt-core software fault shall cause, suppress or degrade a safety decision of the M4 beyond the recorded fallback.", derives_from: [invariant-3, invariant-4, D-072]}
+
+hazards:
+  - id: HZ-001
+    item: cornering_warning
+    hazard: "GREEN shown while tan(theta) > mu (wrong or non-finite decision)"
+    operational_situation: "Rider leans into a bend close to the grip limit"
+    effect: "Rider is not warned of an imminent loss of grip"
+    S: TBD
+    E: TBD
+    C: TBD
+    asil: TBD
+    safety_goal_id: SG-001
+    source: [D-041, D-100]
+  - id: HZ-002
+    item: cornering_warning
+    hazard: "GREEN kept after rt-core's lean is lost, stale or invalid (frozen EKF, bus-off)"
+    operational_situation: "Cornering with rt-core crashed, its bus off or its heartbeat not NORMAL"
+    effect: "A stale lean decides and the rider is told the bend is safe"
+    S: TBD
+    E: TBD
+    C: TBD
+    asil: TBD
+    safety_goal_id: SG-002
+    source: [D-042, D-100, D-101, D-026]
+  - id: HZ-003
+    item: cornering_warning
+    hazard: "mu_eff too high after 0x022 is lost (a lost low mu raises the limit)"
+    operational_situation: "Wet or low-grip road while the friction frame is dropped"
+    effect: "Thresholds too lenient, the warning comes late"
+    S: TBD
+    E: TBD
+    C: TBD
+    asil: TBD
+    safety_goal_id: SG-001
+    source: [D-101, D-029]
+  - id: HZ-004
+    item: cornering_warning
+    hazard: "Wrong but valid rt-core lean (diverged EKF, E2E OK, state ESTIMATED) is trusted"
+    operational_situation: "Cornering with an EKF that drifted"
+    effect: "Decision made on a wrong angle, GREEN shown at a real high lean"
+    S: TBD
+    E: TBD
+    C: TBD
+    asil: TBD
+    safety_goal_id: SG-001
+    source: [D-042, Q-023]
+    candidate: true   # D-042 says only the Q-023 cross-check would catch this; D-075 item 6 (1) only reports
+  - id: HZ-005
+    item: blind_spot_warning
+    hazard: "Side shown CLEAR although the radar delivers nothing (zero or missing data read as clear)"
+    operational_situation: "Lane change with a vehicle in the blind spot and a failed radar"
+    effect: "Rider moves into an occupied lane"
+    S: TBD
+    E: TBD
+    C: TBD
+    asil: TBD
+    safety_goal_id: SG-003
+    source: [D-072]
+  - id: HZ-006
+    item: blind_spot_warning
+    hazard: "APPROACHING warning suppressed by a lost turn-signal input"
+    operational_situation: "Rider indicates and changes lane"
+    effect: "No approach warning at the moment of the manoeuvre"
+    S: TBD
+    E: TBD
+    C: TBD
+    asil: TBD
+    safety_goal_id: SG-003
+    source: [D-075, D-072]
+  - id: HZ-007
+    item: blind_spot_warning
+    hazard: "Blind-spot decision delayed by lower-priority work on the M4 (immobilizer, housekeeping)"
+    operational_situation: "Fast approaching vehicle while the M4 runs a long step"
+    effect: "Warning arrives too late"
+    S: TBD
+    E: TBD
+    C: TBD
+    asil: TBD
+    safety_goal_id: SG-003
+    source: [D-072]
+  - id: HZ-008
+    item: immobilizer
+    hazard: "Immobilizer locks while the engine runs"
+    operational_situation: "Riding, a lock request arrives from the phone or park mode"
+    effect: "Starter circuit opened while moving (the relay is in the starter coil line only, so the engine is never cut); confusion at the next start"
+    S: TBD
+    E: TBD
+    C: TBD
+    asil: TBD
+    safety_goal_id: SG-004
+    source: [invariant-6, D-072, D-082]
+  - id: HZ-009
+    item: immobilizer
+    hazard: "Bike cannot be unlocked with a dead M4, a dead C1 or a flat box supply"
+    operational_situation: "Locked or AUTH_PENDING while the electronics fail"
+    effect: "Rider stranded, the bike cannot be started"
+    S: TBD
+    E: TBD
+    C: TBD
+    asil: TBD
+    safety_goal_id: SG-005
+    source: [invariant-6, D-082, D-097]
+  - id: HZ-010
+    item: immobilizer
+    hazard: "Re-lock after an unlock, a reset or a brownout during cranking"
+    operational_situation: "Starting the engine"
+    effect: "Starter drops out during cranking, the rider cannot start"
+    S: TBD
+    E: TBD
+    C: TBD
+    asil: TBD
+    safety_goal_id: SG-004
+    source: [D-072, D-097]
+  - id: HZ-011
+    item: immobilizer
+    hazard: "A QM lock request changes the immobilizer state without the M4's own authorization, or a missing request changes it"
+    operational_situation: "rt-core or the phone link misbehaves"
+    effect: "Unintended lock or unlock"
+    S: TBD
+    E: TBD
+    C: TBD
+    asil: TBD
+    safety_goal_id: SG-008
+    source: [D-072, D-097]
+  - id: HZ-012
+    item: led_ring_output
+    hazard: "Ring stays lit GREEN with a hung M4 (WS2812 keeps its last frame)"
+    operational_situation: "M4 stops while the LED supply is still up"
+    effect: "A frozen GREEN reads as 'no warning needed'"
+    S: TBD
+    E: TBD
+    C: TBD
+    asil: TBD
+    safety_goal_id: SG-006
+    source: [D-072]
+  - id: HZ-013
+    item: led_ring_output
+    hazard: "Ring driven by rt-core and so hiding the D-042 fallback state"
+    operational_situation: "Fallback or UNAVAILABLE cornering while rt-core still sends"
+    effect: "Rider cannot see that the warning is degraded"
+    S: TBD
+    E: TBD
+    C: TBD
+    asil: TBD
+    safety_goal_id: SG-008
+    source: [D-041, D-072]
+  - id: HZ-014
+    item: led_ring_output
+    hazard: "A brownout or system reset stops both cores and the ring for the restart time"
+    operational_situation: "Supply dip, chip fault or reset"
+    effect: "No warning for the restart time (accepted limitation, a dark ring means no warning available)"
+    S: TBD
+    E: TBD
+    C: TBD
+    asil: TBD
+    safety_goal_id: SG-006
+    source: [D-072]
+  - id: HZ-015
+    item: inter_core_mailbox
+    hazard: "Stale mailbox frame read as fresh (held across a layout mismatch or a stuck sequence)"
+    operational_situation: "Peer image swapped or sender stalled"
+    effect: "Old lean or heartbeat decides as if current"
+    S: TBD
+    E: TBD
+    C: TBD
+    asil: TBD
+    safety_goal_id: SG-007
+    source: [D-093, D-026]
+  - id: HZ-016
+    item: inter_core_mailbox
+    hazard: "Two images built from different defs misread each other's bytes"
+    operational_situation: "Partial flash update, M4-only reset into another image"
+    effect: "A wrong value passes as a valid frame"
+    S: TBD
+    E: TBD
+    C: TBD
+    asil: TBD
+    safety_goal_id: SG-007
+    source: [D-093]
+  - id: HZ-017
+    item: inter_core_mailbox
+    hazard: "HIL forwarder image lets a platform-bus frame inject a lean into the M4"
+    operational_situation: "Test image shipped on a bike"
+    effect: "A forged lean decides the warning"
+    S: TBD
+    E: TBD
+    C: TBD
+    asil: TBD
+    safety_goal_id: SG-007
+    source: [D-072]
+  - id: HZ-018
+    item: inter_core_mailbox
+    hazard: "M4 blocks on the hardware semaphore held by the M7"
+    operational_situation: "M7 stalled while holding an HSEM"
+    effect: "Decision schedule is delayed"
+    S: TBD
+    E: TBD
+    C: TBD
+    asil: TBD
+    safety_goal_id: SG-008
+    source: [D-072]

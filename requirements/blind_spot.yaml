@@ -1,0 +1,29 @@
+# Blind-spot warning (safety-node, M4; no code yet).
+# Schema: requirements/schema.yaml. Draft for Q-006.
+
+domain: blind_spot
+requirements:
+  - id: REQ-BLIND_SPOT-001
+    text: "The blind-spot status shall read UNAVAILABLE, never CLEAR, while no usable radar data exists (raw 0 means no information)."
+    type: FSR
+    derives_from: [SG-003, D-072]
+    allocated_to: "vehicle-safety-node src/features/blind_spot (not written yet)"
+    verification: "host test"
+    status: planned
+    tests: []
+  - id: REQ-BLIND_SPOT-002
+    text: "The turn-signal state shall come from one opto-isolated M4 GPIO per indicator, with a side signalling from the first edge until 1.5 s after its last edge."
+    type: TSR
+    derives_from: [SG-003, D-075]
+    allocated_to: "vehicle-safety-node src/features/blind_spot (not written yet)"
+    verification: HIL
+    status: planned
+    tests: []
+  - id: REQ-BLIND_SPOT-003
+    text: "The M4 schedule shall run the blind-spot decision and the cornering decision first, within a worst-case execution time budget per step, before LED outputs and the immobilizer."
+    type: TSR
+    derives_from: [SG-003, D-072]
+    allocated_to: "vehicle-safety-node src/app/safety_app.c"
+    verification: analysis
+    status: planned
+    tests: []
