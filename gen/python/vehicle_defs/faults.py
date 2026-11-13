@@ -28,8 +28,9 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                                  'https://club.autodoc.co.uk/obd-codes/all). Supports only the '
                                  'generic code number and name, not a CL250 or Honda '
                                  'motorcycle behaviour; SAE text is paywalled; pages not '
-                                 'opened (fetch blocked), read from search-result summaries',
-                          'confidence': 'medium'},
+                                 'opened (fetch blocked), read from search-result summaries '
+                                 '(search-summary only, page not opened)',
+                          'confidence': 'low'},
                          {'ref': "Partzilla blog, 'Diagnosing motorcycle charging problems', "
                                  'https://www.partzilla.com/blog/diagnosing-motorcycle-charging-problems '
                                  '(generic motorcycle); search summary only, not opened',
@@ -39,7 +40,7 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                                  'https://www.jpcycles.com/common-tread/how-to-test-your-motorcycles-stator-and-regulator-rectifier '
                                  '(generic); search summary only, not opened',
                           'confidence': 'low'}],
-             'displayable': True},
+             'displayable': False},
  'CHG-002': {'id': 'CHG-002',
              'subsystem': 'charging',
              'root_cause': 'Regulator/rectifier failed open (no rectified output)',
@@ -62,8 +63,9 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                                  'https://club.autodoc.co.uk/obd-codes/all). Supports only the '
                                  'generic code number and name, not a CL250 or Honda '
                                  'motorcycle behaviour; SAE text is paywalled; pages not '
-                                 'opened (fetch blocked), read from search-result summaries',
-                          'confidence': 'medium'},
+                                 'opened (fetch blocked), read from search-result summaries '
+                                 '(search-summary only, page not opened)',
+                          'confidence': 'low'},
                          {'ref': "J&P Cycles Common Tread, 'How to test your motorcycle's "
                                  "stator and regulator/rectifier', "
                                  'https://www.jpcycles.com/common-tread/how-to-test-your-motorcycles-stator-and-regulator-rectifier '
@@ -73,7 +75,7 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                                  'https://www.partzilla.com/blog/diagnosing-motorcycle-charging-problems '
                                  '(generic motorcycle); search summary only, not opened',
                           'confidence': 'low'}],
-             'displayable': True},
+             'displayable': False},
  'CHG-003': {'id': 'CHG-003',
              'subsystem': 'charging',
              'root_cause': 'Shunt regulator fails to limit the voltage (overcharge)',
@@ -97,14 +99,15 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                                  'https://club.autodoc.co.uk/obd-codes/all). Supports only the '
                                  'generic code number and name, not a CL250 or Honda '
                                  'motorcycle behaviour; SAE text is paywalled; pages not '
-                                 'opened (fetch blocked), read from search-result summaries',
-                          'confidence': 'medium'},
+                                 'opened (fetch blocked), read from search-result summaries '
+                                 '(search-summary only, page not opened)',
+                          'confidence': 'low'},
                          {'ref': "RevZilla Common Tread, 'How to check your motorcycle's "
                                  "battery and charging system', "
                                  'https://www.revzilla.com/common-tread/how-to-check-your-motorcycles-battery-and-charging-system '
                                  '(generic); search summary only, not opened',
                           'confidence': 'low'}],
-             'displayable': True},
+             'displayable': False},
  'CHG-004': {'id': 'CHG-004',
              'subsystem': 'charging',
              'root_cause': 'Stator-to-regulator connector overheated or corroded (intermittent '
@@ -315,8 +318,9 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                                  'https://club.autodoc.co.uk/obd-codes/all). Supports only the '
                                  'generic code number and name, not a CL250 or Honda '
                                  'motorcycle behaviour; SAE text is paywalled; pages not '
-                                 'opened (fetch blocked), read from search-result summaries',
-                          'confidence': 'medium'},
+                                 'opened (fetch blocked), read from search-result summaries '
+                                 '(search-summary only, page not opened)',
+                          'confidence': 'low'},
                          {'ref': "Visordown workshop, 'Overheating motorcycles - cause, effect "
                                  "and resolution', "
                                  'https://www.visordown.com/features/workshop/ (generic); '
@@ -326,7 +330,7 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                                  'https://www.rideapart.com/features/253816/motorcycle-cooling-systems-doctor-moto/ '
                                  '(generic); search summary only, not opened',
                           'confidence': 'low'}],
-             'displayable': True},
+             'displayable': False},
  'COL-002': {'id': 'COL-002',
              'subsystem': 'cooling',
              'root_cause': 'Thermostat stuck open (slow warm-up, runs cold)',
@@ -370,14 +374,15 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                                  'https://club.autodoc.co.uk/obd-codes/all). Supports only the '
                                  'generic code number and name, not a CL250 or Honda '
                                  'motorcycle behaviour; SAE text is paywalled; pages not '
-                                 'opened (fetch blocked), read from search-result summaries',
-                          'confidence': 'medium'},
+                                 'opened (fetch blocked), read from search-result summaries '
+                                 '(search-summary only, page not opened)',
+                          'confidence': 'low'},
                          {'ref': "Visordown workshop, 'Overheating motorcycles - cause, effect "
                                  "and resolution', "
                                  'https://www.visordown.com/features/workshop/ (generic); '
                                  'search summary only, not opened',
                           'confidence': 'low'}],
-             'displayable': True},
+             'displayable': False},
  'COL-004': {'id': 'COL-004',
              'subsystem': 'cooling',
              'root_cause': 'Coolant level low from an external leak (hose, radiator, cap)',
@@ -403,8 +408,9 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                                  'https://club.autodoc.co.uk/obd-codes/all). Supports only the '
                                  'generic code number and name, not a CL250 or Honda '
                                  'motorcycle behaviour; SAE text is paywalled; pages not '
-                                 'opened (fetch blocked), read from search-result summaries',
-                          'confidence': 'medium'},
+                                 'opened (fetch blocked), read from search-result summaries '
+                                 '(search-summary only, page not opened)',
+                          'confidence': 'low'},
                          {'ref': "MotorcycleHabit, 'Why is my motorcycle leaking coolant', "
                                  'https://motorcyclehabit.com/why-is-my-motorcycle-leaking-coolant '
                                  '(generic); search summary only, not opened',
@@ -414,7 +420,7 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                                  'https://www.visordown.com/features/workshop/ (generic); '
                                  'search summary only, not opened',
                           'confidence': 'low'}],
-             'displayable': True},
+             'displayable': False},
  'COL-005': {'id': 'COL-005',
              'subsystem': 'cooling',
              'root_cause': 'Water pump seal or impeller failure (leak or reduced flow)',
@@ -461,13 +467,14 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                                  'https://club.autodoc.co.uk/obd-codes/all). Supports only the '
                                  'generic code number and name, not a CL250 or Honda '
                                  'motorcycle behaviour; SAE text is paywalled; pages not '
-                                 'opened (fetch blocked), read from search-result summaries',
-                          'confidence': 'medium'},
+                                 'opened (fetch blocked), read from search-result summaries '
+                                 '(search-summary only, page not opened)',
+                          'confidence': 'low'},
                          {'ref': "RideApart, 'Motorcycle cooling systems (Doctor Moto)', "
                                  'https://www.rideapart.com/features/253816/motorcycle-cooling-systems-doctor-moto/ '
                                  '(generic); search summary only, not opened',
                           'confidence': 'low'}],
-             'displayable': True},
+             'displayable': False},
  'IGN-001': {'id': 'IGN-001',
              'subsystem': 'ignition',
              'root_cause': 'Crankshaft position (CKP) sensor or its wiring gives no signal',
@@ -521,8 +528,9 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                                  'https://club.autodoc.co.uk/obd-codes/all). Supports only the '
                                  'generic code number and name, not a CL250 or Honda '
                                  'motorcycle behaviour; SAE text is paywalled; pages not '
-                                 'opened (fetch blocked), read from search-result summaries',
-                          'confidence': 'medium'},
+                                 'opened (fetch blocked), read from search-result summaries '
+                                 '(search-summary only, page not opened)',
+                          'confidence': 'low'},
                          {'ref': "Crankshaft/camshaft position sensors — Danny's Engine "
                                  'Portal, n.d., '
                                  'https://dannysengineportal.com/crankshaft-camshaft-position-sensors/ '
@@ -535,7 +543,7 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                                  '(car-focused: random stall then restart, RPM drop to zero on '
                                  'scan tool)',
                           'confidence': 'low'}],
-             'displayable': True},
+             'displayable': False},
  'IGN-003': {'id': 'IGN-003',
              'subsystem': 'ignition',
              'root_cause': 'Weak or failing ignition coil (single coil, so a failure means '
@@ -657,8 +665,8 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                                  'Supports only the generic code number and name, not a CL250 '
                                  'or Honda motorcycle behaviour; SAE text is paywalled; pages '
                                  'not opened (fetch blocked), read from search-result '
-                                 'summaries',
-                          'confidence': 'medium'},
+                                 'summaries (search-summary only, page not opened)',
+                          'confidence': 'low'},
                          {'ref': 'Code P0171 System Too Lean — Samarins, n.d., '
                                  'https://www.samarins.com/diagnose/p0171.html (vacuum leak: '
                                  'high trim at idle that drops at higher RPM; low fuel '
@@ -668,7 +676,7 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                                  'https://www.aa1car.com/library/map_sensors.htm (a vacuum '
                                  'leak reduces intake vacuum so MAP indicates higher load)',
                           'confidence': 'low'}],
-             'displayable': True},
+             'displayable': False},
  'FUE-002': {'id': 'FUE-002',
              'subsystem': 'fuel_air',
              'root_cause': 'Weak fuel pump, clogged pump filter or low fuel pressure '
@@ -810,14 +818,15 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                                  'https://club.autodoc.co.uk/obd-codes/all). Supports only the '
                                  'generic code number and name, not a CL250 or Honda '
                                  'motorcycle behaviour; SAE text is paywalled; pages not '
-                                 'opened (fetch blocked), read from search-result summaries',
-                          'confidence': 'medium'},
+                                 'opened (fetch blocked), read from search-result summaries '
+                                 '(search-summary only, page not opened)',
+                          'confidence': 'low'},
                          {'ref': 'Symptoms of a bad throttle position sensor — Apollo Offroad, '
                                  'n.d., '
                                  'https://apollooffroad.com/blogs/default-blog/blog-symptoms-of-a-bad-throttle-position-sensor '
                                  '(hesitation, idle irregularities or stalling; car-focused)',
                           'confidence': 'low'}],
-             'displayable': True},
+             'displayable': False},
  'FUE-007': {'id': 'FUE-007',
              'subsystem': 'fuel_air',
              'root_cause': 'Intake air temperature (IAT) sensor or wiring fault (reads wrong '
@@ -1802,15 +1811,16 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                                  'https://club.autodoc.co.uk/obd-codes/all). Supports only the '
                                  'generic code number and name, not a CL250 or Honda '
                                  'motorcycle behaviour; SAE text is paywalled; pages not '
-                                 'opened (fetch blocked), read from search-result summaries',
-                          'confidence': 'medium'},
+                                 'opened (fetch blocked), read from search-result summaries '
+                                 '(search-summary only, page not opened)',
+                          'confidence': 'low'},
                          {'ref': 'Honda Motorcycle Aftersales Plus One, DTC and PGM-FI '
                                  'diagnostics article - Honda Motor Co., 2025, '
                                  'https://global.honda/en/motorcycle-aftersales/plusone/202506.html '
                                  '(supports only: PGM-FI stores DTCs, scan tool recommended; '
                                  'failure behaviour here is inferred)',
                           'confidence': 'low'}],
-             'displayable': True},
+             'displayable': False},
  'FUE-009': {'id': 'FUE-009',
              'subsystem': 'fuel_air',
              'root_cause': 'Idle air control or fast-idle valve fault (inference): stuck, '
@@ -1858,15 +1868,16 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                                  'https://club.autodoc.co.uk/obd-codes/all). Supports only the '
                                  'generic code number and name, not a CL250 or Honda '
                                  'motorcycle behaviour; SAE text is paywalled; pages not '
-                                 'opened (fetch blocked), read from search-result summaries',
-                          'confidence': 'medium'},
+                                 'opened (fetch blocked), read from search-result summaries '
+                                 '(search-summary only, page not opened)',
+                          'confidence': 'low'},
                          {'ref': 'Honda Motorcycle Aftersales Plus One, DTC and PGM-FI '
                                  'diagnostics article - Honda Motor Co., 2025, '
                                  'https://global.honda/en/motorcycle-aftersales/plusone/202506.html '
                                  '(supports only: PGM-FI stores DTCs; idle-valve failure '
                                  'behaviour is inferred)',
                           'confidence': 'low'}],
-             'displayable': True}}
+             'displayable': False}}
 
 # catalog ids that apply to the CL250 (vehicle/cl250_faults.yaml, D-078)
 APPLIES_CL250 = ('CHG-001',
