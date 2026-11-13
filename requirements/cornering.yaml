@@ -1,5 +1,5 @@
 # Cornering warning and LED ring output (safety-node, M4).
-# Schema: requirements/schema.yaml. Draft for Q-006.
+# Schema: requirements/schema.yaml. Location per D-113 (provisional).
 
 domain: cornering
 requirements:

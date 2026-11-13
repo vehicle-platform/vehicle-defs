@@ -1,5 +1,5 @@
 # Vehicle-bus tester policy (invariant 1).
-# Schema: requirements/schema.yaml. Draft for Q-006.
+# Schema: requirements/schema.yaml. Location per D-113 (provisional).
 
 domain: tester
 requirements:

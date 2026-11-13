@@ -1,5 +1,5 @@
 # M7 to M4 mailbox (D-093).
-# Schema: requirements/schema.yaml. Draft for Q-006.
+# Schema: requirements/schema.yaml. Location per D-113 (provisional).
 
 domain: mailbox
 requirements:

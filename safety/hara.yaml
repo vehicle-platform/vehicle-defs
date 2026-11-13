@@ -1,4 +1,4 @@
-# HARA scaffold (DRAFT, Q-006). Ratings are TBD for the user (D-046: no ASIL assigned yet).
+# HARA scaffold (D-113, provisional). Ratings are TBD for the user (D-046: no ASIL assigned yet).
 #
 # Schema (checked by scripts/check_requirements.py):
 #   schema_version: 1

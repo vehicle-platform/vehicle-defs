@@ -1,5 +1,5 @@
 # Platform bus E2E and heartbeats.
-# Schema: requirements/schema.yaml. Draft for Q-006.
+# Schema: requirements/schema.yaml. Location per D-113 (provisional).
 
 domain: platform_bus
 requirements:

@@ -1,5 +1,5 @@
 # Immobilizer (safety-node, M4; no code yet).
-# Schema: requirements/schema.yaml. Draft for Q-006.
+# Schema: requirements/schema.yaml. Location per D-113 (provisional).
 
 domain: immobilizer
 requirements:

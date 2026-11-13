@@ -1,4 +1,4 @@
-# Requirement file schema (DRAFT, Q-006). Checked by scripts/check_requirements.py.
+# Requirement file schema (D-113, provisional). Checked by scripts/check_requirements.py.
 # One file per domain: requirements/<domain>.yaml
 #   domain: <name>
 #   requirements: [ ... ]

@@ -1,8 +1,8 @@
-# safety/ — HARA (DRAFT, proposal for Q-006)
+# safety/ — HARA (location per D-113, PROVISIONAL)
 
-**Status: proposal.** Where the HARA, FMEA and requirements live is the open question Q-006
-in `docs/DECISIONS.md` (proposal: `vehicle-defs/safety/` + `requirements/`). Nothing here is
-a decision until the user records one. Until then these files are a scaffold: they collect
+**Status: provisional.** Q-006 is provisionally resolved by D-113 (2026-11-13, Claude's
+recommendation adopted on the user's instruction; the user revises). Every S/E/C/ASIL stays
+`TBD` until the user assigns them (D-046). These files are a scaffold: they collect
 what the recorded decisions and platform invariants already say, in ISO 26262 vocabulary, so
 the thesis chapter Ç8 (process documentation, `docs/ARCHITECTURE.md` §8-§9) has a
 checkable place to grow.

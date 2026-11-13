@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate safety/hara.yaml and requirements/*.yaml (Q-006 draft). Stdlib + PyYAML."""
+"""Validate safety/hara.yaml and requirements/*.yaml (D-113, provisional). Stdlib + PyYAML."""
 import re
 import sys
 from pathlib import Path
