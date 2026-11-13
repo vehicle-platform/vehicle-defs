@@ -23,7 +23,7 @@ RESERVED_BYTES = 256
 USED_BYTES = 128
 HEADER_BYTES = 32
 SLOT_BYTES = 16
-LAYOUT_ID = 0x61F4B364  # CRC-32 of the resolved layout
+LAYOUT_ID = 0x9B315454  # CRC-32 of the resolved layout
 
 SLOTS = (
     Slot(0, 'EkfLean', 0x020, 8, 'm7_to_m4', 'safety', 1, 32),

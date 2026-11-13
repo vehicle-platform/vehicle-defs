@@ -4,6 +4,25 @@ All notable changes to vehicle-defs. Semver (see CLAUDE.md): new message/signal 
 
 ## [Unreleased]
 
+## [0.29.0] — unreleased
+
+**MAJOR (breaking, signal names; D-108, PROVISIONAL: Claude's decision under the user's standing order, the user revises; Q-016).** Do not tag before v0.28.0 exists (v0.28.0 is bumped but not tagged yet). No frame on either bus changes: bit positions, lengths, scales, value tables, cycle times and E2E attributes are identical; only identifiers differ.
+
+- **Heartbeat payload signals renamed** (`platform.dbc`; unique names so kuksa-can-provider, which maps by signal name, can tell the nodes apart). The E2E signals `E2E_CRC` / `E2E_COUNTER` keep their shared names.
+
+  | Message | Old | New |
+  |---|---|---|
+  | `HeartbeatRtCore` 0x081 | `NODE_MODE`, `ERROR_COUNT`, `UPTIME` | `RT_CORE_NODE_MODE`, `RT_CORE_ERROR_COUNT`, `RT_CORE_UPTIME` |
+  | `HeartbeatSafety` 0x082 | `NODE_MODE`, `ERROR_COUNT`, `UPTIME` | `SAFETY_NODE_MODE`, `SAFETY_ERROR_COUNT`, `SAFETY_UPTIME` |
+  | `HeartbeatConn` 0x084 | `NODE_MODE`, `ERROR_COUNT`, `UPTIME` | `CONN_NODE_MODE`, `CONN_ERROR_COUNT`, `CONN_UPTIME` |
+  | `HeartbeatLinux` 0x085 | `NODE_MODE`, `ERROR_COUNT`, `UPTIME` | `LINUX_NODE_MODE`, `LINUX_ERROR_COUNT`, `LINUX_UPTIME` |
+
+  Generated identifiers change with them (struct members `rt_core_node_mode`, `safety_error_count`, ..., the `PLATFORM_HEARTBEAT_<NODE>_<NODE>_NODE_MODE_*_CHOICE` constants, their `pack`/`unpack`/`encode`/`decode` helpers, Python `platform.py`); `gen/` differs by identifiers only, 0 bytes of RAM.
+- **`PLATFORM_MAILBOX_LAYOUT_ID` changes 0x61F4B364 -> 0x9B315454** (the CRC covers signal names), so the rt-core (M7) and safety-node (M4) images must both be rebuilt from this tag; an old/new pair reads MISMATCH by design (D-093). Pin in `test_mailbox.py` updated.
+- **VSS (`vss/overlay.vspec`, `gen_vss.APPROVED_EXTENSIONS`, 16 leaves and 6 branches; D-004 user approval pending):** `Vehicle.Motorcycle.Nodes.<RtCore|Safety|Conn|Linux>.{Mode,ErrorCount,UptimeSeconds}` (12 leaves, mapped by the new names, 100 ms) and `Vehicle.Motorcycle.Validity.{EngineSpeed,BatteryVoltage,CoolantTemp,ThrottlePosition}` (4 boolean leaves from `*_VALID` of 0x110, 50 ms). Branches `Nodes`, `Nodes.<Node>` and `Validity` are declared too. `VEHICLE_SPEED_VALID` (0x021) is not mapped (D-108 names the four VehicleEngine bits).
+- Tests: `test_sources` used `NODE_MODE` as its ambiguous-name example, now `E2E_CRC`.
+- Consumers: vehicle-rt-core, vehicle-safety-node (**safety-reviewer on the regen**, invariant 8: it produces 0x082 and the mailbox layout ID changes), vehicle-connectivity-node, vehicle-hil-bench need a regen and a repin after the v0.29.0 tag; vehicle-linux-node gets the provider YAML and the L2 node-health panel.
+
 ## [0.28.0] — 2026-11-11
 
 MINOR: the `data_quality_mask` bit layout (D-104, part 1), the coast-down method (D-105, part 2), the `tester_rtt_did` input of `ride_tester_nrc78_count` (part 3), the W4 residual and throttle-lag rules (D-106, part 4) and the fault-catalog schema with its first entries (D-084, part 5).

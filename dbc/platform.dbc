@@ -54,30 +54,30 @@ BO_ 35 SafetyWarningStatus: 8 SAFETY
 BO_ 129 HeartbeatRtCore: 8 RT_CORE
  SG_ E2E_CRC : 0|8@1+ (1,0) [0|255] "" SAFETY,CONN,LINUX
  SG_ E2E_COUNTER : 8|4@1+ (1,0) [0|15] "" SAFETY,CONN,LINUX
- SG_ NODE_MODE : 12|4@1+ (1,0) [0|15] "" SAFETY,CONN,LINUX
- SG_ ERROR_COUNT : 16|8@1+ (1,0) [0|255] "" SAFETY,CONN,LINUX
- SG_ UPTIME : 24|16@1+ (1,0) [0|65535] "s" SAFETY,CONN,LINUX
+ SG_ RT_CORE_NODE_MODE : 12|4@1+ (1,0) [0|15] "" SAFETY,CONN,LINUX
+ SG_ RT_CORE_ERROR_COUNT : 16|8@1+ (1,0) [0|255] "" SAFETY,CONN,LINUX
+ SG_ RT_CORE_UPTIME : 24|16@1+ (1,0) [0|65535] "s" SAFETY,CONN,LINUX
 
 BO_ 130 HeartbeatSafety: 8 SAFETY
  SG_ E2E_CRC : 0|8@1+ (1,0) [0|255] "" RT_CORE,LINUX
  SG_ E2E_COUNTER : 8|4@1+ (1,0) [0|15] "" RT_CORE,LINUX
- SG_ NODE_MODE : 12|4@1+ (1,0) [0|15] "" RT_CORE,LINUX
- SG_ ERROR_COUNT : 16|8@1+ (1,0) [0|255] "" RT_CORE,LINUX
- SG_ UPTIME : 24|16@1+ (1,0) [0|65535] "s" RT_CORE,LINUX
+ SG_ SAFETY_NODE_MODE : 12|4@1+ (1,0) [0|15] "" RT_CORE,LINUX
+ SG_ SAFETY_ERROR_COUNT : 16|8@1+ (1,0) [0|255] "" RT_CORE,LINUX
+ SG_ SAFETY_UPTIME : 24|16@1+ (1,0) [0|65535] "s" RT_CORE,LINUX
 
 BO_ 132 HeartbeatConn: 8 CONN
  SG_ E2E_CRC : 0|8@1+ (1,0) [0|255] "" RT_CORE,LINUX
  SG_ E2E_COUNTER : 8|4@1+ (1,0) [0|15] "" RT_CORE,LINUX
- SG_ NODE_MODE : 12|4@1+ (1,0) [0|15] "" RT_CORE,LINUX
- SG_ ERROR_COUNT : 16|8@1+ (1,0) [0|255] "" RT_CORE,LINUX
- SG_ UPTIME : 24|16@1+ (1,0) [0|65535] "s" RT_CORE,LINUX
+ SG_ CONN_NODE_MODE : 12|4@1+ (1,0) [0|15] "" RT_CORE,LINUX
+ SG_ CONN_ERROR_COUNT : 16|8@1+ (1,0) [0|255] "" RT_CORE,LINUX
+ SG_ CONN_UPTIME : 24|16@1+ (1,0) [0|65535] "s" RT_CORE,LINUX
 
 BO_ 133 HeartbeatLinux: 8 LINUX
  SG_ E2E_CRC : 0|8@1+ (1,0) [0|255] "" RT_CORE
  SG_ E2E_COUNTER : 8|4@1+ (1,0) [0|15] "" RT_CORE
- SG_ NODE_MODE : 12|4@1+ (1,0) [0|15] "" RT_CORE
- SG_ ERROR_COUNT : 16|8@1+ (1,0) [0|255] "" RT_CORE
- SG_ UPTIME : 24|16@1+ (1,0) [0|65535] "s" RT_CORE
+ SG_ LINUX_NODE_MODE : 12|4@1+ (1,0) [0|15] "" RT_CORE
+ SG_ LINUX_ERROR_COUNT : 16|8@1+ (1,0) [0|255] "" RT_CORE
+ SG_ LINUX_UPTIME : 24|16@1+ (1,0) [0|65535] "s" RT_CORE
 
 BO_ 272 VehicleEngine: 8 RT_CORE
  SG_ ENGINE_SPEED : 0|16@1+ (0.25,0) [0|16383.75] "rpm" CONN,LINUX
@@ -128,14 +128,14 @@ CM_ BO_ 129 "rt-core heartbeat (0x080 + node_id). The safety partition receives 
 CM_ BO_ 130 "Safety partition heartbeat (0x080 + node_id), written by the M4 into the mailbox and forwarded verbatim by rt-core (D-072 item 4c).";
 CM_ BO_ 132 "connectivity-node heartbeat (0x080 + node_id).";
 CM_ BO_ 133 "linux-node heartbeat (0x080 + node_id).";
-CM_ SG_ 129 ERROR_COUNT "Faults detected since boot; saturates at 255.";
-CM_ SG_ 129 UPTIME "Seconds since boot; saturates at 65535. A decrease means the node restarted.";
-CM_ SG_ 130 ERROR_COUNT "Faults detected since boot; saturates at 255.";
-CM_ SG_ 130 UPTIME "Seconds since boot; saturates at 65535. A decrease means the node restarted.";
-CM_ SG_ 132 ERROR_COUNT "Faults detected since boot; saturates at 255.";
-CM_ SG_ 132 UPTIME "Seconds since boot; saturates at 65535. A decrease means the node restarted.";
-CM_ SG_ 133 ERROR_COUNT "Faults detected since boot; saturates at 255.";
-CM_ SG_ 133 UPTIME "Seconds since boot; saturates at 65535. A decrease means the node restarted.";
+CM_ SG_ 129 RT_CORE_ERROR_COUNT "Faults detected since boot; saturates at 255.";
+CM_ SG_ 129 RT_CORE_UPTIME "Seconds since boot; saturates at 65535. A decrease means the node restarted.";
+CM_ SG_ 130 SAFETY_ERROR_COUNT "Faults detected since boot; saturates at 255.";
+CM_ SG_ 130 SAFETY_UPTIME "Seconds since boot; saturates at 65535. A decrease means the node restarted.";
+CM_ SG_ 132 CONN_ERROR_COUNT "Faults detected since boot; saturates at 255.";
+CM_ SG_ 132 CONN_UPTIME "Seconds since boot; saturates at 65535. A decrease means the node restarted.";
+CM_ SG_ 133 LINUX_ERROR_COUNT "Faults detected since boot; saturates at 255.";
+CM_ SG_ 133 LINUX_UPTIME "Seconds since boot; saturates at 65535. A decrease means the node restarted.";
 CM_ BO_ 272 "CL250 engine values republished by rt-core from UDS DIDs 0xF40C/0xF442/0xF405/0xF411 (D-021, uds/vehicle_cl250.yaml). Scaling equals the J1979 source scaling.";
 CM_ SG_ 272 ENGINE_SPEED "From DID 0xF40C, (A*256+B)/4.";
 CM_ SG_ 272 BATTERY_VOLTAGE "From DID 0xF442, (A*256+B)/1000.";
@@ -200,10 +200,10 @@ VAL_ 35 CORNERING_SOURCE 0 "NONE" 1 "EKF" 2 "OWN_IMU" 3 "RESERVED" ;
 VAL_ 35 BSM_LEFT 0 "UNAVAILABLE" 1 "CLEAR" 2 "PRESENT" 3 "APPROACHING" ;
 VAL_ 35 BSM_RIGHT 0 "UNAVAILABLE" 1 "CLEAR" 2 "PRESENT" 3 "APPROACHING" ;
 VAL_ 35 IMMOBILIZER_STATE 0 "UNKNOWN" 1 "UNLOCKED" 2 "LOCKED" 3 "AUTH_PENDING" 4 "FAULT" ;
-VAL_ 129 NODE_MODE 0 "INIT" 1 "NORMAL" 2 "DEGRADED" 3 "SAFE_STATE" 4 "BOOTLOADER" 5 "DIAGNOSTIC" ;
-VAL_ 130 NODE_MODE 0 "INIT" 1 "NORMAL" 2 "DEGRADED" 3 "SAFE_STATE" 4 "BOOTLOADER" 5 "DIAGNOSTIC" ;
-VAL_ 132 NODE_MODE 0 "INIT" 1 "NORMAL" 2 "DEGRADED" 3 "SAFE_STATE" 4 "BOOTLOADER" 5 "DIAGNOSTIC" ;
-VAL_ 133 NODE_MODE 0 "INIT" 1 "NORMAL" 2 "DEGRADED" 3 "SAFE_STATE" 4 "BOOTLOADER" 5 "DIAGNOSTIC" ;
+VAL_ 129 RT_CORE_NODE_MODE 0 "INIT" 1 "NORMAL" 2 "DEGRADED" 3 "SAFE_STATE" 4 "BOOTLOADER" 5 "DIAGNOSTIC" ;
+VAL_ 130 SAFETY_NODE_MODE 0 "INIT" 1 "NORMAL" 2 "DEGRADED" 3 "SAFE_STATE" 4 "BOOTLOADER" 5 "DIAGNOSTIC" ;
+VAL_ 132 CONN_NODE_MODE 0 "INIT" 1 "NORMAL" 2 "DEGRADED" 3 "SAFE_STATE" 4 "BOOTLOADER" 5 "DIAGNOSTIC" ;
+VAL_ 133 LINUX_NODE_MODE 0 "INIT" 1 "NORMAL" 2 "DEGRADED" 3 "SAFE_STATE" 4 "BOOTLOADER" 5 "DIAGNOSTIC" ;
 VAL_ 272 ENGINE_SPEED_VALID 0 "INVALID" 1 "VALID" ;
 VAL_ 272 BATTERY_VOLTAGE_VALID 0 "INVALID" 1 "VALID" ;
 VAL_ 272 COOLANT_TEMP_VALID 0 "INVALID" 1 "VALID" ;

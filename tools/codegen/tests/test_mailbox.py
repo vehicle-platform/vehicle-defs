@@ -16,7 +16,7 @@ from vehicle_codegen.yaml_checks import load_yaml
 CC = shutil.which("gcc") or shutil.which("cc")
 FLAGS = ["-std=c99", "-Wall", "-Wextra", "-Werror", "-pedantic"]
 C_DIR = config.GEN_DIR / "c"
-LAYOUT_ID = 0x61F4B364  # pinned: a change is a deliberate layout change (defs MINOR)
+LAYOUT_ID = 0x9B315454  # pinned; was 0x61F4B364 before D-108 renamed signals
 
 
 @pytest.fixture
