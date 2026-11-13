@@ -22,7 +22,16 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                            'again.',
              'action': 'Check the battery first, then test stator continuity and short to '
                        'ground against the service manual values.',
-             'sources': [{'ref': "Partzilla blog, 'Diagnosing motorcycle charging problems', "
+             'sources': [{'ref': "SAE J2012 / ISO 15031-6 generic DTC P0562 'System Voltage "
+                                 "Low' as listed in public mirrors "
+                                 '(https://ricksfreeautorepairadvice.com/obdii-code-list-for-powertrain-p-codes/, '
+                                 'https://club.autodoc.co.uk/obd-codes/all). Supports only the '
+                                 'generic code number and name, not a CL250 or Honda '
+                                 'motorcycle behaviour; SAE text is paywalled; pages not '
+                                 'opened (fetch blocked), read from search-result summaries '
+                                 '(search-summary only, page not opened)',
+                          'confidence': 'low'},
+                         {'ref': "Partzilla blog, 'Diagnosing motorcycle charging problems', "
                                  'https://www.partzilla.com/blog/diagnosing-motorcycle-charging-problems '
                                  '(generic motorcycle); search summary only, not opened',
                           'confidence': 'low'},
@@ -48,7 +57,16 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                            'may stop. Stop somewhere safe and have it inspected.',
              'action': 'Diode-test the regulator/rectifier with its connector unplugged; '
                        'confirm the stator output first.',
-             'sources': [{'ref': "J&P Cycles Common Tread, 'How to test your motorcycle's "
+             'sources': [{'ref': "SAE J2012 / ISO 15031-6 generic DTC P0562 'System Voltage "
+                                 "Low' as listed in public mirrors "
+                                 '(https://ricksfreeautorepairadvice.com/obdii-code-list-for-powertrain-p-codes/, '
+                                 'https://club.autodoc.co.uk/obd-codes/all). Supports only the '
+                                 'generic code number and name, not a CL250 or Honda '
+                                 'motorcycle behaviour; SAE text is paywalled; pages not '
+                                 'opened (fetch blocked), read from search-result summaries '
+                                 '(search-summary only, page not opened)',
+                          'confidence': 'low'},
+                         {'ref': "J&P Cycles Common Tread, 'How to test your motorcycle's "
                                  "stator and regulator/rectifier', "
                                  'https://www.jpcycles.com/common-tread/how-to-test-your-motorcycles-stator-and-regulator-rectifier '
                                  '(generic); search summary only, not opened',
@@ -75,7 +93,16 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                            'riding on.',
              'action': 'Measure the charging voltage at several engine speeds against the '
                        'manual limit; replace the regulator/rectifier if out of range.',
-             'sources': [{'ref': "RevZilla Common Tread, 'How to check your motorcycle's "
+             'sources': [{'ref': "SAE J2012 / ISO 15031-6 generic DTC P0563 'System Voltage "
+                                 "High' as listed in public mirrors "
+                                 '(https://ricksfreeautorepairadvice.com/obdii-code-list-for-powertrain-p-codes/, '
+                                 'https://club.autodoc.co.uk/obd-codes/all). Supports only the '
+                                 'generic code number and name, not a CL250 or Honda '
+                                 'motorcycle behaviour; SAE text is paywalled; pages not '
+                                 'opened (fetch blocked), read from search-result summaries '
+                                 '(search-summary only, page not opened)',
+                          'confidence': 'low'},
+                         {'ref': "RevZilla Common Tread, 'How to check your motorcycle's "
                                  "battery and charging system', "
                                  'https://www.revzilla.com/common-tread/how-to-check-your-motorcycles-battery-and-charging-system '
                                  '(generic); search summary only, not opened',
@@ -284,7 +311,17 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                            'cool. Do not ride on; have it inspected.',
              'action': 'Check the hose temperatures (the engine-to-radiator hose stays cool '
                        'when the thermostat is stuck shut); replace the thermostat.',
-             'sources': [{'ref': "Visordown workshop, 'Overheating motorcycles - cause, effect "
+             'sources': [{'ref': "SAE J2012 / ISO 15031-6 generic DTC P0217 'Engine Coolant "
+                                 "Over Temperature Condition (wording varies by list)' as "
+                                 'listed in public mirrors '
+                                 '(https://ricksfreeautorepairadvice.com/obdii-code-list-for-powertrain-p-codes/, '
+                                 'https://club.autodoc.co.uk/obd-codes/all). Supports only the '
+                                 'generic code number and name, not a CL250 or Honda '
+                                 'motorcycle behaviour; SAE text is paywalled; pages not '
+                                 'opened (fetch blocked), read from search-result summaries '
+                                 '(search-summary only, page not opened)',
+                          'confidence': 'low'},
+                         {'ref': "Visordown workshop, 'Overheating motorcycles - cause, effect "
                                  "and resolution', "
                                  'https://www.visordown.com/features/workshop/ (generic); '
                                  'search summary only, not opened',
@@ -330,7 +367,17 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                            'inspected.',
              'action': 'Check the fuse, relay, connector and fan motor; confirm the '
                        'temperature signal; replace the failed part.',
-             'sources': [{'ref': "Visordown workshop, 'Overheating motorcycles - cause, effect "
+             'sources': [{'ref': "SAE J2012 / ISO 15031-6 generic DTC P0480 'Cooling Fan 1 "
+                                 'Control Circuit (wording varies: Relay 1 Control Circuit '
+                                 "Malfunction)' as listed in public mirrors "
+                                 '(https://www.iatn.net/techmail/summaries/2011/03/index-dtc.html, '
+                                 'https://club.autodoc.co.uk/obd-codes/all). Supports only the '
+                                 'generic code number and name, not a CL250 or Honda '
+                                 'motorcycle behaviour; SAE text is paywalled; pages not '
+                                 'opened (fetch blocked), read from search-result summaries '
+                                 '(search-summary only, page not opened)',
+                          'confidence': 'low'},
+                         {'ref': "Visordown workshop, 'Overheating motorcycles - cause, effect "
                                  "and resolution', "
                                  'https://www.visordown.com/features/workshop/ (generic); '
                                  'search summary only, not opened',
@@ -354,7 +401,17 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                            'on.',
              'action': 'Check the level when cold; inspect the hoses, radiator and cap; '
                        'pressure-test the system.',
-             'sources': [{'ref': "MotorcycleHabit, 'Why is my motorcycle leaking coolant', "
+             'sources': [{'ref': "SAE J2012 / ISO 15031-6 generic DTC P0217 'Engine Coolant "
+                                 "Over Temperature Condition (wording varies by list)' as "
+                                 'listed in public mirrors '
+                                 '(https://ricksfreeautorepairadvice.com/obdii-code-list-for-powertrain-p-codes/, '
+                                 'https://club.autodoc.co.uk/obd-codes/all). Supports only the '
+                                 'generic code number and name, not a CL250 or Honda '
+                                 'motorcycle behaviour; SAE text is paywalled; pages not '
+                                 'opened (fetch blocked), read from search-result summaries '
+                                 '(search-summary only, page not opened)',
+                          'confidence': 'low'},
+                         {'ref': "MotorcycleHabit, 'Why is my motorcycle leaking coolant', "
                                  'https://motorcyclehabit.com/why-is-my-motorcycle-leaking-coolant '
                                  '(generic); search summary only, not opened',
                           'confidence': 'low'},
@@ -403,7 +460,17 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                            'it overheats.',
              'action': 'Check the sensor resistance against the manual and the wiring and '
                        'connector; replace the sensor.',
-             'sources': [{'ref': "RideApart, 'Motorcycle cooling systems (Doctor Moto)', "
+             'sources': [{'ref': "SAE J2012 / ISO 15031-6 generic DTC P0117/P0118 'Engine "
+                                 "Coolant Temperature Circuit Low/High Input' as listed in "
+                                 'public mirrors '
+                                 '(https://ricksfreeautorepairadvice.com/obdii-code-list-for-powertrain-p-codes/, '
+                                 'https://club.autodoc.co.uk/obd-codes/all). Supports only the '
+                                 'generic code number and name, not a CL250 or Honda '
+                                 'motorcycle behaviour; SAE text is paywalled; pages not '
+                                 'opened (fetch blocked), read from search-result summaries '
+                                 '(search-summary only, page not opened)',
+                          'confidence': 'low'},
+                         {'ref': "RideApart, 'Motorcycle cooling systems (Doctor Moto)', "
                                  'https://www.rideapart.com/features/253816/motorcycle-cooling-systems-doctor-moto/ '
                                  '(generic); search summary only, not opened',
                           'confidence': 'low'}],
@@ -455,7 +522,16 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
              'action': 'Log RPM while heating and wiggling the harness; inspect CKP connector '
                        'pins and wiring; replace sensor if the signal drops out. Faults may '
                        'not set a DTC.',
-             'sources': [{'ref': "Crankshaft/camshaft position sensors — Danny's Engine "
+             'sources': [{'ref': "SAE J2012 / ISO 15031-6 generic DTC P0335 'Crankshaft "
+                                 "Position Sensor A Circuit' as listed in public mirrors "
+                                 '(https://www.iatn.net/techmail/summaries/2011/03/index-dtc.html, '
+                                 'https://club.autodoc.co.uk/obd-codes/all). Supports only the '
+                                 'generic code number and name, not a CL250 or Honda '
+                                 'motorcycle behaviour; SAE text is paywalled; pages not '
+                                 'opened (fetch blocked), read from search-result summaries '
+                                 '(search-summary only, page not opened)',
+                          'confidence': 'low'},
+                         {'ref': "Crankshaft/camshaft position sensors — Danny's Engine "
                                  'Portal, n.d., '
                                  'https://dannysengineportal.com/crankshaft-camshaft-position-sensors/ '
                                  '(states a sensor may work cold but fail hot; intermittent '
@@ -582,7 +658,16 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
                            'hoses and joints checked soon; a lean engine can run hot.',
              'action': 'Inspect intake boot, throttle-body and manifold seals and vacuum '
                        'lines; smoke test; recheck trims after repair.',
-             'sources': [{'ref': 'Code P0171 System Too Lean — Samarins, n.d., '
+             'sources': [{'ref': "SAE J2012 / ISO 15031-6 generic DTC P0171 'System Too Lean "
+                                 "(Bank 1)' as listed in public mirrors "
+                                 '(https://club.autodoc.co.uk/obd-codes/all, '
+                                 'https://www.iatn.net/techmail/summaries/2011/03/index-dtc.html). '
+                                 'Supports only the generic code number and name, not a CL250 '
+                                 'or Honda motorcycle behaviour; SAE text is paywalled; pages '
+                                 'not opened (fetch blocked), read from search-result '
+                                 'summaries (search-summary only, page not opened)',
+                          'confidence': 'low'},
+                         {'ref': 'Code P0171 System Too Lean — Samarins, n.d., '
                                  'https://www.samarins.com/diagnose/p0171.html (vacuum leak: '
                                  'high trim at idle that drops at higher RPM; low fuel '
                                  'pressure: trim rises at higher RPM)',
@@ -726,7 +811,17 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
              'action': 'Sweep the throttle slowly while logging THROTTLE_POS and look for '
                        'jumps; check connector and 5 V reference; replace the sensor if '
                        'erratic.',
-             'sources': [{'ref': 'Symptoms of a bad throttle position sensor — Apollo Offroad, '
+             'sources': [{'ref': "SAE J2012 / ISO 15031-6 generic DTC P0120 'Throttle/Pedal "
+                                 "Position Sensor/Switch A Circuit' as listed in public "
+                                 'mirrors '
+                                 '(https://www.iatn.net/techmail/summaries/2011/03/index-dtc.html, '
+                                 'https://club.autodoc.co.uk/obd-codes/all). Supports only the '
+                                 'generic code number and name, not a CL250 or Honda '
+                                 'motorcycle behaviour; SAE text is paywalled; pages not '
+                                 'opened (fetch blocked), read from search-result summaries '
+                                 '(search-summary only, page not opened)',
+                          'confidence': 'low'},
+                         {'ref': 'Symptoms of a bad throttle position sensor — Apollo Offroad, '
                                  'n.d., '
                                  'https://apollooffroad.com/blogs/default-blog/blog-symptoms-of-a-bad-throttle-position-sensor '
                                  '(hesitation, idle irregularities or stalling; car-focused)',
@@ -1709,7 +1804,17 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
              'action': 'Read stored fault codes with a Honda-capable scan tool, check the '
                        'sensor heater circuit and wiring, then replace the sensor if out of '
                        'specification.',
-             'sources': [{'ref': 'Honda Motorcycle Aftersales Plus One, DTC and PGM-FI '
+             'sources': [{'ref': "SAE J2012 / ISO 15031-6 generic DTC P0130 'O2 Sensor Circuit "
+                                 "(Bank 1 Sensor 1); the heater circuit code was not verified' "
+                                 'as listed in public mirrors '
+                                 '(https://www.iatn.net/techmail/summaries/2011/03/index-dtc.html, '
+                                 'https://club.autodoc.co.uk/obd-codes/all). Supports only the '
+                                 'generic code number and name, not a CL250 or Honda '
+                                 'motorcycle behaviour; SAE text is paywalled; pages not '
+                                 'opened (fetch blocked), read from search-result summaries '
+                                 '(search-summary only, page not opened)',
+                          'confidence': 'low'},
+                         {'ref': 'Honda Motorcycle Aftersales Plus One, DTC and PGM-FI '
                                  'diagnostics article - Honda Motor Co., 2025, '
                                  'https://global.honda/en/motorcycle-aftersales/plusone/202506.html '
                                  '(supports only: PGM-FI stores DTCs, scan tool recommended; '
@@ -1757,7 +1862,16 @@ FAULTS = {'CHG-001': {'id': 'CHG-001',
              'action': 'Check throttle body and idle air passages for deposits, intake leaks '
                        'and the valve connector and wiring, then clean or replace the valve '
                        'per the model service manual.',
-             'sources': [{'ref': 'Honda Motorcycle Aftersales Plus One, DTC and PGM-FI '
+             'sources': [{'ref': "SAE J2012 / ISO 15031-6 generic DTC P0505 'Idle Control "
+                                 "System Malfunction' as listed in public mirrors "
+                                 '(https://www.iatn.net/techmail/summaries/2011/03/index-dtc.html, '
+                                 'https://club.autodoc.co.uk/obd-codes/all). Supports only the '
+                                 'generic code number and name, not a CL250 or Honda '
+                                 'motorcycle behaviour; SAE text is paywalled; pages not '
+                                 'opened (fetch blocked), read from search-result summaries '
+                                 '(search-summary only, page not opened)',
+                          'confidence': 'low'},
+                         {'ref': 'Honda Motorcycle Aftersales Plus One, DTC and PGM-FI '
                                  'diagnostics article - Honda Motor Co., 2025, '
                                  'https://global.honda/en/motorcycle-aftersales/plusone/202506.html '
                                  '(supports only: PGM-FI stores DTCs; idle-valve failure '
