@@ -63,11 +63,7 @@ Incremental rollout: a unit is not added until its function arrives (see hardwar
 - **Two chips, physical isolation (D-118, supersedes the D-072 single-chip partition).** rt-core (H743) owns FDCAN1 (vehicle bus) and FDCAN2 (platform bus). The safety MCU (G474) is a node on the platform bus only: it receives 0x020/0x022/0x081 (safety inputs, E2E) and 0x120 (QM, immobilizer only) and sends 0x023 and its heartbeat 0x082 itself. Own clock, flash, RAM, watchdog and reset; it starts without rt-core. Masquerade on the shared bus is covered by sender-filtered codegen, per-message E2E Data ID/counter (a second sender → WRONG_SEQUENCE → own-IMU fallback) and the HARA (D-118 item 4). Common causes left: the supply chain and the bus wiring. The OTA A/B scheme of rt-core stays inside its own flash.
 - **rt-core republishes vehicle signals** (speed, RPM, coolant, TPS, battery) on the platform bus (state range 0x100-0x3FF; vehicle speed keeps its E2E protection for its other consumers, but safety-node does not read 0x021, D-041). Everyone else, including the Raspi's kuksa-can-provider (`platform.dbc`), reads them there (D-021). safety-node takes only lean and µ from rt-core (D-041), over the platform bus (D-118); when they are not usable it falls back to its own IMU (D-042, Q-002 resolved).
 - ~~The safety node also listens to the vehicle bus~~ and ~~rt-core does not forward vehicle signals~~ (D-009 bullets superseded by D-021).
-<<<<<<< HEAD
-- rt-core ↔ bike ESP32-S3: SPI/UART simple framed messaging (format to be co-designed, Q-004) or the platform bus. Bike ESP32 ↔ helmet ESP32: BLE, layout defined in `ble/` (D-073). Phase 2: SOME/IP.
-=======
-- rt-core (M7) ↔ bike ESP32-S3: the platform bus, no separate bridge (D-112, provisional). Bike ESP32 ↔ helmet ESP32: BLE, layout defined in `ble/` (D-073). Phase 2: SOME/IP.
->>>>>>> origin/main
+- rt-core ↔ bike ESP32-S3: the platform bus, no separate bridge (D-112, provisional). Bike ESP32 ↔ helmet ESP32: BLE, layout defined in `ble/` (D-073). Phase 2: SOME/IP.
 
 ---
 
