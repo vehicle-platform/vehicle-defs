@@ -16,7 +16,9 @@ from vehicle_codegen.yaml_checks import load_yaml
 CC = shutil.which("gcc") or shutil.which("cc")
 FLAGS = ["-std=c99", "-Wall", "-Wextra", "-Werror", "-pedantic"]
 C_DIR = config.GEN_DIR / "c"
-LAYOUT_ID = 0x61F4B364  # pinned: a change is a deliberate layout change (defs MINOR)
+# Pinned: a change of LAYOUT_ID is a deliberate layout change. History: 0x61F4B364 -> 0x9B315454
+# when D-108 renamed the heartbeat signals (the names are in the CRC).
+LAYOUT_ID = 0x9B315454
 
 
 @pytest.fixture
@@ -194,6 +196,25 @@ def test_layout_id_follows_the_dbc_message(doc, platform_db, platform_text, old,
 
     base = gen_mailbox.layout_id(gen_mailbox.resolve(doc, platform_db), platform_db)
     db = parse_dbc(platform_text.replace(old, new, 1))
+    assert gen_mailbox.layout_id(gen_mailbox.resolve(doc, db), db) != base
+
+
+def test_layout_id_follows_signal_names(doc, platform_db, platform_text):
+    """Swapping the names of two same-width signals of a slot message changes the ID.
+
+    Same bit positions, widths and scales: only the names differ. This pins why the names are
+    in the CRC (D-108): a peer built from a different naming must read MISMATCH.
+    """
+    from conftest import parse_dbc
+
+    a = ' SG_ E2E_CRC : 0|8@1+ (1,0) [0|255] "" SAFETY,CONN,LINUX\n'
+    b = ' SG_ RT_CORE_ERROR_COUNT : 16|8@1+ (1,0) [0|255] "" SAFETY,CONN,LINUX\n'
+    assert a in platform_text and b in platform_text, "DBC text changed, update the variant"
+    swapped = platform_text.replace(a, a.replace("E2E_CRC", "RT_CORE_ERROR_COUNT"))
+    swapped = swapped.replace(b, b.replace("RT_CORE_ERROR_COUNT", "E2E_CRC"))
+    assert swapped != platform_text
+    base = gen_mailbox.layout_id(gen_mailbox.resolve(doc, platform_db), platform_db)
+    db = parse_dbc(swapped)
     assert gen_mailbox.layout_id(gen_mailbox.resolve(doc, db), db) != base
 
 

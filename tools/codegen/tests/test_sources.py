@@ -46,7 +46,7 @@ def test_overlay_maps_existing_signals_only(platform_db):
 
 def test_overlay_rejects_ambiguous_and_unknown_choices(platform_db):
     bad = {
-        "Vehicle.Speed": {"dbc2vss": {"signal": "NODE_MODE", "interval_ms": 100}},
+        "Vehicle.Speed": {"dbc2vss": {"signal": "E2E_CRC", "interval_ms": 100}},
         "Vehicle.Motorcycle.IsEcuPresent": {
             "dbc2vss": {
                 "signal": "ECU_PRESENT",

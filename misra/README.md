@@ -23,5 +23,6 @@ The D-020 gate (`vehicle_cl250.c`) has no deviation. Since ISSUES C-6 its five f
 
 **Not decided by the tool here:**
 - 12.2 through the `shift` parameter of cantools' helpers. cantools passes constant shifts that fit the type; the helper check above covers every shift.
+- 5.1 (external identifiers distinct in 31 characters): the doubled-prefix names generated since D-108 (for example `PLATFORM_HEARTBEAT_RT_CORE_RT_CORE_NODE_MODE_*_CHOICE`) share their first 31 characters, same as the existing `*_e2_e_*` pattern. The supported GCC toolchains give external names full significance, so this is a toolchain argument, not a code fix.
 
 Baseline at the switch to blocking (2026-10-01, cppcheck 2.22, all five nodes, before `unix32` and the header-only files were added): 678 × 8.7, 597 × 2.5, 165 × 15.5, 45 × 17.7, 28 × 15.6, 10 × 10.8, 6 × 2.3, 6 × 2.4 and 5 × `variableScope` (style). 17.7, 15.6, 10.8 (all required) and `variableScope` (in `vehicle_e2e_crc()`) were fixed in the codegen. The rest are DEV-001..DEV-004.
