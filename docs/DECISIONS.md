@@ -942,6 +942,13 @@ Both modes share the scenario format and the evaluation/report. Before hardware 
 - Not chosen: renew per FF (a chatty ECU silences the sole tester forever, E-16); a 2x/3x total cap (longer blackouts, longer 0x020 INVALID stretches, the edge request still lands in the last FF's N_Bs); renew N times (the time bound depends on the FF rate).
 - Why: resuming is harmless to the ECU (no FC is sent, so its transfer never passes the FF; requests are gated read-only Single Frames, one tester), while indefinite silence starves the lean and session keep-alive inputs.
 
+**D-117 — Electronics CAD is KiCad, mechanical CAD is FreeCAD; Fusion is retired** (2026-11-15, user: "I am switching straight to KiCad"; mechanical: FreeCAD; D-082, Q-034, D-033)
+1. **Electronics (schematic + PCB): KiCad** (stable release, 9.x or newer). The module libraries move from vehicle-workspace `models/fusion-lib` (Eagle `.lbr`) to `models/kicad-lib`: the same stdlib-only generator now emits `moto-*.kicad_sym` symbol libraries and `moto-*.pretty` footprint libraries from the same module data, so the pin names, pad positions and Confidence notes do not change. One KiCad project per design (`moto-bike-p0`, `moto-bike`, `moto-helmet`, `moto-hil`); `moto-bike` keeps sheets S1–S5 as hierarchical sheets. Nets that cross sheets are global labels (KiCad local labels do not merge across sheets, Fusion's did), names exactly as in `SCHEMATIC-README.md` §2. ERC passes before a sheet counts as done.
+2. **Mechanical (enclosures, IMU boxes, Main Box placement, Q-034 once measured): FreeCAD** with the KiCad StepUp workbench for the board ↔ enclosure STEP exchange. Reference images and Meshy meshes in `models/hardware-integration/` are calibrated in FreeCAD.
+3. **Unchanged:** the atlas figures (`docs/img/hardware/`) stay the reference for every sheet, the CONFIRM/TBD rule stays (no pin drawn on a guess), and the CubeMX `.ioc` check of `h755-pin-plan.md` (T6) still precedes the S2/S4 sheets. The CubeMX pin plan feeds the KiCad Nucleo symbol's signal names.
+- Not chosen: staying on Fusion (free licence limits schematic sheets, binary cloud files do not diff in git, closed tool for a public repo); KiCad + Fusion for mechanics (two vendors' accounts and an extra export step; the user prefers an open toolchain).
+- Why: both tools are free and open source, run natively on the user's Apple Silicon Mac, store text files that diff and review in the public repos (D-033), and KiCad has no sheet limit for the five-sheet `moto-bike` design.
+
 ## Open questions (awaiting decision)
 
 | ID | Question | When to resolve | Note |
