@@ -63,7 +63,7 @@ Incremental rollout: a unit is not added until its function arrives (see hardwar
 - **One chip, two partitions (D-072).** The Cortex-M7 (rt-core) owns both FDCANs; the Cortex-M4 safety partition has no CAN and gets 0x020/0x022/0x081 through an HSEM-guarded shared-SRAM mailbox that keeps the platform payloads and their E2E checks. The M7 forwards the M4 heartbeat 0x082 and its warning/status bytes verbatim (never re-signs them) and stops when a slot is not updated. Peripherals, memory, GPIO ports and watchdogs are fixed per core, the clock tree is set once at boot, the M4 boots on its own from flash bank 2; power, clock, reset and silicon are shared, and IWDG/system resets restart both cores (accepted, D-072 items 4-5). The OTA A/B scheme stays inside bank 1 (D-072 item 4f).
 - **rt-core republishes vehicle signals** (speed, RPM, coolant, TPS, battery) on the platform bus (state range 0x100-0x3FF; vehicle speed keeps its E2E protection for its other consumers, but safety-node does not read 0x021, D-041). Everyone else, including the Raspi's kuksa-can-provider (`platform.dbc`), reads them there (D-021). safety-node takes only lean and µ from rt-core (D-041), now through the mailbox (D-072); when they are not usable it falls back to its own IMU (D-042, Q-002 resolved).
 - ~~The safety node also listens to the vehicle bus~~ and ~~rt-core does not forward vehicle signals~~ (D-009 bullets superseded by D-021).
-- rt-core (M7) ↔ bike ESP32-S3: SPI/UART simple framed messaging (format to be co-designed, Q-004) or the platform bus. Bike ESP32 ↔ helmet ESP32: BLE, layout defined in `ble/` (D-073). Phase 2: SOME/IP.
+- rt-core (M7) ↔ bike ESP32-S3: the platform bus, no separate bridge (D-112, provisional). Bike ESP32 ↔ helmet ESP32: BLE, layout defined in `ble/` (D-073). Phase 2: SOME/IP.
 
 ---
 
@@ -147,7 +147,7 @@ tests/host/             host-native unit tests with Unity (pure logic: EKF, ISO-
 | LLM assistant | vehicle-mcp (read-only) on the Raspi (localhost, offline) and on the remote vehicle-server (TLS + auth, D-077) → LLM; position and windowed slices allowed provisionally (D-076, Q-035); the LLM does no math | local/HTTPS | none |
 | OTA | vehicle-server → Raspi → UDS bootloader (platform CAN) → MCU A/B bank | CAN | controlled |
 | Engineering analysis (D-081) | vehicle + platform CAN (USB adapter, listen-only), recorded logs or the vehicle-server live stream (`/ws/live`; only a mock source for now, the real source via the Raspi is open under D-077) → vehicle-analyzer (web host, later Tauri desktop); decodes only from the pinned defs, never transmits on a vehicle bus | USB/local/HTTPS | none |
-| Rider layer (D-085) | own motorcycle (Raspi, remote vehicle-server) → rider front end (repo open, Q-037); explanations from the LLM through vehicle-mcp; high-severity catalog results shown directly, without the LLM | local/HTTPS | none (advice, QM) |
+| Rider layer (D-085) | own motorcycle (Raspi, remote vehicle-server) → vehicle-mobile over the vehicle-server API (D-115, provisional); explanations from the LLM through vehicle-mcp; high-severity catalog results shown directly, without the LLM | local/HTTPS | none (advice, QM) |
 
 ---
 
@@ -160,7 +160,7 @@ tests/host/             host-native unit tests with Unity (pure logic: EKF, ISO-
 | L2 | HIL: real DUT + STM32F4 restbus + fault injection | i7 bench | self-hosted runner, nightly/labeled PR |
 | L3 | On-vehicle T0-T4 | CL250 | manual, per protocol |
 
-Requirement–test traceability (Ç8): requirement IDs (`REQ-<DOMAIN>-NNN`) appear in test names/comments. Where the HARA/FMEA and requirements files live is open in Q-006.
+Requirement–test traceability (Ç8): requirement IDs (`REQ-<DOMAIN>-NNN`) appear in test names/comments. HARA and requirements live in `safety/` and `requirements/` of vehicle-defs as YAML with a CI check (D-113, provisional).
 
 ---
 
@@ -185,6 +185,6 @@ The thesis core (Ç1-Ç8) is covered by steps 1-4 above, plus HIL, in this order
 | Ç5 | HIL bench software: scenario engine, fault injection, automatic evaluation, report | log replay + live model (D-035) | vehicle-hil-bench |
 | Ç6 | Test automation: self-hosted runner, build + static analysis + on-hardware regression per commit | needs the NUCLEO-H755ZI-Q (D-072) | all firmware repos |
 | Ç7 | Data collection: signal logging, timestamps, metadata, storage schema | `phase0-data-collection-plan.md` | connectivity-node, mobile, server |
-| Ç8 | Process documentation: HARA, requirement–test traceability, FMEA (ISO 26262 approach) | location open (Q-006) | vehicle-defs |
+| Ç8 | Process documentation: HARA, requirement–test traceability, FMEA (ISO 26262 approach) | `vehicle-defs/safety/` + `requirements/` (D-113, provisional) | vehicle-defs |
 
 Extended scope G1-G5 (bootloader, XCP, riding modes, voice, client-server) is in the same Turkish document §5.2.
