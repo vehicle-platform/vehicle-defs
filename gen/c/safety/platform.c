@@ -547,10 +547,10 @@ int platform_heartbeat_rt_core_unpack(
 
     dst_p->e2_e_crc = unpack_right_shift_u8(src_p[0], 0u, 0xffu);
     dst_p->e2_e_counter = unpack_right_shift_u8(src_p[1], 0u, 0x0fu);
-    dst_p->node_mode = unpack_right_shift_u8(src_p[1], 4u, 0xf0u);
-    dst_p->error_count = unpack_right_shift_u8(src_p[2], 0u, 0xffu);
-    dst_p->uptime = unpack_right_shift_u16(src_p[3], 0u, 0xffu);
-    dst_p->uptime |= unpack_left_shift_u16(src_p[4], 8u, 0xffu);
+    dst_p->rt_core_node_mode = unpack_right_shift_u8(src_p[1], 4u, 0xf0u);
+    dst_p->rt_core_error_count = unpack_right_shift_u8(src_p[2], 0u, 0xffu);
+    dst_p->rt_core_uptime = unpack_right_shift_u16(src_p[3], 0u, 0xffu);
+    dst_p->rt_core_uptime |= unpack_left_shift_u16(src_p[4], 8u, 0xffu);
 
     return (0);
 }
@@ -598,51 +598,51 @@ bool platform_heartbeat_rt_core_e2_e_counter_is_in_phys_range(float value)
     return ((value >= 0.0f) && (value <= 15.0f));
 }
 
-float platform_heartbeat_rt_core_node_mode_decode(uint8_t value)
+float platform_heartbeat_rt_core_rt_core_node_mode_decode(uint8_t value)
 {
     return ((float)value);
 }
 
-bool platform_heartbeat_rt_core_node_mode_is_in_range(uint8_t value)
+bool platform_heartbeat_rt_core_rt_core_node_mode_is_in_range(uint8_t value)
 {
     return (value <= 15u);
 }
 
-bool platform_heartbeat_rt_core_node_mode_is_in_phys_range(float value)
+bool platform_heartbeat_rt_core_rt_core_node_mode_is_in_phys_range(float value)
 {
     return ((value >= 0.0f) && (value <= 15.0f));
 }
 
-float platform_heartbeat_rt_core_error_count_decode(uint8_t value)
+float platform_heartbeat_rt_core_rt_core_error_count_decode(uint8_t value)
 {
     return ((float)value);
 }
 
-bool platform_heartbeat_rt_core_error_count_is_in_range(uint8_t value)
+bool platform_heartbeat_rt_core_rt_core_error_count_is_in_range(uint8_t value)
 {
     (void)value;
 
     return (true);
 }
 
-bool platform_heartbeat_rt_core_error_count_is_in_phys_range(float value)
+bool platform_heartbeat_rt_core_rt_core_error_count_is_in_phys_range(float value)
 {
     return ((value >= 0.0f) && (value <= 255.0f));
 }
 
-float platform_heartbeat_rt_core_uptime_decode(uint16_t value)
+float platform_heartbeat_rt_core_rt_core_uptime_decode(uint16_t value)
 {
     return ((float)value);
 }
 
-bool platform_heartbeat_rt_core_uptime_is_in_range(uint16_t value)
+bool platform_heartbeat_rt_core_rt_core_uptime_is_in_range(uint16_t value)
 {
     (void)value;
 
     return (true);
 }
 
-bool platform_heartbeat_rt_core_uptime_is_in_phys_range(float value)
+bool platform_heartbeat_rt_core_rt_core_uptime_is_in_phys_range(float value)
 {
     return ((value >= 0.0f) && (value <= 65535.0f));
 }
@@ -660,10 +660,10 @@ int platform_heartbeat_safety_pack(
 
     dst_p[0] |= pack_left_shift_u8(src_p->e2_e_crc, 0u, 0xffu);
     dst_p[1] |= pack_left_shift_u8(src_p->e2_e_counter, 0u, 0x0fu);
-    dst_p[1] |= pack_left_shift_u8(src_p->node_mode, 4u, 0xf0u);
-    dst_p[2] |= pack_left_shift_u8(src_p->error_count, 0u, 0xffu);
-    dst_p[3] |= pack_left_shift_u16(src_p->uptime, 0u, 0xffu);
-    dst_p[4] |= pack_right_shift_u16(src_p->uptime, 8u, 0xffu);
+    dst_p[1] |= pack_left_shift_u8(src_p->safety_node_mode, 4u, 0xf0u);
+    dst_p[2] |= pack_left_shift_u8(src_p->safety_error_count, 0u, 0xffu);
+    dst_p[3] |= pack_left_shift_u16(src_p->safety_uptime, 0u, 0xffu);
+    dst_p[4] |= pack_right_shift_u16(src_p->safety_uptime, 8u, 0xffu);
 
     return (8);
 }
@@ -725,7 +725,7 @@ bool platform_heartbeat_safety_e2_e_counter_is_in_phys_range(float value)
     return ((value >= 0.0f) && (value <= 15.0f));
 }
 
-uint8_t platform_heartbeat_safety_node_mode_encode(float value)
+uint8_t platform_heartbeat_safety_safety_node_mode_encode(float value)
 {
     const float raw = value;
     float rounded = 0.0f;
@@ -737,17 +737,17 @@ uint8_t platform_heartbeat_safety_node_mode_encode(float value)
     return (uint8_t)rounded;
 }
 
-bool platform_heartbeat_safety_node_mode_is_in_range(uint8_t value)
+bool platform_heartbeat_safety_safety_node_mode_is_in_range(uint8_t value)
 {
     return (value <= 15u);
 }
 
-bool platform_heartbeat_safety_node_mode_is_in_phys_range(float value)
+bool platform_heartbeat_safety_safety_node_mode_is_in_phys_range(float value)
 {
     return ((value >= 0.0f) && (value <= 15.0f));
 }
 
-uint8_t platform_heartbeat_safety_error_count_encode(float value)
+uint8_t platform_heartbeat_safety_safety_error_count_encode(float value)
 {
     const float raw = value;
     float rounded = 0.0f;
@@ -759,19 +759,19 @@ uint8_t platform_heartbeat_safety_error_count_encode(float value)
     return (uint8_t)rounded;
 }
 
-bool platform_heartbeat_safety_error_count_is_in_range(uint8_t value)
+bool platform_heartbeat_safety_safety_error_count_is_in_range(uint8_t value)
 {
     (void)value;
 
     return (true);
 }
 
-bool platform_heartbeat_safety_error_count_is_in_phys_range(float value)
+bool platform_heartbeat_safety_safety_error_count_is_in_phys_range(float value)
 {
     return ((value >= 0.0f) && (value <= 255.0f));
 }
 
-uint16_t platform_heartbeat_safety_uptime_encode(float value)
+uint16_t platform_heartbeat_safety_safety_uptime_encode(float value)
 {
     const float raw = value;
     float rounded = 0.0f;
@@ -783,14 +783,14 @@ uint16_t platform_heartbeat_safety_uptime_encode(float value)
     return (uint16_t)rounded;
 }
 
-bool platform_heartbeat_safety_uptime_is_in_range(uint16_t value)
+bool platform_heartbeat_safety_safety_uptime_is_in_range(uint16_t value)
 {
     (void)value;
 
     return (true);
 }
 
-bool platform_heartbeat_safety_uptime_is_in_phys_range(float value)
+bool platform_heartbeat_safety_safety_uptime_is_in_phys_range(float value)
 {
     return ((value >= 0.0f) && (value <= 65535.0f));
 }
@@ -953,7 +953,7 @@ int platform_safety_warning_status_pack_checked(
     return (result);
 }
 
-bool platform_heartbeat_safety_node_mode_is_defined(uint8_t value)
+bool platform_heartbeat_safety_safety_node_mode_is_defined(uint8_t value)
 {
     return ((value == 0u) || (value == 1u) || (value == 2u) || (value == 3u) || (value == 4u) || (value == 5u));
 }
@@ -969,10 +969,10 @@ int platform_heartbeat_safety_pack_checked(
         (src_p != NULL) &&
         platform_heartbeat_safety_e2_e_crc_is_in_range(src_p->e2_e_crc) &&
         platform_heartbeat_safety_e2_e_counter_is_in_range(src_p->e2_e_counter) &&
-        platform_heartbeat_safety_node_mode_is_in_range(src_p->node_mode) &&
-        platform_heartbeat_safety_node_mode_is_defined(src_p->node_mode) &&
-        platform_heartbeat_safety_error_count_is_in_range(src_p->error_count) &&
-        platform_heartbeat_safety_uptime_is_in_range(src_p->uptime)) {
+        platform_heartbeat_safety_safety_node_mode_is_in_range(src_p->safety_node_mode) &&
+        platform_heartbeat_safety_safety_node_mode_is_defined(src_p->safety_node_mode) &&
+        platform_heartbeat_safety_safety_error_count_is_in_range(src_p->safety_error_count) &&
+        platform_heartbeat_safety_safety_uptime_is_in_range(src_p->safety_uptime)) {
         result = platform_heartbeat_safety_pack(dst_p, src_p, size);
     }
 

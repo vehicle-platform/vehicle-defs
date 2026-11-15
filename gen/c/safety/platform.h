@@ -118,19 +118,19 @@ extern "C" {
 #define PLATFORM_SAFETY_WARNING_STATUS_IMMOBILIZER_STATE_AUTH_PENDING_CHOICE (3u)
 #define PLATFORM_SAFETY_WARNING_STATUS_IMMOBILIZER_STATE_FAULT_CHOICE (4u)
 
-#define PLATFORM_HEARTBEAT_RT_CORE_NODE_MODE_INIT_CHOICE (0u)
-#define PLATFORM_HEARTBEAT_RT_CORE_NODE_MODE_NORMAL_CHOICE (1u)
-#define PLATFORM_HEARTBEAT_RT_CORE_NODE_MODE_DEGRADED_CHOICE (2u)
-#define PLATFORM_HEARTBEAT_RT_CORE_NODE_MODE_SAFE_STATE_CHOICE (3u)
-#define PLATFORM_HEARTBEAT_RT_CORE_NODE_MODE_BOOTLOADER_CHOICE (4u)
-#define PLATFORM_HEARTBEAT_RT_CORE_NODE_MODE_DIAGNOSTIC_CHOICE (5u)
+#define PLATFORM_HEARTBEAT_RT_CORE_RT_CORE_NODE_MODE_INIT_CHOICE (0u)
+#define PLATFORM_HEARTBEAT_RT_CORE_RT_CORE_NODE_MODE_NORMAL_CHOICE (1u)
+#define PLATFORM_HEARTBEAT_RT_CORE_RT_CORE_NODE_MODE_DEGRADED_CHOICE (2u)
+#define PLATFORM_HEARTBEAT_RT_CORE_RT_CORE_NODE_MODE_SAFE_STATE_CHOICE (3u)
+#define PLATFORM_HEARTBEAT_RT_CORE_RT_CORE_NODE_MODE_BOOTLOADER_CHOICE (4u)
+#define PLATFORM_HEARTBEAT_RT_CORE_RT_CORE_NODE_MODE_DIAGNOSTIC_CHOICE (5u)
 
-#define PLATFORM_HEARTBEAT_SAFETY_NODE_MODE_INIT_CHOICE (0u)
-#define PLATFORM_HEARTBEAT_SAFETY_NODE_MODE_NORMAL_CHOICE (1u)
-#define PLATFORM_HEARTBEAT_SAFETY_NODE_MODE_DEGRADED_CHOICE (2u)
-#define PLATFORM_HEARTBEAT_SAFETY_NODE_MODE_SAFE_STATE_CHOICE (3u)
-#define PLATFORM_HEARTBEAT_SAFETY_NODE_MODE_BOOTLOADER_CHOICE (4u)
-#define PLATFORM_HEARTBEAT_SAFETY_NODE_MODE_DIAGNOSTIC_CHOICE (5u)
+#define PLATFORM_HEARTBEAT_SAFETY_SAFETY_NODE_MODE_INIT_CHOICE (0u)
+#define PLATFORM_HEARTBEAT_SAFETY_SAFETY_NODE_MODE_NORMAL_CHOICE (1u)
+#define PLATFORM_HEARTBEAT_SAFETY_SAFETY_NODE_MODE_DEGRADED_CHOICE (2u)
+#define PLATFORM_HEARTBEAT_SAFETY_SAFETY_NODE_MODE_SAFE_STATE_CHOICE (3u)
+#define PLATFORM_HEARTBEAT_SAFETY_SAFETY_NODE_MODE_BOOTLOADER_CHOICE (4u)
+#define PLATFORM_HEARTBEAT_SAFETY_SAFETY_NODE_MODE_DIAGNOSTIC_CHOICE (5u)
 
 #define PLATFORM_SAFETY_REQUEST_IGNITION_STATE_UNKNOWN_CHOICE (0u)
 #define PLATFORM_SAFETY_REQUEST_IGNITION_STATE_OFF_CHOICE (1u)
@@ -178,14 +178,14 @@ extern "C" {
 #define PLATFORM_SAFETY_WARNING_STATUS_IMMOBILIZER_STATE_NAME "IMMOBILIZER_STATE"
 #define PLATFORM_HEARTBEAT_RT_CORE_E2_E_CRC_NAME "E2E_CRC"
 #define PLATFORM_HEARTBEAT_RT_CORE_E2_E_COUNTER_NAME "E2E_COUNTER"
-#define PLATFORM_HEARTBEAT_RT_CORE_NODE_MODE_NAME "NODE_MODE"
-#define PLATFORM_HEARTBEAT_RT_CORE_ERROR_COUNT_NAME "ERROR_COUNT"
-#define PLATFORM_HEARTBEAT_RT_CORE_UPTIME_NAME "UPTIME"
+#define PLATFORM_HEARTBEAT_RT_CORE_RT_CORE_NODE_MODE_NAME "RT_CORE_NODE_MODE"
+#define PLATFORM_HEARTBEAT_RT_CORE_RT_CORE_ERROR_COUNT_NAME "RT_CORE_ERROR_COUNT"
+#define PLATFORM_HEARTBEAT_RT_CORE_RT_CORE_UPTIME_NAME "RT_CORE_UPTIME"
 #define PLATFORM_HEARTBEAT_SAFETY_E2_E_CRC_NAME "E2E_CRC"
 #define PLATFORM_HEARTBEAT_SAFETY_E2_E_COUNTER_NAME "E2E_COUNTER"
-#define PLATFORM_HEARTBEAT_SAFETY_NODE_MODE_NAME "NODE_MODE"
-#define PLATFORM_HEARTBEAT_SAFETY_ERROR_COUNT_NAME "ERROR_COUNT"
-#define PLATFORM_HEARTBEAT_SAFETY_UPTIME_NAME "UPTIME"
+#define PLATFORM_HEARTBEAT_SAFETY_SAFETY_NODE_MODE_NAME "SAFETY_NODE_MODE"
+#define PLATFORM_HEARTBEAT_SAFETY_SAFETY_ERROR_COUNT_NAME "SAFETY_ERROR_COUNT"
+#define PLATFORM_HEARTBEAT_SAFETY_SAFETY_UPTIME_NAME "SAFETY_UPTIME"
 #define PLATFORM_SAFETY_REQUEST_E2_E_CRC_NAME "E2E_CRC"
 #define PLATFORM_SAFETY_REQUEST_E2_E_COUNTER_NAME "E2E_COUNTER"
 #define PLATFORM_SAFETY_REQUEST_IGNITION_STATE_NAME "IGNITION_STATE"
@@ -410,7 +410,7 @@ struct platform_heartbeat_rt_core_t {
      * Scale: 1
      * Offset: 0
      */
-    uint8_t node_mode;
+    uint8_t rt_core_node_mode;
 
     /**
      * Faults detected since boot; saturates at 255.
@@ -419,7 +419,7 @@ struct platform_heartbeat_rt_core_t {
      * Scale: 1
      * Offset: 0
      */
-    uint8_t error_count;
+    uint8_t rt_core_error_count;
 
     /**
      * Seconds since boot; saturates at 65535. A decrease means the node restarted.
@@ -428,7 +428,7 @@ struct platform_heartbeat_rt_core_t {
      * Scale: 1
      * Offset: 0
      */
-    uint16_t uptime;
+    uint16_t rt_core_uptime;
 };
 
 /**
@@ -458,7 +458,7 @@ struct platform_heartbeat_safety_t {
      * Scale: 1
      * Offset: 0
      */
-    uint8_t node_mode;
+    uint8_t safety_node_mode;
 
     /**
      * Faults detected since boot; saturates at 255.
@@ -467,7 +467,7 @@ struct platform_heartbeat_safety_t {
      * Scale: 1
      * Offset: 0
      */
-    uint8_t error_count;
+    uint8_t safety_error_count;
 
     /**
      * Seconds since boot; saturates at 65535. A decrease means the node restarted.
@@ -476,7 +476,7 @@ struct platform_heartbeat_safety_t {
      * Scale: 1
      * Offset: 0
      */
-    uint16_t uptime;
+    uint16_t safety_uptime;
 };
 
 /**
@@ -1310,7 +1310,7 @@ bool platform_heartbeat_rt_core_e2_e_counter_is_in_phys_range(float value);
  *
  * @return Decoded signal.
  */
-float platform_heartbeat_rt_core_node_mode_decode(uint8_t value);
+float platform_heartbeat_rt_core_rt_core_node_mode_decode(uint8_t value);
 
 /**
  * Check that given signal is in allowed range.
@@ -1319,7 +1319,7 @@ float platform_heartbeat_rt_core_node_mode_decode(uint8_t value);
  *
  * @return true if in range, false otherwise.
  */
-bool platform_heartbeat_rt_core_node_mode_is_in_range(uint8_t value);
+bool platform_heartbeat_rt_core_rt_core_node_mode_is_in_range(uint8_t value);
 
 /**
  * Check that given physical value is in allowed range before encoding.
@@ -1332,7 +1332,7 @@ bool platform_heartbeat_rt_core_node_mode_is_in_range(uint8_t value);
  *
  * @return true if in range, false otherwise.
  */
-bool platform_heartbeat_rt_core_node_mode_is_in_phys_range(float value);
+bool platform_heartbeat_rt_core_rt_core_node_mode_is_in_phys_range(float value);
 
 /**
  * Decode given signal by applying scaling and offset.
@@ -1341,7 +1341,7 @@ bool platform_heartbeat_rt_core_node_mode_is_in_phys_range(float value);
  *
  * @return Decoded signal.
  */
-float platform_heartbeat_rt_core_error_count_decode(uint8_t value);
+float platform_heartbeat_rt_core_rt_core_error_count_decode(uint8_t value);
 
 /**
  * Check that given signal is in allowed range.
@@ -1350,7 +1350,7 @@ float platform_heartbeat_rt_core_error_count_decode(uint8_t value);
  *
  * @return true if in range, false otherwise.
  */
-bool platform_heartbeat_rt_core_error_count_is_in_range(uint8_t value);
+bool platform_heartbeat_rt_core_rt_core_error_count_is_in_range(uint8_t value);
 
 /**
  * Check that given physical value is in allowed range before encoding.
@@ -1363,7 +1363,7 @@ bool platform_heartbeat_rt_core_error_count_is_in_range(uint8_t value);
  *
  * @return true if in range, false otherwise.
  */
-bool platform_heartbeat_rt_core_error_count_is_in_phys_range(float value);
+bool platform_heartbeat_rt_core_rt_core_error_count_is_in_phys_range(float value);
 
 /**
  * Decode given signal by applying scaling and offset.
@@ -1372,7 +1372,7 @@ bool platform_heartbeat_rt_core_error_count_is_in_phys_range(float value);
  *
  * @return Decoded signal.
  */
-float platform_heartbeat_rt_core_uptime_decode(uint16_t value);
+float platform_heartbeat_rt_core_rt_core_uptime_decode(uint16_t value);
 
 /**
  * Check that given signal is in allowed range.
@@ -1381,7 +1381,7 @@ float platform_heartbeat_rt_core_uptime_decode(uint16_t value);
  *
  * @return true if in range, false otherwise.
  */
-bool platform_heartbeat_rt_core_uptime_is_in_range(uint16_t value);
+bool platform_heartbeat_rt_core_rt_core_uptime_is_in_range(uint16_t value);
 
 /**
  * Check that given physical value is in allowed range before encoding.
@@ -1394,7 +1394,7 @@ bool platform_heartbeat_rt_core_uptime_is_in_range(uint16_t value);
  *
  * @return true if in range, false otherwise.
  */
-bool platform_heartbeat_rt_core_uptime_is_in_phys_range(float value);
+bool platform_heartbeat_rt_core_rt_core_uptime_is_in_phys_range(float value);
 
 /**
  * Pack message HeartbeatSafety.
@@ -1488,7 +1488,7 @@ bool platform_heartbeat_safety_e2_e_counter_is_in_phys_range(float value);
  *
  * @return Encoded signal.
  */
-uint8_t platform_heartbeat_safety_node_mode_encode(float value);
+uint8_t platform_heartbeat_safety_safety_node_mode_encode(float value);
 
 /**
  * Check that given signal is in allowed range.
@@ -1497,7 +1497,7 @@ uint8_t platform_heartbeat_safety_node_mode_encode(float value);
  *
  * @return true if in range, false otherwise.
  */
-bool platform_heartbeat_safety_node_mode_is_in_range(uint8_t value);
+bool platform_heartbeat_safety_safety_node_mode_is_in_range(uint8_t value);
 
 /**
  * Check that given physical value is in allowed range before encoding.
@@ -1510,7 +1510,7 @@ bool platform_heartbeat_safety_node_mode_is_in_range(uint8_t value);
  *
  * @return true if in range, false otherwise.
  */
-bool platform_heartbeat_safety_node_mode_is_in_phys_range(float value);
+bool platform_heartbeat_safety_safety_node_mode_is_in_phys_range(float value);
 
 /**
  * Encode given signal by applying scaling and offset.
@@ -1519,7 +1519,7 @@ bool platform_heartbeat_safety_node_mode_is_in_phys_range(float value);
  *
  * @return Encoded signal.
  */
-uint8_t platform_heartbeat_safety_error_count_encode(float value);
+uint8_t platform_heartbeat_safety_safety_error_count_encode(float value);
 
 /**
  * Check that given signal is in allowed range.
@@ -1528,7 +1528,7 @@ uint8_t platform_heartbeat_safety_error_count_encode(float value);
  *
  * @return true if in range, false otherwise.
  */
-bool platform_heartbeat_safety_error_count_is_in_range(uint8_t value);
+bool platform_heartbeat_safety_safety_error_count_is_in_range(uint8_t value);
 
 /**
  * Check that given physical value is in allowed range before encoding.
@@ -1541,7 +1541,7 @@ bool platform_heartbeat_safety_error_count_is_in_range(uint8_t value);
  *
  * @return true if in range, false otherwise.
  */
-bool platform_heartbeat_safety_error_count_is_in_phys_range(float value);
+bool platform_heartbeat_safety_safety_error_count_is_in_phys_range(float value);
 
 /**
  * Encode given signal by applying scaling and offset.
@@ -1550,7 +1550,7 @@ bool platform_heartbeat_safety_error_count_is_in_phys_range(float value);
  *
  * @return Encoded signal.
  */
-uint16_t platform_heartbeat_safety_uptime_encode(float value);
+uint16_t platform_heartbeat_safety_safety_uptime_encode(float value);
 
 /**
  * Check that given signal is in allowed range.
@@ -1559,7 +1559,7 @@ uint16_t platform_heartbeat_safety_uptime_encode(float value);
  *
  * @return true if in range, false otherwise.
  */
-bool platform_heartbeat_safety_uptime_is_in_range(uint16_t value);
+bool platform_heartbeat_safety_safety_uptime_is_in_range(uint16_t value);
 
 /**
  * Check that given physical value is in allowed range before encoding.
@@ -1572,7 +1572,7 @@ bool platform_heartbeat_safety_uptime_is_in_range(uint16_t value);
  *
  * @return true if in range, false otherwise.
  */
-bool platform_heartbeat_safety_uptime_is_in_phys_range(float value);
+bool platform_heartbeat_safety_safety_uptime_is_in_phys_range(float value);
 
 /**
  * Unpack message SafetyRequest.
@@ -1830,14 +1830,14 @@ int platform_safety_warning_status_pack_checked(
     size_t size);
 
 /**
- * Check that given HeartbeatSafety.NODE_MODE raw value is a defined enum value
+ * Check that given HeartbeatSafety.SAFETY_NODE_MODE raw value is a defined enum value
  * (a value-table name other than RESERVED).
  *
  * @param[in] value Raw signal value to check.
  *
  * @return true if defined, false otherwise.
  */
-bool platform_heartbeat_safety_node_mode_is_defined(uint8_t value);
+bool platform_heartbeat_safety_safety_node_mode_is_defined(uint8_t value);
 
 /**
  * Pack message HeartbeatSafety after checking every signal.
