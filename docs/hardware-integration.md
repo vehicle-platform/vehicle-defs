@@ -150,6 +150,43 @@ One row per cable that leaves a board or a box. Pin orders are fixed in the Fusi
 
 Counts this table implies for Wave 1 (check against the procurement list before ordering): Main Box glands 6 (G1–G6) plus up to 4 more if G6a–G6e enter through their own PG7 instead of one multi-core harness (**decide at the box**), Pi box 4, ESP32 box 2, each sensor/IMU/radar/relay box 1–2. Deutsch DT: 13 pairs for Wave 1 (6× 2-pin: G3, G6b ×2, P1, P2, E1; 2× 3-pin: G6a; 4× 4-pin: G5, G6c ×2, G6e, with G5 6-pin if its six cores are confirmed; 1× 8-pin: G4); the G6f Scale 1B sensor runs add 12 in Wave 2 (7× 2-pin with five NTCs, 3× 3-pin, 2× 6-pin), 25 in all. The procurement list v3.0 carries these counts and adds 20 % spare to the cable metres. LiYCY: 5 m 4-core, 2 m 8-core, 5 m 2-core; FLRY-B pair 3 m.
 
+**Cable metres per run (estimate, CONFIRM with M1-M16).** Basis: Honda CL250 (2023) overall length 2175 mm, width 830 mm, height 1135 mm, wheelbase 1485 mm, seat height 790 mm ([Webike Japan spec page](https://japan.webike.net/HONDA/CL250/14769/m-spec/), [Webike launch article](https://japan.webike.net/moto_news/latest-news/20230314-cl250-will-be-released-on-5-18-specifications-also-revealed-motorcycle-show-2023/); some figures there are pre-release, so M-sheet values win) and the Q-034 placement of §4.1 (Main Box on the rear-subframe tray, option (c); battery, starter relay, indicator feeds, radars within about 0.5-1 m of it). Routed lengths follow the frame, not the straight line: tray to gauge / head stock is about 1.3 m along the frame plus about 0.5 m for the rise to the bars and steering slack, so about 2 m. "Base" is the one-way routed length, "Buy" is base + 30 % slack, rounded up to the next 0.5 m (G2 is capped, see its note). Every number below is an **estimate, CONFIRM with M1-M16**. No connector, pin or decision changes.
+
+| Run | Cable | Cores | Base (m) | Buy (m) | Basis | Measure |
+|---|---|---|---|---|---|---|
+| G1 | 22 AWG | 1 red + 1 black | 0.8 | 1.5 each | tray to fuse box / tap, GND to battery negative (both under the seat region) | M11, M14 |
+| G2 | FLRY-B pair (+ GND on 22 AWG black) | 2 + 1 | 0.45 | 1.0 pair, 1.0 black | stub **< 50 cm is a cap, not a minimum**; the 1.0 m is spare for a failed crimp, cut to <= 0.5 m | M1, M2 |
+| G3 | FLRY-B pair | 2 | 2.0 | 3.0 | platform bus trunk, tray to front hub | M10 |
+| P2 | FLRY-B pair | 2 | 0.5 | 1.0 | Pi box drop (1.5 m if the Pi sits on the front crash bar, option 2) | M3, M4 |
+| E1 | FLRY-B pair | 2 | 0.5 | 1.0 | ESP32 box drop at the front end of the trunk | |
+| G4 | LiYCY 8x0.22 | 8 | 0.3 | 0.5 | C1-IO to C1-IMU, <= ~30 cm rule | M10 |
+| G5 | LiYCY 6x0.22 (4x0.22 if 4 cores are confirmed) | 6 | 0.3 | 0.5 | Board A to C2 box, <= ~30 cm rule | M10 |
+| G6a | LiYCY 4x0.22, two runs | 4 | 2.0 | 3.0 each (6.0) | tray to the gauge area, includes head-stock slack | M15 |
+| G6b | 22 AWG twisted, two runs | 1 red + 1 black | 2.3 | 3.0 each | tray to the mirror stems, along the ring route plus the bar width | M16 |
+| G6c | LiYCY 4x0.22, two runs | 4 | 0.6 | 1.0 each (2.0) | tray to the rear radar boxes at the tail | M5 |
+| G6d | 22 AWG, two runs | 1 red + 1 black | 0.6 | 1.0 each | tray to the rear indicator feed taps | M13 |
+| G6e | 22 AWG | 3 red + 1 black | 0.8 | 1.5 each | tray to the immobilizer relay box at the starter relay; the 2 relay contact leads are harness gauge and not counted here | M12 |
+| P1 | 22 AWG twisted | 1 red + 1 black | 1.5 | 2.0 each | Board A to the Pi box (0.8 m if the Pi box shares the tray or plate) | M3, M4 |
+| G6f-a | LiYCY 6x0.22, two runs | 6 | 1.2 | 2.0 each (4.0) | `ADXL345` x2 (Wave 2), tray to the engine area | M8 |
+| G6f-b | LiYCY 2x0.22, five NTC + spark clip | 2 | 1.0 / 1.2 | 1.5 each (7.5), 2.0 | five NTC runs at the upper bound, one spark clip run (Wave 2) | M8 |
+| G6f-c | LiYCY 4x0.22 | 3 used | 0.6 / 1.0 | 1.0 (`ACS758`), 1.5 x2 (`LJ12A3`) | battery current sensor and the two inductive sensors (Wave 2) | M11, M14 |
+
+Not counted (not stock cable): the `MAX31856` thermocouple probe lead, the two relay contact leads, the Pi CSI flex (P3), internal board-to-board wiring.
+
+**Totals and purchase suggestion (estimate, CONFIRM with M1-M16):**
+
+| Cable | Wave 1 (m) | Wave 2 (m) | Total (m) | Suggested purchase | Row now in the procurement list |
+|---|---|---|---|---|---|
+| 22 AWG silicone, red | 16.0 | 0 | 16.0 | 20 m (2 x 10 m) | 5 m |
+| 22 AWG silicone, black | 14.0 | 0 | 14.0 | 15 m (10 m + 5 m) | 5 m |
+| LiYCY 2x0.22 | 0 | 9.5 | 9.5 | 10 m (2 x 5 m) | 6 m |
+| LiYCY 4x0.22 | 8.0 | 4.0 | 12.0 | 15 m (3 x 5 m) | 6 m |
+| LiYCY 6x0.22 | 0.5 | 4.0 | 4.5 | 5 m | 0 m (not counted) |
+| LiYCY 8x0.22 | 0.5 | 0 | 0.5 | 2 m (cut once, keep a retry) | 2.4 m |
+| FLRY-B pair | 6.0 | 0 | 6.0 | 10 m (5 m + 5 m) | 3.6 m |
+
+Totals already contain the 30 % slack; the 20 % spare of procurement list v3.0 is not added on top. 22 AWG split by colour: red carries supply and signal-hot cores, black carries GND/return (G6e: 3 red + 1 black, assumed). Wave 1 totals are the bike-side runs of the Main Box build; Wave 2 is the G6f Scale 1B sensors.
+
 ## 4. Mechanical integration
 
 | Item | Rule | Source |
