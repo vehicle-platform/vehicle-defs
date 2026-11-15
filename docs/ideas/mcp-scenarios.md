@@ -6,7 +6,7 @@
 >
 > | Item | Verdict | Basis |
 > |---|---|---|
-> | Rule 1 (no actuation or write tools), rule 2 (pre-computed statistics), rule 4 (VSS abstraction) | compatible | Invariant 1 and the read-only repo map (rule 1 cites D-020, which is the vehicle-bus allow-list, not an MCP rule); invariant 7: tools return computed values, never raw time series; D-028 |
+> | Rule 1 (no actuation or write tools), rule 2 (pre-computed statistics), rule 4 (VSS abstraction) | compatible | Invariant 1 and the read-only repo map (rule 1 now cites invariant 1 and D-114, provisional: vehicle-mcp is read-only for good); invariant 7: tools return computed values, never raw time series; D-028 |
 > | Dual-brain voice assistant | compatible | D-044, D-047. Which assistant (templates, a local LLM or the hybrid cloud path) and what may reach a cloud LLM: Q-028 |
 > | "System 1: JEV / TinyML reflex engine" | EDIT | "JEV" is not defined anywhere in the platform; the deterministic layer is rt-core / safety-node firmware (EKF, cornering decision), renamed in the diagram. "D-029 Autoencoder Gating" is wrong: D-029 is the polling budget |
 > | "ISO 26262 ASIL-D" claims (document header, §5) | CONTRADICTS | D-046: no ASIL has been assigned yet (no HARA) |
@@ -57,7 +57,7 @@ The `vehicle-mcp` service transforms the motorcycle from an opaque mechanical as
 ```
 
 ### Safety & Isolation Boundary (The 4 Inviolable Rules)
-1. **Strict Read-Only Enforcement (D-020):** `vehicle-mcp` exposes zero actuation or write tools. An LLM can never manipulate throttle, braking, fuel, or ignition.
+1. **Strict Read-Only Enforcement (invariant 1, D-114):** `vehicle-mcp` exposes zero actuation or write tools. An LLM can never manipulate throttle, braking, fuel, or ignition.
 2. **Pre-Computed Statistics (No LLM Math Hallucinations):** Tools never return raw 100,000-point time-series. Python/PyArrow pre-computes mean, standard deviation, percentiles, and anomaly scores, delivering pre-digested domain summaries.
 3. **Location Privacy (Semantic Geofencing):** Raw GPS coordinates are masked into high-level semantic tags (`"Mountain Pass"`, `"Urban Congestion"`, `"15 km from Garage"`).
 4. **VSS Abstraction (Vehicle-Agnostic):** Internal tool mappings utilize standard COVESA VSS signal paths (`Vehicle.Powertrain.CombustionEngine.Speed`) rather than OEM-specific CAN IDs, ensuring 100% portability to any car, van, or motorcycle.
