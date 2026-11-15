@@ -25,6 +25,9 @@ jobs:
       - name: Lint
         run: make lint
 
+      - name: Requirements and HARA files are consistent
+        run: uv run --locked --project tools/codegen python scripts/check_requirements.py
+
       - name: Tests
         run: make test
 
