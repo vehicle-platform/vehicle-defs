@@ -12,7 +12,7 @@ Background: `ARCHITECTURE.md` §3-5, decisions D-003/D-004/D-005/D-009. Signals 
 ## 1. Decide which bus
 
 - **Vehicle ECU data** (`uds/vehicle_cl250.yaml`): CL250 data is poll-based (D-019). Each entry: DID, name, request/response addressing, response byte layout, J1979-style formula, unit, range, poll period, `verified: true|false` + evidence. rt-core is the only poller (D-021); a signal that others need is **also** added to `platform.dbc` as rt-core's republish. `dbc/cl250.dbc` is only for passive broadcast frames, if ever found (Q-001); mark unverified ones `CM_ ... "UNVERIFIED - <evidence>"`.
-- **Platform bus** (`dbc/platform.dbc`): messages between our nodes. Nodes: `RT_CORE SAFETY CONN LINUX HIL_SIM TESTER` (IO retired by D-072; SAFETY is the M4 partition, its frames cross the mailbox). Pick the ID from the class range (ARCHITECTURE §4):
+- **Platform bus** (`dbc/platform.dbc`): messages between our nodes. Nodes: `RT_CORE SAFETY CONN LINUX HIL_SIM TESTER` (IO retired by D-072; SAFETY is the separate G474 safety MCU on the platform bus, D-118). Pick the ID from the class range (ARCHITECTURE §4):
   `0x010-0x07F` safety-critical (E2E mandatory) · `0x080+node_id` heartbeat (E2E) · `0x100-0x3FF` state/context · `0x400-0x5FF` telemetry · `0x600-0x6FF` bridge/dev · `0x700-0x7FF` UDS. Check that the ID is free.
 
 ## 2. Edit the DBC (cantools-compatible)
