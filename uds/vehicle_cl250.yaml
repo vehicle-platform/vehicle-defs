@@ -79,7 +79,10 @@ transport:
   # its own allowed request, and only for a First Frame with FF_DL <= max_ff_dl
   # (anything longer gets no FC; the ECU then times out on N_Bs). After a First Frame
   # it did not answer with an FC, the client sends no request for
-  # response_timeout_max_ms and does not count it as a DID timeout; a reception whose
+  # response_timeout_max_ms from the FIRST such First Frame of a run; later ones in
+  # that window do not renew it, and the window ends at the next request slot, so
+  # chatter can never silence the tester for good (D-116, provisional, amends D-059).
+  # It does not count it as a DID timeout; a reception whose
   # next CF does not arrive within response_timeout_base_ms (N_Cr), whose sequence
   # number skips, or during which the receiver lost a frame, is aborted. Platform
   # choices, not legacy values: the golden copy in tools/codegen config.py bounds them.
