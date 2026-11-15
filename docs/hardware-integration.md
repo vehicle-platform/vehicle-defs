@@ -127,7 +127,7 @@ To suppress magnetic induction (EMF = -dΦ/dt, from the ignition coil/HT lead, r
 
 ### 3.5 Connector and cable plan (H755 build; every type is a proposal until bought)
 
-One row per cable that leaves a board or a box. Pin orders are fixed in the Fusion sheets (SCHEMATIC §8); this table fixes what each cable carries, so the gland count, the cable stock and the Deutsch kit can be ordered. Lengths are "measure on the bike" (§4.1) except where a rule caps them. Fig. 3 numbers the Main Box glands G1–G6; Fig. 13 gives the harness rules.
+One row per cable that leaves a board or a box. Pin orders are fixed in the KiCad sheets (SCHEMATIC §8, D-117); this table fixes what each cable carries, so the gland count, the cable stock and the Deutsch kit can be ordered. Lengths are "measure on the bike" (§4.1) except where a rule caps them. Fig. 3 numbers the Main Box glands G1–G6; Fig. 13 gives the harness rules.
 
 | # | From → to | Cores (signal list) | Cable | Connector | Length rule | Shield / notes |
 |---|---|---|---|---|---|---|
@@ -397,7 +397,7 @@ Pass: the effective rate matches the serial `pvt/s`; lost or MTU-skipped near 0 
 | 7 | ~~ECU round-trip instrumentation~~ decided in D-058 items 1-3 (BLE telemetry v4) | D-029, A-4 |
 | 8 | vehicle-mobile has no iOS project yet (Android only), so the D-062 bonding check on iOS waits for one | §7.3 step 3 on iOS |
 | 9 | Main enclosure placement for the H755 build (Q-034): the measurements of §4.1 | §4.1, Wave 1 on-bike build |
-| 10 | Schematic CONFIRM/TBD items (vehicle-workspace `models/fusion-lib/SCHEMATIC-README.md`, D-082): `L1` value; `+3V3` source for off-box sensors; Nucleo `AGND` tie (UM2408); `ACS758LCB-200B` mounting and fuse/cable plan; `LJ12A3` unloaded output voltage; `HLK-LD2451` supply and UART level; `IND_L/IND_R` tap point on the harness; H755 pin map (CubeMX) | S1-S3 schematics, Wave 1/2 build |
+| 10 | Schematic CONFIRM/TBD items (vehicle-workspace `models/kicad-lib/SCHEMATIC-README.md`, D-082): `L1` value; `+3V3` source for off-box sensors; Nucleo `AGND` tie (UM2408); `ACS758LCB-200B` mounting and fuse/cable plan; `LJ12A3` unloaded output voltage; `HLK-LD2451` supply and UART level; `IND_L/IND_R` tap point on the harness; H755 pin map (CubeMX) | S1-S3 schematics, Wave 1/2 build |
 | 11 | C1-IMU and C2 boxes: one small IP65/IP67 box type for both (the `DT-0505`/`DT-0508` are `126×136` mm, no IP rating stated, §3.4), product **CONFIRM** with Q-034; C1-IO fit beside the Nucleo (§4.2) **CONFIRM**; ~~D-082 item 6 (immobilizer fail state)~~ confirmed by D-097 | C1/C2 build, §4.1 |
 | 12 | Connector and cable plan (§3.5): Deutsch DT as the box-wall connector (type), G5 core count (4 vs 6), whether G6a–G6e share one harness gland or get their own, the relay-box location, the measurement sheet M1–M16 (§4.1) | Wave 1 order, S1–S4 |
 

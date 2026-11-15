@@ -14,7 +14,7 @@ Firmware CubeMX projects (red zone, invariant 8) follow it only after that.
 - Peripheral needs and ownership: D-072 items 2-4 (port-level GPIO split: **no GPIO port is
   shared by the two cores**), D-082 (boards A, B, C1-IO, C1-IMU, C2), D-093 (SRAM4 mailbox,
   HSEM), D-094 (no CRYP/HASH), D-075 item 4 (Q-033 indicator inputs), D-097 (immobilizer),
-  `models/fusion-lib/SCHEMATIC-README.md` (vehicle-workspace) for the signal names.
+  `models/kicad-lib/SCHEMATIC-README.md` (vehicle-workspace) for the signal names.
 
 **Note on this package:** the dual-core LQFP144 (SMPS) has no PF0-PF5, PF12, PF13, PG0-PG5 or
 PG15. Every pin below exists in `STM32H745ZITx.xml`.
