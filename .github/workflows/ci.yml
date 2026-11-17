@@ -4,6 +4,9 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   check:
     # Pinned, like the cppcheck cache key below (misra/README.md).

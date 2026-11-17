@@ -1,0 +1,8 @@
+# Safety-relevant definitions: the D-020/D-059 golden copy and the files it guards,
+# and the signal sources every node generates code from. Pair with branch protection
+# ("Require review from Code Owners") in the repository settings.
+/uds/                                              @Alihanesentas
+/tools/codegen/src/vehicle_codegen/config.py       @Alihanesentas
+/limits/                                           @Alihanesentas
+/dbc/                                              @Alihanesentas
+/mailbox/                                          @Alihanesentas

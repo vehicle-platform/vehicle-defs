@@ -5,3 +5,13 @@ tools/codegen/.cache/
 __pycache__/
 .pytest_cache/
 .ruff_cache/
+
+# Secrets and credentials never belong in git (D-033, public repo).
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.jks
+*.keystore
