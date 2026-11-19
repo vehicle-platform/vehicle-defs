@@ -22,7 +22,7 @@ Modern SDV (software-defined vehicle) logic: a small number of powerful compute 
 
 ## 2. Target Hardware Architecture (5 units)
 
-> **Superseded in part by D-072/D-073 (2026-10-17).** The three STM32 units of this section became **one dual-core STM32H755** (NUCLEO-H755ZI-Q): the Cortex-M7 runs rt-core, the Cortex-M4 is the safety partition (cornering decision, own fallback IMU, blind spot, immobilizer, LED ring and mirror LEDs). The I/O node is retired; power management and park mode move to rt-core. A second ESP32-S3 sits in the helmet (HUD, microphone, voice, §5b.4a). Current unit table and topology: `ARCHITECTURE.md` §2-3. The text below is kept as the original rationale.
+> **Superseded in part by D-072/D-073 (2026-10-17).** The three STM32 units of this section became **one dual-core STM32H755** (NUCLEO-H755ZI-Q): the Cortex-M7 runs rt-core, the Cortex-M4 is the safety partition (cornering decision, own fallback IMU, blind spot, immobilizer, LED ring and mirror LEDs). **D-118 (2026-11-15) then split this in two chips:** rt-core on a single-core STM32H743ZI (NUCLEO-H743ZI2) and the safety partition on its own STM32G474RE (NUCLEO-G474RE) on the platform CAN bus; the inter-core mailbox is retired. The I/O node is retired; power management and park mode move to rt-core. A second ESP32-S3 sits in the helmet (HUD, microphone, voice, §5b.4a). Current unit table and topology: `ARCHITECTURE.md` §2-3. The text below is kept as the original rationale.
 
 ```
  VEHICLE CAN (CL250 DLC, classic 500 kbps) ══╤════════════════════
@@ -55,7 +55,7 @@ Full diagram with interfaces: `ARCHITECTURE.md` §3.
 
 ## 3. Standard Chip Selections (by task)
 
-> Safety and I/O rows: superseded by D-072 (the safety class is the Cortex-M4 core of the STM32H755; no separate I/O chip). The AURIX/S32K note remains the production reference for a separate safety MCU.
+> Safety and I/O rows: superseded by D-072 (the safety class is the separate STM32G474RE safety MCU, D-118, formerly the Cortex-M4 core of the STM32H755; no separate I/O chip). The AURIX/S32K note remains the production reference for a separate safety MCU.
 
 | Role | Standard chip | Why this class |
 |---|---|---|
@@ -203,7 +203,7 @@ Since it must work at reflex speed, deterministically, and independently, it is 
 - **LEDs must be readable even in morning sunlight** → high-brightness type, visible in direct sun; embedded inside the mirror
 - **Not connected to the AI assistant** — reflex speed is required, LED is the correct interface, spoken words add latency/noise
 
-**Processing node (D-072):** the **Cortex-M4 safety partition** of the STM32H755 reads the 2 radars on its own UARTs, runs the approach logic, drives the mirror LEDs and hands the status to the Cortex-M7, which broadcasts it on CAN. The decision is independent of the rt-core software, the Raspi and CAN, so the LED keeps working when rt-core crashes; a power or chip fault stops both (accepted, D-072 item 5). _(Original plan: the STM32F103 as a rear I/O node; retired.)_
+**Processing node (D-072):** the **safety MCU** (STM32G474RE, D-118; formerly the Cortex-M4 partition of the STM32H755) reads the 2 radars on its own UARTs, runs the approach logic, drives the mirror LEDs and sends the status itself as a platform-bus frame (0x023). The decision is independent of the rt-core software, the Raspi and CAN, so the LED keeps working when rt-core crashes; a power fault in the shared supply chain stops both (D-118 item 5). _(Original plan: the STM32F103 as a rear I/O node; retired.)_
 
 **LED logic:**
 - Green: side clear
@@ -279,7 +279,7 @@ Layer 3 — ML adaptation (vehicle-rt-core, together with the context model, opt
 **Lean estimator (D-065).** A 2-state EKF [roll, gyro bias] measuring roll from tan(roll) = v · yaw rate / g, in its own task above the comms task; wait-free triple buffers carry the speed (with its stamp) in and the lean out, and the comms pass sends 0x020. No usable speed (limits `vehicle_speed`) or no converged filter → INVALID (there is no default lean, D-029); the CLAMPED range is a defs limit. The EKF's alive supervision makes rt-core's heartbeat DEGRADED (D-064 item 4).
 
 **Output — two channels:**
-- **Round LED ring** (either side of the gauge, defined in 5b.4, driven by the Cortex-M4 safety partition, `vehicle-safety-node` (Q-026 resolved by D-072); never by rt-core, D-042): green→yellow→red, instantaneous lean state; DEGRADED / UNAVAILABLE patterns per D-042
+- **Round LED ring** (either side of the gauge, defined in 5b.4, driven by the safety MCU (G474, D-118), `vehicle-safety-node` (Q-026 resolved by D-072); never by rt-core, D-042): green→yellow→red, instantaneous lean state; DEGRADED / UNAVAILABLE patterns per D-042
 - **Audio/HMI warning** (if the threshold is exceeded): on the main-screen profile (visible in the "sport" profile) + if needed, a fixed warning phrase from the voice command system (5b.6)
 
 **Calibration and field testing:** T4-class tests from the vehicle work plan (section 7) — closed area, gradual speed increase, **aimed not at approaching the limit but at validating the model's consistency.** The actual tip-over/slide limit is never reached.
@@ -292,9 +292,9 @@ Layer 3 — ML adaptation (vehicle-rt-core, together with the context model, opt
 
 ### 5b.3 I/O Node — Immobilizer + Park Mode/Tracking + Power Board (combined)
 
-> **Superseded in part by D-072:** there is no separate I/O node. The immobilizer runs on the Cortex-M4 safety partition (rules below unchanged, invariant 6); park mode and the power-board logic run on the Cortex-M7 (rt-core).
+> **Superseded in part by D-072:** there is no separate I/O node. The immobilizer runs on the safety MCU (STM32G474, D-118; rules below unchanged, invariant 6); park mode and the power-board logic run on rt-core (H743).
 
-_Superseded by D-072: the immobilizer and the blind-spot system run on the Cortex-M4 safety partition of the STM32H755 (`vehicle-safety-node`); `vehicle-io-node` is retired._ Originally: runs on the same physical node (`vehicle-io-node`, STM32 G0/F0) together with the blind-spot system — SDV zone-controller logic: few nodes, many modules.
+_Superseded by D-072: the immobilizer and the blind-spot system run on the safety MCU (STM32G474RE, D-118; formerly the Cortex-M4 partition of the STM32H755) (`vehicle-safety-node`); `vehicle-io-node` is retired._ Originally: runs on the same physical node (`vehicle-io-node`, STM32 G0/F0) together with the blind-spot system — SDV zone-controller logic: few nodes, many modules.
 
 **Immobilizer:**
 - Intervention point: **starter relay coil circuit** (low current, non-functional while the engine runs — can never cut off a moving engine). The ignition/fuel-pump/ECU line is NEVER touched.
@@ -350,9 +350,9 @@ _Superseded by D-072: the immobilizer and the blind-spot system run on the Corte
 |---|---|---|---|---|
 | Original Honda round gauge | — | Mandatory info (speed, fuel, fault lamp) | — | **Untouched** — legal/warranty |
 | Between handlebar and tank | **1× Nextion** (existing hardware) | Main info screen — profile-based pages | UART → main MCU (H7) | Critical, works even if Linux/Raspi crashes |
-| Left of the gauge | Round **LED ring** (WS2812, circular) | Left lean-angle indicator | M4 safety partition (D-072) | NOT a graphic display — see rationale |
-| Right of the gauge | Round **LED ring** (WS2812, circular) | Right lean-angle indicator | M4 safety partition (D-072) | Same |
-| Mirror ends (left/right) | LED (defined in 5b.1) | Blind-spot warning | M4 safety partition (D-072) | Not a screen; compensated by lean angle (see below) |
+| Left of the gauge | Round **LED ring** (WS2812, circular) | Left lean-angle indicator | safety MCU G474 (D-072, D-118) | NOT a graphic display — see rationale |
+| Right of the gauge | Round **LED ring** (WS2812, circular) | Right lean-angle indicator | safety MCU G474 (D-072, D-118) | Same |
+| Mirror ends (left/right) | LED (defined in 5b.1) | Blind-spot warning | safety MCU G474 (D-072, D-118) | Not a screen; compensated by lean angle (see below) |
 | Above/beside the main screen (optional) | RGB LED strip (WS2812) | Shift-light (green→red as RPM rises) | Main MCU | Same driver technology, low added cost |
 | Phone | — | Remote interface (settings, history, reports) | BLE/WiFi → `vehicle-connectivity-node` | Not involved in critical work, loosely coupled |
 
@@ -376,7 +376,7 @@ _Superseded by D-072: the immobilizer and the blind-spot system run on the Corte
 
 **Lean-angle compensation of the blind-spot LED (point of originality):** Research shows that motorcycle blind-spot systems generally do not compensate for lean angle, and that this is a known shortcoming (the area visible in the mirror changes with lean). Since the system already produces lean angle from the EKF (context bus, 5b.0c), the blind-spot distance threshold can be slightly adjusted based on lean angle — a difference most competing systems lack, a point of originality for the thesis.
 
-**Rule:** The Nextion is directly connected to the H7, works even if Linux/Raspi crashes. The LED rings and mirror LEDs are driven by the M4 safety partition, the shift-light by the M7 (D-072) — no heavy processing required. The helmet HUD (§5b.4a) only repeats warnings. The phone is never involved in any critical work.
+**Rule:** The Nextion is directly connected to the H7, works even if Linux/Raspi crashes. The LED rings and mirror LEDs are driven by the safety MCU (G474), the shift-light by rt-core (H743) (D-072, D-118) — no heavy processing required. The helmet HUD (§5b.4a) only repeats warnings. The phone is never involved in any critical work.
 
 **Phase 2 note (upgrade reference, not done now):** If switching from Nextion to LVGL+ESP32/round display is wanted, open-source references: `dev-ale/moto2000` (ESP32-S3 AMOLED round, BLE, phone-side logic, ~₺1250-1450 BOM, IP67 PG7 cable gland + silicone O-ring mounting), `emdzej/opencluster` (ESP32+LVGL, multi-screen over CAN, desktop simulator), `barcu00/DIY-dash-5` (ESP32-S3, table-based CAN decoder, UI-isolated architecture), `hpeyerl/evj55-dashboard` (large panel → Raspi/Linux framebuffer LVGL, the boundary where ESP32 falls short).
 
@@ -406,7 +406,7 @@ _Superseded by D-072: the immobilizer and the blind-spot system run on the Corte
 **Data path:** platform CAN → bike ESP32 → BLE notification → helmet ESP32 → display. The frame layout is defined in `vehicle-defs` `ble/` through `/signal-change` before any code; it carries only values that exist on the platform bus. Telemetry at most 10 Hz; warnings are sent on change and repeated while active.
 
 **Rules:**
-- **Informational only** (D-041 item 2, invariant 4). The wired LED ring and mirror LEDs driven by the M4 safety partition stay the safety output; BLE can drop.
+- **Informational only** (D-041 item 2, invariant 4). The wired LED ring and mirror LEDs driven by the safety MCU (G474, D-118) stay the safety output; BLE can drop.
 - **Helmet integrity:** never drill, cut or glue the shell, the EPS liner or the visor (ECE 22.06 approval). The unit clips on and comes off without tools.
 - **Glanceable:** few symbols, no text paragraphs, no animation, automatic brightness, short voice prompts.
 
@@ -746,7 +746,7 @@ Repo boundary = runtime boundary (things running in a different place/language/h
 
 **Why vehicle-mcp is a separate repo (exception rationale):** Its runtime is the same as `vehicle-linux-node`'s (Raspi 5), which would normally make it a single repo/module. But here **the sharing boundary** is a valid reason: it is intended to be published as an independent open-source project (so other DIY vehicle/motorcycle projects can use it too), to have its own star/contribution history on GitHub, to be a piece of the career showcase. `vehicle-linux-node` calls `vehicle-mcp` as an MCP client, treating it as a dependency/subprocess.
 
-**Rationale for the split (1 and 2):** H7 and ESP32-S3 are different physical chips, differently compiled binaries, different flashes — a real runtime boundary. For the same reason, safety-node and io-node were also separate (different STM32 chip/flash); since D-072 safety-node is the Cortex-M4 image of the same STM32H755 (own flash bank and linker script) and io-node is retired. Functions on the main MCU (UDS, XCP, EKF, context, dynamometer, anomaly inference), however, are modules of a SINGLE repo — all compiled into the same H7 binary; a separate repo would be false isolation.
+**Rationale for the split (1 and 2):** H7 and ESP32-S3 are different physical chips, differently compiled binaries, different flashes — a real runtime boundary. For the same reason, safety-node and io-node were also separate (different STM32 chip/flash); since D-118 safety-node runs on its own STM32G474RE (own chip, flash and linker script; D-072 had briefly made it the Cortex-M4 image of the STM32H755) and io-node is retired. Functions on the main MCU (UDS, XCP, EKF, context, dynamometer, anomaly inference), however, are modules of a SINGLE repo — all compiled into the same H7 binary; a separate repo would be false isolation.
 
 **vehicle-defs cornerstone:** Signal definitions, CAN message map, VSS model. The other ten repos take it as their source (submodule/package). Single source of truth → the "two units know the same signal differently" problem never occurs.
 

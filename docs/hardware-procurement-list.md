@@ -166,9 +166,9 @@ New sensors need their signals defined through `/signal-change` (and Q-025) befo
 
 ---
 
-## Part 3 — Safety System: M4 Safety Partition, Cornering, Blind Spot, Lane Keeping & Immobilizer (D-072)
+## Part 3 — Safety System: Safety MCU (G474, D-118), Cornering, Blind Spot, Lane Keeping & Immobilizer (D-072)
 
-Covers all hardware for the isolated `Cortex-M4` safety partition (`vehicle-safety-node`: fallback IMU, cornering lighting, 24 GHz blind-spot radar, NFC immobilizer) plus the `linux-node` vision/lane-keeping camera, park-mode security, and **Section 3C (Sized Perfboards, Standoffs & Chassis IP67 Enclosures for Safety Modules)**.
+Covers all hardware for the isolated safety MCU (`STM32G474RE`, D-118; `vehicle-safety-node`: fallback IMU, cornering lighting, 24 GHz blind-spot radar, NFC immobilizer) plus the `linux-node` vision/lane-keeping camera, park-mode security, and **Section 3C (Sized Perfboards, Standoffs & Chassis IP67 Enclosures for Safety Modules)**.
 
 ### 3A — Isolated Safety MCU (STM32G474, D-118): Cornering, Blind-Spot Radar & Immobilizer (Wave 1 & Wave 4)
 

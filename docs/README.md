@@ -1,6 +1,6 @@
 # Documentation Index — where to look for what
 
-**Rule (for Claude):** start with `ARCHITECTURE.md` + `DECISIONS.md`. The raw docs below are large (~2,800 lines in total), so read only the needed section with `Read offset/limit`, or ask the `docs-researcher` agent. Line numbers are as of 2026-09-29. If a doc changes, refresh them with `grep -n '^#' <file>`.
+**Rule (for Claude):** start with `ARCHITECTURE.md` + `DECISIONS.md`. The raw docs below are large (~2,800 lines in total), so read only the needed section with `Read offset/limit`, or ask the `docs-researcher` agent. Line numbers are as of 2026-11-19. If a doc changes, refresh them with `grep -n '^#' <file>`.
 
 Authority order: `DECISIONS.md` > `ARCHITECTURE.md` > other English docs. For vehicle facts, `uds/vehicle_cl250.yaml` beats `legacy-telemetry-notes.md`. `archive/` is not read by Claude (D-038).
 
@@ -22,7 +22,7 @@ Authority order: `DECISIONS.md` > `ARCHITECTURE.md` > other English docs. For ve
 | `legacy-telemetry-notes.md` | Reference (short) | Legacy HondaCl250_Telemetry facts per D-023: UDS state machine, NRC table, bus-off backoff, ISO-TP first-frame pitfall, ESP32-S3 pin map, discrepancies, accepted security risks, legacy test coverage |
 | `archive/tr/*` | Turkish originals + the two advisor documents (D-038) | **Not read by Claude.** Ç1-Ç8 are in `ARCHITECTURE.md` §9 |
 
-## hardware-architecture.md (     902 lines)
+## hardware-architecture.md (902 lines)
 
 | Lines | Section |
 |---|---|
@@ -42,7 +42,7 @@ Authority order: `DECISIONS.md` > `ARCHITECTURE.md` > other English docs. For ve
 | 693-728 | §6-7 module vs chip, staged rollout |
 | 729-790 | §8-9 repo structure, dependency direction, setup order |
 | 791-860 | §9b HIL bench |
-| 861-     902 | §10 Phase 2, eliminated items, open notes |
+| 861-902 | §10 Phase 2, eliminated items, open notes |
 
 ## vehicle-work-plan.md (673 lines)
 
@@ -63,13 +63,25 @@ Authority order: `DECISIONS.md` > `ARCHITECTURE.md` > other English docs. For ve
 
 Superseded-in-part note (D-032, D-045) at the top, line 5 · §1 work packages 27-40 · §3 data schema 76-124 (format decision 111) · §4-8 WP-3..WP-7 125-206 · §9 hardware 207-252 · §10-11 effort, next 253-278
 
-## feature-pool.md (624 lines)
+## feature-pool.md (642 lines)
 
-§1-13 categories 26-311 (vehicle functions §9 173, comfort/energy §9c 223, vision §10 254) · §14 top ten 312 · §15 out of pool 332 · §16 prioritization 345 · §17 hardware analysis 361-404 · §18 open-source ecosystem 405-624 (SDV §18.3 446, test/sim §18.5 479, data/ML §18.6 495, reference projects §18.7 510, costs §18.9 545)
+§1-13 categories 26-329 (vehicle functions §9 173, comfort/energy §9c 223, vision §10 254) · §14 top ten 330 · §15 out of pool 350 · §16 prioritization 363 · §17 hardware analysis 379-422 · §18 open-source ecosystem 423-642 (SDV §18.3 464, test/sim §18.5 497, data/ML §18.6 513, reference projects §18.7 528, costs §18.9 563)
 
-## hardware-procurement-list.md (299 lines)
+## hardware-procurement-list.md (308 lines)
 
-On hand 15 · Part 1 core, power chain, boards A/B/C1/C2, boxes 31 · Part 2 anomaly sensors 96 (2A 100, 2B 110, 2C 128, 2D boxes 140) · Part 3 safety 160 (3A M4 partition 164, 3B camera 184, 3C boxes 191) · Part 4 helmet 208 · Part 5 Pi 5 + HIL 233 (5A 235, 5B 248) · board/box master reference 262 · budget 284 · removed from v1.0 294
+On hand 21 · Part 1 core, power chain, boards A/B/C1/C2, boxes 37 · Part 2 anomaly sensors 105 (2A 109, 2B 119, 2C 137, 2D boxes 149) · Part 3 safety MCU 169 (3A 173, 3B camera 193, 3C boxes 200) · Part 4 helmet 217 · Part 5 Pi 5 + HIL 242 (5A 244, 5B 257) · board/box master reference 271 · budget 293 · removed from v1.0 303
+
+## hardware-integration.md (444 lines)
+
+§0 figures 5-24 · §1 what this build is 25-49 · §2 parts 50-72 · §3 electrical 73-190 (CAN 77, power 90, IMU/display/GPS 99, harness 106, connector and cable plan 129) · §4 mechanical 191-265 (placement 204, Main Box layout 255) · §5 firmware setup 266-282 · §6 bring-up gates 283-300 · §7 first measurements 301-409 (7.1 315, 7.2 340, 7.3 354) · §8 safety rules 410-417 · §9 data handling 418-424 · §10 open items 425-441 · §11 move to rt-core 442-444
+
+## h743-pin-plan.md (104 lines)
+
+Intro, sources 1-28 · §1 port ownership and DMA 29-37 · §2 board-reserved pins 38-53 · §3 rt-core pins 54-83 · §4 duplicate and reserved check 84-94 · §5 checks before it becomes a decision 95-104
+
+## g474-pin-plan.md (103 lines)
+
+Intro, sources 1-35 · §1 BOOT0 warning (PB8) 36-43 · §2 board-reserved pins 44-59 · §3 safety-node pins 60-82 · §4 duplicate and reserved check 83-94 · §5 checks before it becomes a decision 95-103
 
 ## archive/tr/ (for the user; not read by Claude, D-038)
 

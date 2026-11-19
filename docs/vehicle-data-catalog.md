@@ -126,13 +126,13 @@ None of these is defined anywhere yet. J1979 has no PID for them.
 | Wheel speeds (front/rear) | ABS modulator wheel sensors | (b) only if the ABS unit broadcasts on the DLC bus (Q-001); its own diagnostics are a second ECU, not in our tester policy | DISC |
 | ABS active / intervention | ABS unit | (b) | DISC |
 | Kill switch, engine stop | Interlock / ECU | (a), (c) | DISC / HW |
-| Turn signals, lights | Lighting circuit | (c); planned M4 safety-partition input for blind spot (hardware-architecture §5b.1, D-072) | HW / PLAN |
+| Turn signals, lights | Lighting circuit | (c); planned safety-MCU (G474) input for blind spot (hardware-architecture §5b.1, D-072, D-118) | HW / PLAN |
 | Horn, high beam | Lighting circuit | (c) | HW |
 
 Notes:
 - (a) means new read-only discovery of non-standard DIDs (0x22 only, so inside `tester_policy`), but a range scan is a new probe mode: it needs a D-xxx (budget, which ranges, stop rules) before it is coded. The strategy note's 0x1000–0x2FFF range is an example, not a known range.
 - (b) is the Q-001 listen-only capture (`esp32-s3-devkitc-1-listen-only`, `hardware-integration.md` §7.1). It costs nothing on the bus; do it first.
-- (c) never cuts the OEM harness (vehicle-work-plan: parallel or via connectors). A tap is a hardware decision (which node reads it: the M4 safety partition per §5b.1 and D-072, or conn in Phase 0) and must not load the switch circuit.
+- (c) never cuts the OEM harness (vehicle-work-plan: parallel or via connectors). A tap is a hardware decision (which node reads it: the safety MCU (G474) per §5b.1, D-072 and D-118, or conn in Phase 0) and must not load the switch circuit.
 
 ### 3.1 Interactive discovery on the bike (proposal for Q-031 (b), added 2026-10-15)
 
