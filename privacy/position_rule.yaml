@@ -1,0 +1,25 @@
+# The position rule (D-076, platform invariant 7): which names count as GPS position data and
+# must be refused, dropped or redacted at every boundary (read API, MDF4 export, MCP tools,
+# ML training columns, black box buffers). Single source: generated into
+# gen/python/vehicle_defs/position.py by tools/codegen; golden vectors in
+# privacy/position_vectors.json. This is the STRICTEST UNION of the four hand-written copies
+# found before T22 (vehicle-server, vehicle-mcp, vehicle-ml, vehicle-linux-node blackbox).
+# Changing it is a defs change with a version bump; a rule may only get stricter without a
+# decision. No vehicle fact lives here: it is about names, not about the CL250.
+
+# Names are split into lowercase tokens at every non-alphanumeric character, and also at
+# camelCase boundaries (gpsLat -> gps, lat); the unsplit lowercase tokens are kept too so that
+# "hMSL" still reads as "hmsl". A token match anywhere in the name refuses it.
+horizontal_tokens: [lat, latitude, lon, lng, longitude, ecef]
+vertical_tokens: [alt, altitude, height, hmsl]
+
+# A vertical token alone does not refuse a name whose LAST token is one of these:
+# derived.altitude_change is the barometric change since key-on, not a position.
+# Horizontal tokens are never exempt.
+relative_last_tokens: [change]
+
+# Whole dot-separated segments (case-insensitive) that refuse a VSS-style path, whatever the
+# other segments are: Vehicle.CurrentLocation.*, Vehicle.Motorcycle.GNSS.Position.*.
+# "pos"/"position" are NOT tokens (throttle_pos_pct, position_sensor_ok are not GPS), only
+# the exact segment `Position` is.
+path_segments: [currentlocation, position]

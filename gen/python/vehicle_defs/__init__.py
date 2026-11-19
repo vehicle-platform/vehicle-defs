@@ -5,4 +5,5 @@
 # limits (platform_limits.yaml), ble (BLE packet schema, D-061),
 # vehicle_constants (CL250 constants for the derived signals, D-070),
 # vehicle_derived (derived signal definitions, D-070),
-# faults (fault catalog and CL250 applicability, D-084).
+# faults (fault catalog and CL250 applicability, D-084),
+# position (the D-076 position rule: is_position_key, redact; T22).
