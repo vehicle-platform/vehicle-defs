@@ -11,6 +11,7 @@ Single source of truth for signals in [vehicle-platform](https://github.com/vehi
 | `uds/dids.yaml` | UDS servers of our platform nodes: addressing, timing, services, DIDs, DTCs (RT_CORE so far, D-040) |
 | `uds/iso14229.yaml` | Generic ISO 14229-1 codes, generated as `uds_iso14229.h` (D-040) |
 | `ble/ble_schema.json` | BLE packet schema of vehicle-connectivity-node: telemetry versions 2/3/4, IMU block, GATT UUIDs; consumed by conn, vehicle-mobile and vehicle-server through generated code (D-061, [`ble/README.md`](ble/README.md)) |
+| `privacy/position_rule.yaml` | The position rule (D-076, invariant 7): token lists that mark a name as GPS position; generated into `vehicle_defs.position`; golden vectors in `privacy/position_vectors.json` that every consumer tests against (T22) |
 | `limits/platform_limits.yaml` | Layer 1 thresholds `k_yellow`/`k_red` (D-041), µ/mass fallback values, rt-core's speed-age rules, and a per-node `scope` (provisional, D-029, D-048) |
 | `vehicle/cl250_constants.yaml` | CL250 engine, drivetrain, tyre and fuel constants for the derived signals, each with status and source (D-070) |
 | `faults/catalog.yaml` | Vehicle-independent fault catalog, FMEA style (D-084); an entry without a high/medium source is CONFIRM, not displayable |

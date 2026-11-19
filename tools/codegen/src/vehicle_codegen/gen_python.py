@@ -250,7 +250,8 @@ def generate_init_py() -> str:
         "# limits (platform_limits.yaml), ble (BLE packet schema, D-061),\n"
         "# vehicle_constants (CL250 constants for the derived signals, D-070),\n"
         "# vehicle_derived (derived signal definitions, D-070),\n"
-        "# faults (fault catalog and CL250 applicability, D-084).\n"
+        "# faults (fault catalog and CL250 applicability, D-084),\n"
+        "# position (the D-076 position rule: is_position_key, redact; T22).\n"
     )
 
 

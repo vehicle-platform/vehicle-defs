@@ -13,6 +13,7 @@ from . import (
     gen_ble,
     gen_c,
     gen_catalog,
+    gen_position,
     gen_python,
     gen_uds,
     gen_vss,
@@ -47,6 +48,8 @@ def run_checks(with_vss: bool = True) -> list[str]:
         errors += gen_uds.check_dids(
             load_yaml(config.DIDS_YAML), iso, load_yaml(config.VEHICLE_YAML)
         )
+    errors += gen_position.check_rule(gen_position.load_rule())
+    errors += gen_position.check_vectors(gen_position.load_vectors())
     errors += check_limits(
         load_yaml(config.LIMITS_YAML), load_yaml(config.VEHICLE_YAML), platform_db
     )
@@ -140,6 +143,7 @@ def render_all(with_vss: bool = True) -> dict[Path, str]:
     files[py / "vehicle_constants.py"] = gen_python.generate_vehicle_constants_py(constants)
     files[py / "vehicle_derived.py"] = gen_python.generate_derived_py(derived)
     files[py / "uds.py"] = gen_uds.generate_uds_py(iso, dids, vehicle)
+    files[py / "position.py"] = gen_position.generate_python(gen_position.load_rule())
     files[py / "ble.py"] = gen_ble.generate_python(ble)
     files[py / "vehicle_catalog.py"] = gen_catalog.generate_python(cand, vehicle, iso)
     files[py / "faults.py"] = faults.generate_python(
