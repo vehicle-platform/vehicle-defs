@@ -41,7 +41,7 @@
       <text x="12" y="118" fill="#b42318" font-weight="600">≥ 15 cm from the ignition coil and HT lead.</text>
       <text x="12" y="138" fill="#1f2a37">5–7 mm snap-on ferrites on the engine-bay ADXL345,</text>
       <text x="12" y="152" fill="#1f2a37">EGT and spark-clip cables right before the PG7.</text>
-      <text x="12" y="172" fill="#6b7280">AGND meets GND once, at the H755 analog reference.</text>
+      <text x="12" y="172" fill="#6b7280">AGND meets GND once, at the H743 analog reference.</text>
     </g>
   </g>
 
