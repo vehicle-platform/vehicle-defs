@@ -89,7 +89,7 @@
     <text x="52" y="512" fill="#067647"><tspan font-weight="600">c</tspan> rear subframe tray under the fender, left of centre — Claude's recommendation: rigid tray, box on silicone mounts, glands down; check tyre clearance and the DLC run.</text>
     <text x="52" y="528" fill="#175cd3"><tspan font-weight="600">d</tspan> left pannier-carrier plate (~127 mm bosses, CONFIRM) — candidate: cool side, rigid, side access to ST-LINK/microSD; depends on unverified bosses.</text>
     <text x="52" y="544" fill="#175cd3"><tspan font-weight="600">e</tspan> rear rack plate (~23×23 cm, CONFIRM) — candidate: airflow, clear sky for GPS/BLE/Wi-Fi; rack stiffness and run length unverified.</text>
-    <text x="52" y="560" fill="#175cd3"><tspan font-weight="600">f</tspan> left crash bar / downtube — DLC run likely &gt; 50 cm: not for the H755 box; suits the Pi 5 (platform CAN has no stub limit) or a front hub.</text>
+    <text x="52" y="560" fill="#175cd3"><tspan font-weight="600">f</tspan> left crash bar / downtube — DLC run likely &gt; 50 cm: not for the H743 box; suits the Pi 5 (platform CAN has no stub limit) or a front hub.</text>
     <text x="52" y="576" fill="#175cd3"><tspan font-weight="600">g</tspan> behind the headlight / cowl — front satellites only (&lt; 400 g on the steering head): camera, NFC, BME280, cornering LEDs.</text>
     <text x="52" y="592" fill="#175cd3"><tspan font-weight="600">h</tspan> behind the left side cover (&lt; 45 mm deep, CONFIRM) — small boxes only: a C1/C2 box, the ACS758 box or the immobilizer relay box.</text>
   </g>

@@ -78,7 +78,7 @@
       <text x="10" y="20" font-weight="600" fill="#1f2a37">T2 / T3 road tests · only after V3</text>
       <text x="10" y="40" fill="#1f2a37">§8 rules: one tester, read-only, recording checked</text>
       <text x="10" y="54" fill="#1f2a37">before riding, full gear. T4 out of scope here.</text>
-      <text x="10" y="76" fill="#6b7280">H755 build repeats B1/B2/V0/V1 with rt-core (§11)</text>
+      <text x="10" y="76" fill="#6b7280">H743 build repeats B1/B2/V0/V1 with rt-core (§11)</text>
     </g>
   </g>
   <text x="30" y="350" font-size="11" fill="#1f2a37">At G1 (the first capture + V0/V1): verify the 35 slow-polled `verified: false` DIDs and the catalog candidates (D-068, D-059 probe env), record Q-001, measure the tester step gap and ECU round trip (D-058).</text>

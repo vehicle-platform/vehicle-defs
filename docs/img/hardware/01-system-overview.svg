@@ -1,9 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" role="img" aria-label="System overview: the CL250 ECU on the vehicle CAN with one read-only tester, the STM32H755 with M7 rt-core and M4 safety partition joined by a mailbox, the platform CAN with the bike ESP32 and the Raspberry Pi 5, BLE to the phone and helmet, and the laptop server">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" role="img" aria-label="System overview: the CL250 ECU on the vehicle CAN with one read-only tester, the STM32H743 rt-core and the separate STM32G474 safety MCU, both on the platform CAN with no mailbox, the platform CAN with the bike ESP32 and the Raspberry Pi 5, BLE to the phone and helmet, and the laptop server">
   <defs>
     <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#1f2a37"/></marker>
   </defs>
   <rect width="1000" height="560" fill="#ffffff"/>
-  <text x="20" y="28" font-size="16" font-weight="600" fill="#1f2a37">Fig. 1 — System overview (target build, D-072 / D-073 / D-082)</text>
+  <text x="20" y="28" font-size="16" font-weight="600" fill="#1f2a37">Fig. 1 — System overview (target build, D-118 / D-073 / D-082)</text>
   <text x="20" y="46" fill="#6b7280">Solid = CAN · dashed = radio · dotted = USB/laptop. Bus rules: ARCHITECTURE §3. Vehicle bus: one tester, it only reads (D-037).</text>
 
   <!-- Vehicle CAN -->
@@ -18,32 +18,31 @@
   <text x="305" y="170" text-anchor="middle" fill="#6b7280">stub &lt; 50 cm</text>
   <line x1="305" y1="110" x2="305" y2="130" stroke="#067647" stroke-width="2"/>
 
-  <!-- H755 -->
-  <rect x="250" y="220" width="420" height="150" rx="6" fill="#f8fafc" stroke="#1f2a37" stroke-width="1.5"/>
-  <text x="262" y="240" font-weight="600" fill="#1f2a37">STM32H755 — NUCLEO-H745ZI-Q (D-094), Main Box 170×120×55</text>
-  <rect x="268" y="256" width="170" height="96" rx="4" fill="#eff6ff" stroke="#175cd3"/>
-  <text x="353" y="276" text-anchor="middle" font-weight="600" fill="#175cd3">Cortex-M7 · rt-core</text>
-  <text x="353" y="294" text-anchor="middle" fill="#1f2a37">FDCAN1 tester · FDCAN2</text>
-  <text x="353" y="310" text-anchor="middle" fill="#1f2a37">SDMMC log · GPS · ADC 1 kHz</text>
-  <text x="353" y="326" text-anchor="middle" fill="#1f2a37">EKF lean · derived · DTC</text>
-  <text x="353" y="342" text-anchor="middle" fill="#6b7280">ports A B C D H</text>
-  <rect x="482" y="256" width="170" height="96" rx="4" fill="#fef3f2" stroke="#b42318"/>
-  <text x="567" y="276" text-anchor="middle" font-weight="600" fill="#b42318">Cortex-M4 · safety partition</text>
-  <text x="567" y="294" text-anchor="middle" fill="#1f2a37">cornering · blind spot</text>
-  <text x="567" y="310" text-anchor="middle" fill="#1f2a37">own IMU (SPI4) · 2 radars</text>
-  <text x="567" y="326" text-anchor="middle" fill="#1f2a37">LED rings · immobilizer</text>
-  <text x="567" y="342" text-anchor="middle" fill="#6b7280">ports E F G · no CAN</text>
-  <line x1="438" y1="304" x2="482" y2="304" stroke="#1f2a37" stroke-width="1.5" marker-start="url(#a)" marker-end="url(#a)"/>
-  <text x="460" y="296" text-anchor="middle" font-size="10" fill="#1f2a37">mailbox</text>
-  <text x="460" y="320" text-anchor="middle" font-size="10" fill="#6b7280">SRAM4+HSEM, E2E</text>
+  <!-- H743 + G474 (D-118) -->
+  <rect x="250" y="220" width="470" height="150" rx="6" fill="#f8fafc" stroke="#1f2a37" stroke-width="1.5"/>
+  <text x="262" y="240" font-weight="600" fill="#1f2a37">Main Box 170×120×55 · two MCUs, no mailbox (D-118)</text>
+  <rect x="268" y="256" width="210" height="96" rx="4" fill="#eff6ff" stroke="#175cd3"/>
+  <text x="373" y="276" text-anchor="middle" font-weight="600" fill="#175cd3">STM32H743 · rt-core</text>
+  <text x="373" y="294" text-anchor="middle" fill="#1f2a37">FDCAN1 tester · FDCAN2 platform</text>
+  <text x="373" y="310" text-anchor="middle" fill="#1f2a37">SDMMC log · GPS · ADC 1 kHz</text>
+  <text x="373" y="326" text-anchor="middle" fill="#1f2a37">EKF lean · derived · DTC</text>
+  <text x="373" y="342" text-anchor="middle" fill="#6b7280">NUCLEO-H743ZI2 · one Cortex-M7</text>
+  <rect x="502" y="256" width="200" height="96" rx="4" fill="#fef3f2" stroke="#b42318"/>
+  <text x="602" y="276" text-anchor="middle" font-weight="600" fill="#b42318">STM32G474 · safety-node</text>
+  <text x="602" y="294" text-anchor="middle" fill="#1f2a37">cornering · blind spot</text>
+  <text x="602" y="310" text-anchor="middle" fill="#1f2a37">own IMU (SPI2) · 2 radars</text>
+  <text x="602" y="326" text-anchor="middle" fill="#1f2a37">LED rings · immobilizer</text>
+  <text x="602" y="342" text-anchor="middle" fill="#6b7280">NUCLEO-G474RE · own clock, WDT</text>
   <line x1="305" y1="184" x2="305" y2="220" stroke="#067647" stroke-width="2" marker-end="url(#a)"/>
   <text x="312" y="206" font-size="11" fill="#067647">FDCAN1 (only tester, D-021)</text>
 
   <!-- Platform CAN -->
   <line x1="40" y1="430" x2="960" y2="430" stroke="#175cd3" stroke-width="4"/>
-  <text x="40" y="452" fill="#175cd3" font-weight="600">PLATFORM CAN — ours, 500 kbps classic, 11-bit, 120 Ω at both physical ends (D-009). 0x020/0x022 lean+µ, 0x021 speed, 0x023/0x082 M4 status, 0x081 heartbeat, 0x110 vehicle signals, 0x120 QM requests.</text>
-  <line x1="353" y1="370" x2="353" y2="430" stroke="#175cd3" stroke-width="2" marker-end="url(#a)"/>
-  <text x="360" y="400" font-size="11" fill="#175cd3">FDCAN2</text>
+  <text x="40" y="452" fill="#175cd3" font-weight="600">PLATFORM CAN — ours, 500 kbps classic, 11-bit, 120 Ω at both physical ends (D-009). 0x020/0x022 lean+µ, 0x021 speed, 0x023/0x082 safety status, 0x081 heartbeat, 0x110 vehicle signals, 0x120 QM requests.</text>
+  <line x1="373" y1="370" x2="373" y2="430" stroke="#175cd3" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="602" y1="370" x2="602" y2="430" stroke="#b42318" stroke-width="2" marker-end="url(#a)"/>
+  <text x="609" y="400" font-size="11" fill="#b42318">G474 FDCAN1</text>
+  <text x="380" y="400" font-size="11" fill="#175cd3">H743 FDCAN2</text>
 
   <!-- Raspi -->
   <rect x="740" y="220" width="200" height="150" rx="6" fill="#f8fafc" stroke="#1f2a37" stroke-width="1.5"/>
