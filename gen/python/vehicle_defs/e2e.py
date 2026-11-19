@@ -25,6 +25,7 @@ class E2EStatus(IntEnum):
     WRONG_CRC = 5
     NO_NEW_DATA = 6
     BAD_ARGUMENT = 7
+    WRONG_LENGTH = 8  # generated wrapper: frame length is not the message DLC (ISSUES E-5)
 
 
 def is_valid(status: E2EStatus) -> bool:

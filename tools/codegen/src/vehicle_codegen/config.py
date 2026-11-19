@@ -22,7 +22,6 @@ VEHICLE_CONSTANTS_YAML = REPO_ROOT / "vehicle" / "cl250_constants.yaml"  # D-070
 DERIVED_YAML = REPO_ROOT / "derived" / "cl250_derived.yaml"  # D-070 item 3
 FAULT_CATALOG_YAML = REPO_ROOT / "faults" / "catalog.yaml"  # D-084
 FAULTS_CL250_YAML = REPO_ROOT / "vehicle" / "cl250_faults.yaml"  # D-084 item 2, D-078
-MAILBOX_YAML = REPO_ROOT / "mailbox" / "h755_mailbox.yaml"  # D-093
 CATALOG_MD = REPO_ROOT / "docs" / "vehicle-data-catalog.md"  # derived `catalog` rows
 OVERLAY_VSPEC = REPO_ROOT / "vss" / "overlay.vspec"
 BLE_SCHEMA = REPO_ROOT / "ble" / "ble_schema.json"
@@ -55,8 +54,6 @@ class CTarget:
     # uds_iso14229.h: "full" (UDS server and/or client) or "client" (vehicle-bus tester
     # only: nothing outside the D-020 allow-list is named, D-040). None: no UDS.
     uds_iso: str | None = None
-    # gets platform_mailbox.h: the two images of the STM32H755 share the M7<->M4 layout (D-093)
-    mailbox: bool = False
 
 
 # LINUX and TESTER parse the DBC/VSS at runtime (Python), so they get no C code.
@@ -68,9 +65,8 @@ C_TARGETS: tuple[CTarget, ...] = (
         limits=True,
         uds_iso="full",
         vehicle_constants=True,
-        mailbox=True,
     ),
-    CTarget("SAFETY", "safety", limits=True, mailbox=True),
+    CTarget("SAFETY", "safety", limits=True),
     # Temporary sole vehicle-bus tester until rt-core polls (D-023).
     CTarget("CONN", "conn", vehicle_dids=True, uds_iso="client"),
     # Simulates the CL250 ECU and impersonates platform nodes on the HIL bench.

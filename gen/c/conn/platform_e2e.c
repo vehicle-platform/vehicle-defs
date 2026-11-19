@@ -7,7 +7,12 @@
 
 vehicle_e2e_status_t platform_vehicle_speed_e2e_check(const uint8_t *data, size_t size, vehicle_e2e_rx_state_t *state, uint32_t now_ms)
 {
-    return vehicle_e2e_check(PLATFORM_VEHICLE_SPEED_E2E_DATA_ID, PLATFORM_VEHICLE_SPEED_E2E_MAX_DELTA_COUNTER, PLATFORM_VEHICLE_SPEED_E2E_TIMEOUT_MS, data, size, state, now_ms);
+    vehicle_e2e_status_t result = VEHICLE_E2E_WRONG_LENGTH; /* state untouched */
+
+    if (size == PLATFORM_VEHICLE_SPEED_E2E_LENGTH) {
+        result = vehicle_e2e_check(PLATFORM_VEHICLE_SPEED_E2E_DATA_ID, PLATFORM_VEHICLE_SPEED_E2E_MAX_DELTA_COUNTER, PLATFORM_VEHICLE_SPEED_E2E_TIMEOUT_MS, data, size, state, now_ms);
+    }
+    return result;
 }
 
 vehicle_e2e_status_t platform_vehicle_speed_e2e_check_timeout(vehicle_e2e_rx_state_t *state, uint32_t now_ms)
@@ -17,7 +22,12 @@ vehicle_e2e_status_t platform_vehicle_speed_e2e_check_timeout(vehicle_e2e_rx_sta
 
 vehicle_e2e_status_t platform_safety_warning_status_e2e_check(const uint8_t *data, size_t size, vehicle_e2e_rx_state_t *state, uint32_t now_ms)
 {
-    return vehicle_e2e_check(PLATFORM_SAFETY_WARNING_STATUS_E2E_DATA_ID, PLATFORM_SAFETY_WARNING_STATUS_E2E_MAX_DELTA_COUNTER, PLATFORM_SAFETY_WARNING_STATUS_E2E_TIMEOUT_MS, data, size, state, now_ms);
+    vehicle_e2e_status_t result = VEHICLE_E2E_WRONG_LENGTH; /* state untouched */
+
+    if (size == PLATFORM_SAFETY_WARNING_STATUS_E2E_LENGTH) {
+        result = vehicle_e2e_check(PLATFORM_SAFETY_WARNING_STATUS_E2E_DATA_ID, PLATFORM_SAFETY_WARNING_STATUS_E2E_MAX_DELTA_COUNTER, PLATFORM_SAFETY_WARNING_STATUS_E2E_TIMEOUT_MS, data, size, state, now_ms);
+    }
+    return result;
 }
 
 vehicle_e2e_status_t platform_safety_warning_status_e2e_check_timeout(vehicle_e2e_rx_state_t *state, uint32_t now_ms)
@@ -27,7 +37,12 @@ vehicle_e2e_status_t platform_safety_warning_status_e2e_check_timeout(vehicle_e2
 
 vehicle_e2e_status_t platform_heartbeat_rt_core_e2e_check(const uint8_t *data, size_t size, vehicle_e2e_rx_state_t *state, uint32_t now_ms)
 {
-    return vehicle_e2e_check(PLATFORM_HEARTBEAT_RT_CORE_E2E_DATA_ID, PLATFORM_HEARTBEAT_RT_CORE_E2E_MAX_DELTA_COUNTER, PLATFORM_HEARTBEAT_RT_CORE_E2E_TIMEOUT_MS, data, size, state, now_ms);
+    vehicle_e2e_status_t result = VEHICLE_E2E_WRONG_LENGTH; /* state untouched */
+
+    if (size == PLATFORM_HEARTBEAT_RT_CORE_E2E_LENGTH) {
+        result = vehicle_e2e_check(PLATFORM_HEARTBEAT_RT_CORE_E2E_DATA_ID, PLATFORM_HEARTBEAT_RT_CORE_E2E_MAX_DELTA_COUNTER, PLATFORM_HEARTBEAT_RT_CORE_E2E_TIMEOUT_MS, data, size, state, now_ms);
+    }
+    return result;
 }
 
 vehicle_e2e_status_t platform_heartbeat_rt_core_e2e_check_timeout(vehicle_e2e_rx_state_t *state, uint32_t now_ms)
@@ -37,5 +52,10 @@ vehicle_e2e_status_t platform_heartbeat_rt_core_e2e_check_timeout(vehicle_e2e_rx
 
 vehicle_e2e_status_t platform_heartbeat_conn_e2e_protect(uint8_t *data, size_t size, vehicle_e2e_tx_state_t *state)
 {
-    return vehicle_e2e_protect(PLATFORM_HEARTBEAT_CONN_E2E_DATA_ID, data, size, state);
+    vehicle_e2e_status_t result = VEHICLE_E2E_WRONG_LENGTH; /* buffer untouched */
+
+    if (size == PLATFORM_HEARTBEAT_CONN_E2E_LENGTH) {
+        result = vehicle_e2e_protect(PLATFORM_HEARTBEAT_CONN_E2E_DATA_ID, data, size, state);
+    }
+    return result;
 }

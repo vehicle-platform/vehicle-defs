@@ -31,24 +31,28 @@ static inline bool platform_e2e_id_mandatory(uint32_t id, bool extended)
 #define PLATFORM_EKF_LEAN_E2E_DATA_ID (0x1020u)
 #define PLATFORM_EKF_LEAN_E2E_TIMEOUT_MS (60u)
 #define PLATFORM_EKF_LEAN_E2E_MAX_DELTA_COUNTER (1u)
+#define PLATFORM_EKF_LEAN_E2E_LENGTH (8u)
 vehicle_e2e_status_t platform_ekf_lean_e2e_protect(uint8_t *data, size_t size, vehicle_e2e_tx_state_t *state);
 
 /* VehicleSpeed 0x021, cycle 50 ms, sender RT_CORE */
 #define PLATFORM_VEHICLE_SPEED_E2E_DATA_ID (0x1021u)
 #define PLATFORM_VEHICLE_SPEED_E2E_TIMEOUT_MS (150u)
 #define PLATFORM_VEHICLE_SPEED_E2E_MAX_DELTA_COUNTER (1u)
+#define PLATFORM_VEHICLE_SPEED_E2E_LENGTH (8u)
 vehicle_e2e_status_t platform_vehicle_speed_e2e_protect(uint8_t *data, size_t size, vehicle_e2e_tx_state_t *state);
 
 /* EkfFrictionMass 0x022, cycle 100 ms, sender RT_CORE */
 #define PLATFORM_EKF_FRICTION_MASS_E2E_DATA_ID (0x1022u)
 #define PLATFORM_EKF_FRICTION_MASS_E2E_TIMEOUT_MS (300u)
 #define PLATFORM_EKF_FRICTION_MASS_E2E_MAX_DELTA_COUNTER (1u)
+#define PLATFORM_EKF_FRICTION_MASS_E2E_LENGTH (8u)
 vehicle_e2e_status_t platform_ekf_friction_mass_e2e_protect(uint8_t *data, size_t size, vehicle_e2e_tx_state_t *state);
 
 /* SafetyWarningStatus 0x023, cycle 20 ms, sender SAFETY */
 #define PLATFORM_SAFETY_WARNING_STATUS_E2E_DATA_ID (0x1023u)
 #define PLATFORM_SAFETY_WARNING_STATUS_E2E_TIMEOUT_MS (60u)
 #define PLATFORM_SAFETY_WARNING_STATUS_E2E_MAX_DELTA_COUNTER (1u)
+#define PLATFORM_SAFETY_WARNING_STATUS_E2E_LENGTH (8u)
 vehicle_e2e_status_t platform_safety_warning_status_e2e_check(const uint8_t *data, size_t size, vehicle_e2e_rx_state_t *state, uint32_t now_ms);
 vehicle_e2e_status_t platform_safety_warning_status_e2e_check_timeout(vehicle_e2e_rx_state_t *state, uint32_t now_ms);
 
@@ -56,12 +60,14 @@ vehicle_e2e_status_t platform_safety_warning_status_e2e_check_timeout(vehicle_e2
 #define PLATFORM_HEARTBEAT_RT_CORE_E2E_DATA_ID (0x1081u)
 #define PLATFORM_HEARTBEAT_RT_CORE_E2E_TIMEOUT_MS (300u)
 #define PLATFORM_HEARTBEAT_RT_CORE_E2E_MAX_DELTA_COUNTER (1u)
+#define PLATFORM_HEARTBEAT_RT_CORE_E2E_LENGTH (8u)
 vehicle_e2e_status_t platform_heartbeat_rt_core_e2e_protect(uint8_t *data, size_t size, vehicle_e2e_tx_state_t *state);
 
 /* HeartbeatSafety 0x082, cycle 100 ms, sender SAFETY */
 #define PLATFORM_HEARTBEAT_SAFETY_E2E_DATA_ID (0x1082u)
 #define PLATFORM_HEARTBEAT_SAFETY_E2E_TIMEOUT_MS (300u)
 #define PLATFORM_HEARTBEAT_SAFETY_E2E_MAX_DELTA_COUNTER (1u)
+#define PLATFORM_HEARTBEAT_SAFETY_E2E_LENGTH (8u)
 vehicle_e2e_status_t platform_heartbeat_safety_e2e_check(const uint8_t *data, size_t size, vehicle_e2e_rx_state_t *state, uint32_t now_ms);
 vehicle_e2e_status_t platform_heartbeat_safety_e2e_check_timeout(vehicle_e2e_rx_state_t *state, uint32_t now_ms);
 
@@ -69,6 +75,7 @@ vehicle_e2e_status_t platform_heartbeat_safety_e2e_check_timeout(vehicle_e2e_rx_
 #define PLATFORM_HEARTBEAT_CONN_E2E_DATA_ID (0x1084u)
 #define PLATFORM_HEARTBEAT_CONN_E2E_TIMEOUT_MS (300u)
 #define PLATFORM_HEARTBEAT_CONN_E2E_MAX_DELTA_COUNTER (1u)
+#define PLATFORM_HEARTBEAT_CONN_E2E_LENGTH (8u)
 vehicle_e2e_status_t platform_heartbeat_conn_e2e_check(const uint8_t *data, size_t size, vehicle_e2e_rx_state_t *state, uint32_t now_ms);
 vehicle_e2e_status_t platform_heartbeat_conn_e2e_check_timeout(vehicle_e2e_rx_state_t *state, uint32_t now_ms);
 
@@ -76,6 +83,7 @@ vehicle_e2e_status_t platform_heartbeat_conn_e2e_check_timeout(vehicle_e2e_rx_st
 #define PLATFORM_HEARTBEAT_LINUX_E2E_DATA_ID (0x1085u)
 #define PLATFORM_HEARTBEAT_LINUX_E2E_TIMEOUT_MS (300u)
 #define PLATFORM_HEARTBEAT_LINUX_E2E_MAX_DELTA_COUNTER (1u)
+#define PLATFORM_HEARTBEAT_LINUX_E2E_LENGTH (8u)
 vehicle_e2e_status_t platform_heartbeat_linux_e2e_check(const uint8_t *data, size_t size, vehicle_e2e_rx_state_t *state, uint32_t now_ms);
 vehicle_e2e_status_t platform_heartbeat_linux_e2e_check_timeout(vehicle_e2e_rx_state_t *state, uint32_t now_ms);
 
@@ -83,6 +91,7 @@ vehicle_e2e_status_t platform_heartbeat_linux_e2e_check_timeout(vehicle_e2e_rx_s
 #define PLATFORM_SAFETY_REQUEST_E2E_DATA_ID (0x1120u)
 #define PLATFORM_SAFETY_REQUEST_E2E_TIMEOUT_MS (300u)
 #define PLATFORM_SAFETY_REQUEST_E2E_MAX_DELTA_COUNTER (1u)
+#define PLATFORM_SAFETY_REQUEST_E2E_LENGTH (8u)
 vehicle_e2e_status_t platform_safety_request_e2e_protect(uint8_t *data, size_t size, vehicle_e2e_tx_state_t *state);
 
 #ifdef __cplusplus

@@ -85,7 +85,7 @@ Incremental rollout: a unit is not added until its function arrives (see hardwar
 
 **E2E (AUTOSAR E2E Profile 1/2-like, D-005):** protected messages carry a 4-bit alive counter + CRC8 (SAE J1850, poly 0x1D). The message's `E2E_DataID` is included in the CRC calculation but not transmitted. The receiver checks three things: **timeout** (3 × cycle), **counter jump/freeze**, **CRC**. If any of these fails, the signal is considered `INVALID` and the consumer transitions to its own safe state. For the safety node, an invalid lean/µ switches to its own-IMU fallback (DEGRADED, or UNAVAILABLE if no source is usable; D-042, Q-002 resolved, details in Q-023). Cost is 1-2 bytes per message plus a few lines of generated code.
 
-**Heartbeat:** every node publishes one. The safety node monitors rt-core's heartbeat 0x081 on the platform bus (D-118), rt-core is meant to monitor the other nodes (no 0x082 monitor yet; the mailbox DTCs become a SAFETY heartbeat-lost DTC in the next defs minor, D-118 item 6). The Raspi health dashboard displays this.
+**Heartbeat:** every node publishes one. The safety node monitors rt-core's heartbeat 0x081 on the platform bus (D-118), rt-core is meant to monitor the other nodes (DTC `SAFETY_HEARTBEAT_LOST` U0167-00 on 0x082, diagnostic only, D-118 item 6; the rt-core monitor itself is a consumer follow-up). The Raspi health dashboard displays this.
 
 ---
 
@@ -137,7 +137,7 @@ tests/host/             host-native unit tests with Unity (pure logic: EKF, ISO-
 
 | Flow | Path | Channel | Criticality |
 |---|---|---|---|
-| Cornering warning | IMU/GPS/vehicle CAN → rt-core EKF (H743) → lean + µ [platform CAN, E2E, D-118] → safety-MCU decision (G474) (no speed, D-041; own-IMU fallback when rt-core data is unusable, D-042) → LED ring driven by the safety MCU (Q-026 resolved); helmet HUD copy informational (D-073) | mailbox | µs-ms, safety |
+| Cornering warning | IMU/GPS/vehicle CAN → rt-core EKF (H743) → lean + µ [platform CAN, E2E, D-118] → safety-MCU decision (G474) (no speed, D-041; own-IMU fallback when rt-core data is unusable, D-042) → LED ring driven by the safety MCU (Q-026 resolved); helmet HUD copy informational (D-073) | platform CAN (E2E) | µs-ms, safety |
 | Blind spot | radar x2 (UART, safety MCU) → safety-MCU decision → mirror LED; status → platform CAN directly (D-118); helmet HUD copy informational (D-073) | local + platform CAN | reflex, safety |
 | Context data bus | rt-core `context/` + EKF + measurements → platform CAN 0x100-0x3FF → consumers | CAN | ms |
 | Derived signals (D-070) | vehicle DIDs + IMU + GPS speed → rt-core `features/derived` → microSD log (all); ride summaries → rt-core UDS DIDs; platform CAN 0x100-0x3FF only for a live consumer (Raspi anomaly model via VSS, D-004); cross-ride trends → vehicle-server. Never a safety-partition input | SD/CAN | latency-tolerant (QM) |

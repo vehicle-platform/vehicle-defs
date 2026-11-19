@@ -224,7 +224,7 @@ struct platform_vehicle_speed_t {
 /**
  * Signals in message SafetyWarningStatus.
  *
- * Safety partition output status (D-072 item 4c): the cornering warning level and its source (D-041, D-042), both blind-spot sides (hardware-architecture 5b.1) and the immobilizer state. The M4 writes it into the mailbox; rt-core forwards it verbatim and stops when the slot is not updated. Informational for every receiver (logging, phone, helmet HUD, D-073): the safety outputs are the LED ring and mirror LEDs, driven by the partition itself. No receiver may show a safe state from it; a timeout or E2E error means no status is available, never GREEN or CLEAR. Raw 0 is the no-information value of every field (codegen rule), so a zero-initialised or never-written field reads as unavailable.
+ * Safety MCU output status (D-118): the cornering warning level and its source (D-041, D-042), both blind-spot sides (hardware-architecture 5b.1) and the immobilizer state. The safety MCU sends it itself on this bus. Informational for every receiver (logging, phone, helmet HUD, D-073): the safety outputs are the LED ring and mirror LEDs, driven by the safety MCU itself. No receiver may show a safe state from it; a timeout or E2E error means no status is available, never GREEN or CLEAR. Raw 0 is the no-information value of every field (codegen rule), so a zero-initialised or never-written field reads as unavailable.
  *
  * All signal values are as on the CAN bus.
  */
@@ -280,7 +280,7 @@ struct platform_safety_warning_status_t {
     uint8_t bsm_right;
 
     /**
-     * Starter-relay immobilizer (invariant 6). UNKNOWN = the partition does not know the relay position (at boot, without position feedback; a boot never pulses the relay). UNLOCKED = relay released, the starter-relay coil circuit passes and the engine can start (default). LOCKED = the starter-relay coil circuit is interrupted. AUTH_PENDING = a lock request or an authorization (NFC, PIN) is being decided; it ends within 10 s in LOCKED or UNLOCKED, and in UNLOCKED if no decision is reached. FAULT = immobilizer out of service. Values 5-7 are read as UNKNOWN.
+     * Starter-relay immobilizer (invariant 6). UNKNOWN = the safety MCU does not know the relay position (at boot, without position feedback; a boot never pulses the relay). UNLOCKED = relay released, the starter-relay coil circuit passes and the engine can start (default). LOCKED = the starter-relay coil circuit is interrupted. AUTH_PENDING = a lock request or an authorization (NFC, PIN) is being decided; it ends within 10 s in LOCKED or UNLOCKED, and in UNLOCKED if no decision is reached. FAULT = immobilizer out of service. Values 5-7 are read as UNKNOWN.
      *
      * Range: 0..4 (0..4 -)
      * Scale: 1
@@ -292,7 +292,7 @@ struct platform_safety_warning_status_t {
 /**
  * Signals in message HeartbeatRtCore.
  *
- * rt-core heartbeat (0x080 + node_id). The safety partition receives it through the mailbox (D-042 item 3, D-072 item 4c).
+ * rt-core heartbeat (0x080 + node_id). The safety MCU receives it as an ordinary platform-bus frame (D-042 item 3, D-118).
  *
  * All signal values are as on the CAN bus.
  */
@@ -1578,6 +1578,123 @@ bool platform_heartbeat_conn_conn_node_mode_is_defined(uint8_t value);
 int platform_heartbeat_conn_pack_checked(
     uint8_t *dst_p,
     const struct platform_heartbeat_conn_t *src_p,
+    size_t size);
+/**
+ * Encode HeartbeatConn.CONN_NODE_MODE after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_heartbeat_conn_conn_node_mode_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode HeartbeatConn.CONN_ERROR_COUNT after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_heartbeat_conn_conn_error_count_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode HeartbeatConn.CONN_UPTIME after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_heartbeat_conn_conn_uptime_encode_checked(float value, uint16_t *raw_p);
+/**
+ * Unpack message VehicleSpeed after checking its length and every signal.
+ *
+ * size must be exactly PLATFORM_VEHICLE_SPEED_LENGTH (the DBC DLC) and every signal must
+ * pass its is_in_range() check. dst_p is written only on success. Undefined enum
+ * values are not rejected (the receiver applies the documented fallback). Run the
+ * E2E wrapper check first.
+ *
+ * @param[out] dst_p Object to unpack into.
+ * @param[in] src_p Frame data.
+ * @param[in] size Size of src_p.
+ *
+ * @return 0 on success, -EINVAL on a bad argument, wrong length or a value out of
+ *         range.
+ */
+int platform_vehicle_speed_unpack_checked(
+    struct platform_vehicle_speed_t *dst_p,
+    const uint8_t *src_p,
+    size_t size);
+
+/**
+ * Unpack message SafetyWarningStatus after checking its length and every signal.
+ *
+ * size must be exactly PLATFORM_SAFETY_WARNING_STATUS_LENGTH (the DBC DLC) and every signal must
+ * pass its is_in_range() check. dst_p is written only on success. Undefined enum
+ * values are not rejected (the receiver applies the documented fallback). Run the
+ * E2E wrapper check first.
+ *
+ * @param[out] dst_p Object to unpack into.
+ * @param[in] src_p Frame data.
+ * @param[in] size Size of src_p.
+ *
+ * @return 0 on success, -EINVAL on a bad argument, wrong length or a value out of
+ *         range.
+ */
+int platform_safety_warning_status_unpack_checked(
+    struct platform_safety_warning_status_t *dst_p,
+    const uint8_t *src_p,
+    size_t size);
+
+/**
+ * Unpack message HeartbeatRtCore after checking its length and every signal.
+ *
+ * size must be exactly PLATFORM_HEARTBEAT_RT_CORE_LENGTH (the DBC DLC) and every signal must
+ * pass its is_in_range() check. dst_p is written only on success. Undefined enum
+ * values are not rejected (the receiver applies the documented fallback). Run the
+ * E2E wrapper check first.
+ *
+ * @param[out] dst_p Object to unpack into.
+ * @param[in] src_p Frame data.
+ * @param[in] size Size of src_p.
+ *
+ * @return 0 on success, -EINVAL on a bad argument, wrong length or a value out of
+ *         range.
+ */
+int platform_heartbeat_rt_core_unpack_checked(
+    struct platform_heartbeat_rt_core_t *dst_p,
+    const uint8_t *src_p,
+    size_t size);
+
+/**
+ * Unpack message VehicleEngine after checking its length and every signal.
+ *
+ * size must be exactly PLATFORM_VEHICLE_ENGINE_LENGTH (the DBC DLC) and every signal must
+ * pass its is_in_range() check. dst_p is written only on success. Undefined enum
+ * values are not rejected (the receiver applies the documented fallback). Run the
+ * E2E wrapper check first.
+ *
+ * @param[out] dst_p Object to unpack into.
+ * @param[in] src_p Frame data.
+ * @param[in] size Size of src_p.
+ *
+ * @return 0 on success, -EINVAL on a bad argument, wrong length or a value out of
+ *         range.
+ */
+int platform_vehicle_engine_unpack_checked(
+    struct platform_vehicle_engine_t *dst_p,
+    const uint8_t *src_p,
     size_t size);
 
 #ifdef __cplusplus

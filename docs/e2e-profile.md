@@ -29,6 +29,7 @@ Call `platform_<msg>_e2e_check(data, size, &rx_state, now_ms)` for each received
 | `WRONG_SEQUENCE` | counter jump > max delta; resynchronises the counter | no |
 | `WRONG_CRC` | corrupted frame or wrong DataID | no |
 | `NO_NEW_DATA` | timeout expired (or never received); forces a resync | no |
+| `WRONG_LENGTH` | (generated wrappers only, v0.30.0) frame size is not the message's DBC DLC (`PLATFORM_<MSG>_E2E_LENGTH`); the state and the buffer are left untouched | no |
 
 Only `OK`/`OK_SOME_LOST` (`vehicle_e2e_is_valid()`) allow use. `OK`, `OK_SOME_LOST` and `INITIAL` refresh the timeout; the others do not, so a frozen or corrupted stream ends in `NO_NEW_DATA`. Parameters: timeout = **3 × GenMsgCycleTime** (`PLATFORM_<MSG>_E2E_TIMEOUT_MS`), max delta counter = **1** (`..._E2E_MAX_DELTA_COUNTER`), so a single lost frame makes that cycle invalid. After an invalid status the consumer uses its own safe state; safety-node then uses its own-IMU fallback (DEGRADED or UNAVAILABLE, D-042, which resolved Q-002).
 
