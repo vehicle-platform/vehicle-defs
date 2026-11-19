@@ -105,7 +105,7 @@
   <rect x="40" y="250" width="560" height="120" rx="6" fill="#f8fafc" stroke="#1f2a37"/>
   <text x="52" y="272" font-weight="600" fill="#1f2a37">Ground rules</text>
   <text x="52" y="294" fill="#1f2a37">• GND on its own wire straight to the battery negative: a star point, no chassis return, no second ground path per unit.</text>
-  <text x="52" y="312" fill="#1f2a37">• AGND ↔ GND tied once, at the H755 analog reference (0 Ω net-tie) — unless the Nucleo already ties it on board (UM2408, CONFIRM).</text>
+  <text x="52" y="312" fill="#1f2a37">• AGND ↔ GND tied once, at the H743 analog reference (0 Ω net-tie) — unless the Nucleo already ties it on board (UM2408, CONFIRM).</text>
   <text x="52" y="330" fill="#1f2a37">• Cable shields drain to GND at the Main Box end only; the sensor end floats.</text>
   <text x="52" y="348" fill="#1f2a37">• Sleep current target &lt; 1 mA with the ignition off (T0, INA226 or multimeter); otherwise switch the supply with the ignition.</text>
 
@@ -113,6 +113,6 @@
   <text x="52" y="412" font-weight="600" fill="#b54708">Gate B1 (bench, 12–14 V) before Board A touches the Nucleo</text>
   <text x="52" y="434" fill="#1f2a37">5 V stable under load · no heat on the buck · reversed input once: must not conduct.</text>
   <text x="52" y="452" fill="#1f2a37">+3V3 for off-box sensors: option (b) separate LDO on Board A + PTC per sensor lead is the proposal (S1, decision TBD).</text>
-  <text x="52" y="470" fill="#1f2a37">Common causes that remain (D-082): this rail and buck, the star ground, the H755 supply/clock/reset. Stated, not removed.</text>
+  <text x="52" y="470" fill="#1f2a37">Common causes that remain (D-082): this rail and buck, the star ground, the H743 supply/clock/reset. Stated, not removed.</text>
   <text x="52" y="490" fill="#6b7280">Figure is schematic-level: component orientation and layout belong to the Fusion sheet S1.</text>
 </svg>
