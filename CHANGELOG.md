@@ -4,6 +4,8 @@ All notable changes to vehicle-defs. Semver (see CLAUDE.md): new message/signal 
 
 ## [Unreleased]
 
+PATCH (fault catalog sources only, no signal change): the 12 generic DTC leads of defs#167 (P0562, P0563, P0217, P0480, P0117/P0118, P0171, P0120, P0130, P0505, P0335) were checked against SAE J2012-2002 and are now cited by section (App. B tables) instead of public mirrors; all 12 confirmed, none corrected or removed. They stay `confidence: low` (the standard supports the code meaning only, not the entry), so the displayable set is unchanged; `gen/python/vehicle_defs/faults.py` regenerated.
+
 ## [0.29.0] — unreleased
 
 **MAJOR (breaking, signal names; D-108, PROVISIONAL: Claude's decision under the user's standing order, the user revises; Q-016).** Do not tag before v0.28.0 exists (v0.28.0 is bumped but not tagged yet). No frame on either bus changes: bit positions, lengths, scales, value tables, cycle times and E2E attributes are identical; only identifiers differ.
