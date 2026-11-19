@@ -96,7 +96,7 @@ This calculation will be used to independently check the accuracy of the speed s
 
 | Feature | Decision |
 |---|---|
-| Processor | STM32H755 Cortex-M7 (rt-core, the DUT, D-001, D-072) |
+| Processor | STM32H743ZI Cortex-M7 (rt-core, the DUT, NUCLEO-H743ZI2; D-001, D-118) |
 | Enclosure | ABS or aluminum box, minimum IP54 |
 | Mounting location | Under-seat or inside the side panel (preferred: under-seat) |
 | Vibration isolation | Silicone mount or double-sided vibration-damping tape |
@@ -589,7 +589,7 @@ All additional equipment must be removable before inspection. This is one of the
 
 | Item | Purpose | Estimate (TL) |
 |---|---|---|
-| NUCLEO-H745ZI-Q (STM32H745: M7 = rt-core, M4 = safety partition; D-001, D-072, D-094) | Main MCU | ~2900 |
+| NUCLEO-H743ZI2 (STM32H743: rt-core) + NUCLEO-G474RE (STM32G474: safety MCU on the platform bus); D-001, D-118 | Main MCU + safety MCU | ~2900 (old H755 board estimate; the two new lines are not priced yet, `hardware-procurement-list.md` v3.1) |
 | ESP32-S3 (connectivity-node: BLE/Wi-Fi bridge, Phase 0 tester until rt-core, D-023) | Connectivity | 300-450 |
 | CAN transceiver | Physical layer | 80-150 |
 | IMU (6/9-axis) | Motion data | 150-300 |
@@ -612,7 +612,7 @@ All additional equipment must be removable before inspection. This is one of the
 | Track day (optional) | Controlled data | 0-3000 |
 | **Grand total** | | **6160-17900** |
 
-The board price is the NUCLEO-H755ZI-Q list price of `hardware-procurement-list.md` (2,904.30 TL); the NUCLEO-H745ZI-Q bought on 2026-11-02 (D-094) is the same class. The itemised, current list with stores and prices is `hardware-procurement-list.md`; this table is the planning estimate. The wide range is due to the dyno and track-day line items. If university facilities can be used, the total stays close to the lower band.
+The MCU-board figure is the former NUCLEO-H755ZI-Q list price (2,904.30 TL); D-118 replaced that board by the NUCLEO-H743ZI2 and a NUCLEO-G474RE, whose prices `hardware-procurement-list.md` v3.1 has not collected yet. The itemised, current list with stores and prices is `hardware-procurement-list.md`; this table is the planning estimate. The wide range is due to the dyno and track-day line items. If university facilities can be used, the total stays close to the lower band.
 
 ---
 
