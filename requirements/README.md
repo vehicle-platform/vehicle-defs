@@ -1,6 +1,6 @@
 # requirements/ (location per D-113, PROVISIONAL)
 
-Requirements per domain, one file each: `cornering`, `blind_spot`, `immobilizer`, `mailbox`,
+Requirements per domain, one file each: `cornering`, `blind_spot`, `immobilizer`,
 `tester`, `platform_bus`. Ids are `REQ-<DOMAIN>-NNN` (ARCHITECTURE section 8: requirement
 ids appear in test names or comments for traceability). Fields are in `schema.yaml`.
 

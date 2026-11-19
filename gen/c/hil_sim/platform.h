@@ -271,7 +271,7 @@ extern "C" {
 /**
  * Signals in message EkfLean.
  *
- * rt-core EKF lean (roll) angle estimate for the cornering decision (hardware-architecture 5b.2 Layer 2); reaches the safety partition through the mailbox (D-072 item 4c). Until the EKF has converged after a restart, rt-core sends LEAN_ANGLE_STATE=INVALID and QUALITY=0.
+ * rt-core EKF lean (roll) angle estimate for the cornering decision (hardware-architecture 5b.2 Layer 2); is received by the safety MCU as an ordinary platform-bus frame (D-118). Until the EKF has converged after a restart, rt-core sends LEAN_ANGLE_STATE=INVALID and QUALITY=0.
  *
  * All signal values are as on the CAN bus.
  */
@@ -371,7 +371,7 @@ struct platform_vehicle_speed_t {
 /**
  * Signals in message EkfFrictionMass.
  *
- * rt-core EKF road friction and total mass estimates for the cornering decision (hardware-architecture 5b.2 Layer 2); reaches the safety partition through the mailbox (D-072 item 4c). Until the EKF has converged after a restart, rt-core sends *_STATE=INVALID and QUALITY=0.
+ * rt-core EKF road friction and total mass estimates for the cornering decision (hardware-architecture 5b.2 Layer 2); is received by the safety MCU as an ordinary platform-bus frame (D-118). Until the EKF has converged after a restart, rt-core sends *_STATE=INVALID and QUALITY=0.
  *
  * All signal values are as on the CAN bus.
  */
@@ -444,7 +444,7 @@ struct platform_ekf_friction_mass_t {
 /**
  * Signals in message SafetyWarningStatus.
  *
- * Safety partition output status (D-072 item 4c): the cornering warning level and its source (D-041, D-042), both blind-spot sides (hardware-architecture 5b.1) and the immobilizer state. The M4 writes it into the mailbox; rt-core forwards it verbatim and stops when the slot is not updated. Informational for every receiver (logging, phone, helmet HUD, D-073): the safety outputs are the LED ring and mirror LEDs, driven by the partition itself. No receiver may show a safe state from it; a timeout or E2E error means no status is available, never GREEN or CLEAR. Raw 0 is the no-information value of every field (codegen rule), so a zero-initialised or never-written field reads as unavailable.
+ * Safety MCU output status (D-118): the cornering warning level and its source (D-041, D-042), both blind-spot sides (hardware-architecture 5b.1) and the immobilizer state. The safety MCU sends it itself on this bus. Informational for every receiver (logging, phone, helmet HUD, D-073): the safety outputs are the LED ring and mirror LEDs, driven by the safety MCU itself. No receiver may show a safe state from it; a timeout or E2E error means no status is available, never GREEN or CLEAR. Raw 0 is the no-information value of every field (codegen rule), so a zero-initialised or never-written field reads as unavailable.
  *
  * All signal values are as on the CAN bus.
  */
@@ -500,7 +500,7 @@ struct platform_safety_warning_status_t {
     uint8_t bsm_right;
 
     /**
-     * Starter-relay immobilizer (invariant 6). UNKNOWN = the partition does not know the relay position (at boot, without position feedback; a boot never pulses the relay). UNLOCKED = relay released, the starter-relay coil circuit passes and the engine can start (default). LOCKED = the starter-relay coil circuit is interrupted. AUTH_PENDING = a lock request or an authorization (NFC, PIN) is being decided; it ends within 10 s in LOCKED or UNLOCKED, and in UNLOCKED if no decision is reached. FAULT = immobilizer out of service. Values 5-7 are read as UNKNOWN.
+     * Starter-relay immobilizer (invariant 6). UNKNOWN = the safety MCU does not know the relay position (at boot, without position feedback; a boot never pulses the relay). UNLOCKED = relay released, the starter-relay coil circuit passes and the engine can start (default). LOCKED = the starter-relay coil circuit is interrupted. AUTH_PENDING = a lock request or an authorization (NFC, PIN) is being decided; it ends within 10 s in LOCKED or UNLOCKED, and in UNLOCKED if no decision is reached. FAULT = immobilizer out of service. Values 5-7 are read as UNKNOWN.
      *
      * Range: 0..4 (0..4 -)
      * Scale: 1
@@ -512,7 +512,7 @@ struct platform_safety_warning_status_t {
 /**
  * Signals in message HeartbeatRtCore.
  *
- * rt-core heartbeat (0x080 + node_id). The safety partition receives it through the mailbox (D-042 item 3, D-072 item 4c).
+ * rt-core heartbeat (0x080 + node_id). The safety MCU receives it as an ordinary platform-bus frame (D-042 item 3, D-118).
  *
  * All signal values are as on the CAN bus.
  */
@@ -560,7 +560,7 @@ struct platform_heartbeat_rt_core_t {
 /**
  * Signals in message HeartbeatSafety.
  *
- * Safety partition heartbeat (0x080 + node_id), written by the M4 into the mailbox and forwarded verbatim by rt-core (D-072 item 4c).
+ * Safety MCU heartbeat (0x080 + node_id), sent by the safety MCU itself (D-118). rt-core monitors it with the E2E timeout; a loss is a diagnostic-only DTC and never a safety input (D-118 item 6).
  *
  * All signal values are as on the CAN bus.
  */
@@ -786,7 +786,7 @@ struct platform_vehicle_engine_t {
 /**
  * Signals in message SafetyRequest.
  *
- * QM requests from rt-core to the safety partition (D-072 item 4c), passed through the mailbox. E2E protects integrity only. Used by the immobilizer alone: it never gates or degrades the cornering decision, the blind spot, the LED ring or mirror LEDs, the D-042 source selection or the M4 power and clock state, and its E2E status is not a D-042 fallback criterion (codegen SAFETY_RX_QM_IMMOBILIZER). A missing, stale or invalid frame is no request and never changes the immobilizer state (D-072 item 7, user 2026-10-18). A release rt-core image fills it only from its own state, never from a frame received on the platform bus.
+ * QM requests from rt-core to the safety MCU (D-072 item 7, D-118), sent as an ordinary platform-bus frame. E2E protects integrity only. Used by the immobilizer alone: it never gates or degrades the cornering decision, the blind spot, the LED ring or mirror LEDs, the D-042 source selection or the safety MCU power and clock state, and its E2E status is not a D-042 fallback criterion (codegen SAFETY_RX_QM_IMMOBILIZER). A missing, stale or invalid frame is no request and never changes the immobilizer state (D-072 item 7, user 2026-10-18). A release rt-core image fills it only from its own state, never from a frame received on the platform bus.
  *
  * All signal values are as on the CAN bus.
  */
@@ -806,7 +806,7 @@ struct platform_safety_request_t {
     uint8_t e2_e_counter;
 
     /**
-     * Ignition (key) state seen by rt-core power management; UNKNOWN until measured. 3 is reserved and is read as UNKNOWN. Only OFF lets the partition accept a lock; it can never cause a lock or an unlock by itself.
+     * Ignition (key) state seen by rt-core power management; UNKNOWN until measured. 3 is reserved and is read as UNKNOWN. Only OFF lets the safety MCU accept a lock; it can never cause a lock or an unlock by itself.
      *
      * Range: 0..3 (0..3 -)
      * Scale: 1
@@ -824,7 +824,7 @@ struct platform_safety_request_t {
     uint8_t park_mode;
 
     /**
-     * LOCK = the phone or park mode asks the partition to lock the starter relay; it is only a request. LOCK is 3 and 1 and 2 are reserved and read as NONE, so any single-bit error from NONE or LOCK lands on a reserved value. The partition counts a lock only on a NONE -> LOCK transition with E2E OK, after it has seen NONE with E2E OK since its own boot, with IGNITION_STATE = OFF and its own IMU stationary (D-072 item 7). There is no unlock request: unlocking is the partition's own decision (NFC, PIN, hidden bypass).
+     * LOCK = the phone or park mode asks the safety MCU to lock the starter relay; it is only a request. LOCK is 3 and 1 and 2 are reserved and read as NONE, so any single-bit error from NONE or LOCK lands on a reserved value. The safety MCU counts a lock only on a NONE -> LOCK transition with E2E OK, after it has seen NONE with E2E OK since its own boot, with IGNITION_STATE = OFF and its own IMU stationary (D-072 item 7). There is no unlock request: unlocking is the safety MCU's own decision (NFC, PIN, hidden bypass).
      *
      * Range: 0..3 (0..3 -)
      * Scale: 1
@@ -4041,6 +4041,737 @@ bool platform_safety_request_immobilizer_lock_request_is_defined(uint8_t value);
 int platform_safety_request_pack_checked(
     uint8_t *dst_p,
     const struct platform_safety_request_t *src_p,
+    size_t size);
+/**
+ * Encode EkfLean.LEAN_ANGLE_STATE after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_ekf_lean_lean_angle_state_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode EkfLean.LEAN_ANGLE after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_ekf_lean_lean_angle_encode_checked(float value, int16_t *raw_p);
+
+/**
+ * Encode EkfLean.LEAN_ANGLE_QUALITY after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_ekf_lean_lean_angle_quality_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode VehicleSpeed.VEHICLE_SPEED_VALID after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_vehicle_speed_vehicle_speed_valid_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode VehicleSpeed.VEHICLE_SPEED after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_vehicle_speed_vehicle_speed_encode_checked(float value, uint16_t *raw_p);
+
+/**
+ * Encode VehicleSpeed.VEHICLE_SPEED_AGE after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_vehicle_speed_vehicle_speed_age_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode EkfFrictionMass.FRICTION_COEFF_STATE after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_ekf_friction_mass_friction_coeff_state_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode EkfFrictionMass.TOTAL_MASS_STATE after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_ekf_friction_mass_total_mass_state_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode EkfFrictionMass.FRICTION_COEFF after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_ekf_friction_mass_friction_coeff_encode_checked(float value, uint16_t *raw_p);
+
+/**
+ * Encode EkfFrictionMass.FRICTION_COEFF_QUALITY after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_ekf_friction_mass_friction_coeff_quality_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode EkfFrictionMass.TOTAL_MASS after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_ekf_friction_mass_total_mass_encode_checked(float value, uint16_t *raw_p);
+
+/**
+ * Encode EkfFrictionMass.TOTAL_MASS_QUALITY after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_ekf_friction_mass_total_mass_quality_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode SafetyWarningStatus.CORNERING_LEVEL after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_safety_warning_status_cornering_level_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode SafetyWarningStatus.CORNERING_SOURCE after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_safety_warning_status_cornering_source_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode SafetyWarningStatus.BSM_LEFT after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_safety_warning_status_bsm_left_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode SafetyWarningStatus.BSM_RIGHT after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_safety_warning_status_bsm_right_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode SafetyWarningStatus.IMMOBILIZER_STATE after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_safety_warning_status_immobilizer_state_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode HeartbeatRtCore.RT_CORE_NODE_MODE after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_heartbeat_rt_core_rt_core_node_mode_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode HeartbeatRtCore.RT_CORE_ERROR_COUNT after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_heartbeat_rt_core_rt_core_error_count_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode HeartbeatRtCore.RT_CORE_UPTIME after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_heartbeat_rt_core_rt_core_uptime_encode_checked(float value, uint16_t *raw_p);
+
+/**
+ * Encode HeartbeatSafety.SAFETY_NODE_MODE after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_heartbeat_safety_safety_node_mode_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode HeartbeatSafety.SAFETY_ERROR_COUNT after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_heartbeat_safety_safety_error_count_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode HeartbeatSafety.SAFETY_UPTIME after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_heartbeat_safety_safety_uptime_encode_checked(float value, uint16_t *raw_p);
+
+/**
+ * Encode HeartbeatConn.CONN_NODE_MODE after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_heartbeat_conn_conn_node_mode_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode HeartbeatConn.CONN_ERROR_COUNT after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_heartbeat_conn_conn_error_count_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode HeartbeatConn.CONN_UPTIME after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_heartbeat_conn_conn_uptime_encode_checked(float value, uint16_t *raw_p);
+
+/**
+ * Encode HeartbeatLinux.LINUX_NODE_MODE after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_heartbeat_linux_linux_node_mode_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode HeartbeatLinux.LINUX_ERROR_COUNT after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_heartbeat_linux_linux_error_count_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode HeartbeatLinux.LINUX_UPTIME after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_heartbeat_linux_linux_uptime_encode_checked(float value, uint16_t *raw_p);
+
+/**
+ * Encode VehicleEngine.ENGINE_SPEED after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_vehicle_engine_engine_speed_encode_checked(float value, uint16_t *raw_p);
+
+/**
+ * Encode VehicleEngine.BATTERY_VOLTAGE after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_vehicle_engine_battery_voltage_encode_checked(float value, uint16_t *raw_p);
+
+/**
+ * Encode VehicleEngine.COOLANT_TEMP after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_vehicle_engine_coolant_temp_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode VehicleEngine.THROTTLE_POS after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_vehicle_engine_throttle_pos_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode VehicleEngine.ENGINE_SPEED_VALID after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_vehicle_engine_engine_speed_valid_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode VehicleEngine.BATTERY_VOLTAGE_VALID after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_vehicle_engine_battery_voltage_valid_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode VehicleEngine.COOLANT_TEMP_VALID after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_vehicle_engine_coolant_temp_valid_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode VehicleEngine.THROTTLE_POS_VALID after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_vehicle_engine_throttle_pos_valid_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode VehicleEngine.ECU_PRESENT after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_vehicle_engine_ecu_present_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode SafetyRequest.IGNITION_STATE after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_safety_request_ignition_state_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode SafetyRequest.PARK_MODE after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_safety_request_park_mode_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode SafetyRequest.IMMOBILIZER_LOCK_REQUEST after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_safety_request_immobilizer_lock_request_encode_checked(float value, uint8_t *raw_p);
+/**
+ * Unpack message EkfLean after checking its length and every signal.
+ *
+ * size must be exactly PLATFORM_EKF_LEAN_LENGTH (the DBC DLC) and every signal must
+ * pass its is_in_range() check. dst_p is written only on success. Undefined enum
+ * values are not rejected (the receiver applies the documented fallback). Run the
+ * E2E wrapper check first.
+ *
+ * @param[out] dst_p Object to unpack into.
+ * @param[in] src_p Frame data.
+ * @param[in] size Size of src_p.
+ *
+ * @return 0 on success, -EINVAL on a bad argument, wrong length or a value out of
+ *         range.
+ */
+int platform_ekf_lean_unpack_checked(
+    struct platform_ekf_lean_t *dst_p,
+    const uint8_t *src_p,
+    size_t size);
+
+/**
+ * Unpack message VehicleSpeed after checking its length and every signal.
+ *
+ * size must be exactly PLATFORM_VEHICLE_SPEED_LENGTH (the DBC DLC) and every signal must
+ * pass its is_in_range() check. dst_p is written only on success. Undefined enum
+ * values are not rejected (the receiver applies the documented fallback). Run the
+ * E2E wrapper check first.
+ *
+ * @param[out] dst_p Object to unpack into.
+ * @param[in] src_p Frame data.
+ * @param[in] size Size of src_p.
+ *
+ * @return 0 on success, -EINVAL on a bad argument, wrong length or a value out of
+ *         range.
+ */
+int platform_vehicle_speed_unpack_checked(
+    struct platform_vehicle_speed_t *dst_p,
+    const uint8_t *src_p,
+    size_t size);
+
+/**
+ * Unpack message EkfFrictionMass after checking its length and every signal.
+ *
+ * size must be exactly PLATFORM_EKF_FRICTION_MASS_LENGTH (the DBC DLC) and every signal must
+ * pass its is_in_range() check. dst_p is written only on success. Undefined enum
+ * values are not rejected (the receiver applies the documented fallback). Run the
+ * E2E wrapper check first.
+ *
+ * @param[out] dst_p Object to unpack into.
+ * @param[in] src_p Frame data.
+ * @param[in] size Size of src_p.
+ *
+ * @return 0 on success, -EINVAL on a bad argument, wrong length or a value out of
+ *         range.
+ */
+int platform_ekf_friction_mass_unpack_checked(
+    struct platform_ekf_friction_mass_t *dst_p,
+    const uint8_t *src_p,
+    size_t size);
+
+/**
+ * Unpack message SafetyWarningStatus after checking its length and every signal.
+ *
+ * size must be exactly PLATFORM_SAFETY_WARNING_STATUS_LENGTH (the DBC DLC) and every signal must
+ * pass its is_in_range() check. dst_p is written only on success. Undefined enum
+ * values are not rejected (the receiver applies the documented fallback). Run the
+ * E2E wrapper check first.
+ *
+ * @param[out] dst_p Object to unpack into.
+ * @param[in] src_p Frame data.
+ * @param[in] size Size of src_p.
+ *
+ * @return 0 on success, -EINVAL on a bad argument, wrong length or a value out of
+ *         range.
+ */
+int platform_safety_warning_status_unpack_checked(
+    struct platform_safety_warning_status_t *dst_p,
+    const uint8_t *src_p,
+    size_t size);
+
+/**
+ * Unpack message HeartbeatRtCore after checking its length and every signal.
+ *
+ * size must be exactly PLATFORM_HEARTBEAT_RT_CORE_LENGTH (the DBC DLC) and every signal must
+ * pass its is_in_range() check. dst_p is written only on success. Undefined enum
+ * values are not rejected (the receiver applies the documented fallback). Run the
+ * E2E wrapper check first.
+ *
+ * @param[out] dst_p Object to unpack into.
+ * @param[in] src_p Frame data.
+ * @param[in] size Size of src_p.
+ *
+ * @return 0 on success, -EINVAL on a bad argument, wrong length or a value out of
+ *         range.
+ */
+int platform_heartbeat_rt_core_unpack_checked(
+    struct platform_heartbeat_rt_core_t *dst_p,
+    const uint8_t *src_p,
+    size_t size);
+
+/**
+ * Unpack message HeartbeatSafety after checking its length and every signal.
+ *
+ * size must be exactly PLATFORM_HEARTBEAT_SAFETY_LENGTH (the DBC DLC) and every signal must
+ * pass its is_in_range() check. dst_p is written only on success. Undefined enum
+ * values are not rejected (the receiver applies the documented fallback). Run the
+ * E2E wrapper check first.
+ *
+ * @param[out] dst_p Object to unpack into.
+ * @param[in] src_p Frame data.
+ * @param[in] size Size of src_p.
+ *
+ * @return 0 on success, -EINVAL on a bad argument, wrong length or a value out of
+ *         range.
+ */
+int platform_heartbeat_safety_unpack_checked(
+    struct platform_heartbeat_safety_t *dst_p,
+    const uint8_t *src_p,
+    size_t size);
+
+/**
+ * Unpack message HeartbeatConn after checking its length and every signal.
+ *
+ * size must be exactly PLATFORM_HEARTBEAT_CONN_LENGTH (the DBC DLC) and every signal must
+ * pass its is_in_range() check. dst_p is written only on success. Undefined enum
+ * values are not rejected (the receiver applies the documented fallback). Run the
+ * E2E wrapper check first.
+ *
+ * @param[out] dst_p Object to unpack into.
+ * @param[in] src_p Frame data.
+ * @param[in] size Size of src_p.
+ *
+ * @return 0 on success, -EINVAL on a bad argument, wrong length or a value out of
+ *         range.
+ */
+int platform_heartbeat_conn_unpack_checked(
+    struct platform_heartbeat_conn_t *dst_p,
+    const uint8_t *src_p,
+    size_t size);
+
+/**
+ * Unpack message HeartbeatLinux after checking its length and every signal.
+ *
+ * size must be exactly PLATFORM_HEARTBEAT_LINUX_LENGTH (the DBC DLC) and every signal must
+ * pass its is_in_range() check. dst_p is written only on success. Undefined enum
+ * values are not rejected (the receiver applies the documented fallback). Run the
+ * E2E wrapper check first.
+ *
+ * @param[out] dst_p Object to unpack into.
+ * @param[in] src_p Frame data.
+ * @param[in] size Size of src_p.
+ *
+ * @return 0 on success, -EINVAL on a bad argument, wrong length or a value out of
+ *         range.
+ */
+int platform_heartbeat_linux_unpack_checked(
+    struct platform_heartbeat_linux_t *dst_p,
+    const uint8_t *src_p,
+    size_t size);
+
+/**
+ * Unpack message VehicleEngine after checking its length and every signal.
+ *
+ * size must be exactly PLATFORM_VEHICLE_ENGINE_LENGTH (the DBC DLC) and every signal must
+ * pass its is_in_range() check. dst_p is written only on success. Undefined enum
+ * values are not rejected (the receiver applies the documented fallback). Run the
+ * E2E wrapper check first.
+ *
+ * @param[out] dst_p Object to unpack into.
+ * @param[in] src_p Frame data.
+ * @param[in] size Size of src_p.
+ *
+ * @return 0 on success, -EINVAL on a bad argument, wrong length or a value out of
+ *         range.
+ */
+int platform_vehicle_engine_unpack_checked(
+    struct platform_vehicle_engine_t *dst_p,
+    const uint8_t *src_p,
+    size_t size);
+
+/**
+ * Unpack message SafetyRequest after checking its length and every signal.
+ *
+ * size must be exactly PLATFORM_SAFETY_REQUEST_LENGTH (the DBC DLC) and every signal must
+ * pass its is_in_range() check. dst_p is written only on success. Undefined enum
+ * values are not rejected (the receiver applies the documented fallback). Run the
+ * E2E wrapper check first.
+ *
+ * @param[out] dst_p Object to unpack into.
+ * @param[in] src_p Frame data.
+ * @param[in] size Size of src_p.
+ *
+ * @return 0 on success, -EINVAL on a bad argument, wrong length or a value out of
+ *         range.
+ */
+int platform_safety_request_unpack_checked(
+    struct platform_safety_request_t *dst_p,
+    const uint8_t *src_p,
     size_t size);
 
 #ifdef __cplusplus

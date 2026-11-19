@@ -136,13 +136,16 @@ def generate_platform_c(db: Database, target: config.CTarget) -> dict[str, str]:
     source = _encode_rounding(_misra_fixups(_strip_date(source)), header)
     header = _strip_date(header)
     sent = [m for m in db.messages if _sends(target, m)]
-    header, source = _checked_pack(header, source, [m for m in sent if _enum_signals(m)])
+    received = [m for m in db.messages if _receives(target, m)]
+    header, source = _checked_pack(header, source, sent)
+    header, source = _checked_encode(header, source, sent)
+    header, source = _checked_unpack(header, source, received)
     return {"platform.h": header, "platform.c": source}
 
 
 # D-072 item 7 follow-up: the cantools *_pack() masks every member into its bit field, so an
 # out-of-range or undefined enum value is sent as a different, valid-looking value. For each
-# sent message with a value table, <msg>_pack_checked() validates first and calls the plain
+# sent message (every one since v0.30.0, ISSUES E-6; before, only those with a value table), <msg>_pack_checked() validates first and calls the plain
 # pack only if everything passes: it returns -EINVAL and leaves the destination untouched
 # otherwise. Additive: *_pack() is unchanged. The checks are the cantools *_is_in_range() of
 # every signal plus <msg>_<signal>_is_defined() of every enum signal (is_in_range() only
@@ -282,6 +285,119 @@ def _checked_pack(header: str, source: str, messages: list[Message]) -> tuple[st
     return header, source.rstrip("\n") + "\n\n" + "\n".join(c_parts)
 
 
+# ISSUES E-7: cantools *_encode(float) turns NaN into 0 (the codegen's own rounding, above) and
+# the DBC [min|max] check lets a signal without a range through. <sig>_encode_checked() is the
+# sender's finite-and-in-range gate: it returns -EINVAL and leaves *raw_p unchanged for NaN, +-Inf
+# and any value outside the DBC physical range. E2E CRC/counter signals are the wrapper's job.
+_FLT_MAX_LITERAL = "3.4028234e+38f"  # FLT_MAX without <float.h>: NaN and +-Inf fail both tests
+
+
+def _checked_encode(header: str, source: str, messages: list[Message]) -> tuple[str, str]:
+    h_parts: list[str] = []
+    c_parts: list[str] = []
+    for msg in messages:
+        base = f"platform_{camel_to_snake_case(msg.name)}"
+        for sig in msg.signals:
+            if sig.name.startswith("E2E_"):
+                continue
+            member = camel_to_snake_case(sig.name)
+            ctype = _c_type(sig)
+            signature = f"int {base}_{member}_encode_checked(float value, {ctype} *raw_p)"
+            h_parts.append(
+                "/**\n"
+                f" * Encode {msg.name}.{sig.name} after checking the value.\n"
+                " *\n"
+                " * Rejects NaN, +-Inf and any value outside the DBC physical range; on a\n"
+                " * negative return *raw_p is unchanged (the plain encode turns NaN into 0).\n"
+                " *\n"
+                " * @param[in] value Physical value to encode.\n"
+                " * @param[out] raw_p Raw value on success.\n"
+                " *\n"
+                " * @return 0 on success, -EINVAL otherwise.\n"
+                " */\n"
+                f"{signature};\n"
+            )
+            c_parts.append(
+                f"{signature}\n{{\n"
+                "    int result = (-EINVAL);\n\n"
+                f"    if ((raw_p != NULL) && (value >= -{_FLT_MAX_LITERAL}) &&\n"
+                f"        (value <= {_FLT_MAX_LITERAL}) &&\n"
+                f"        {base}_{member}_is_in_phys_range(value)) {{\n"
+                f"        *raw_p = {base}_{member}_encode(value);\n"
+                "        result = 0;\n"
+                "    }\n\n"
+                "    return (result);\n}\n"
+            )
+    return _append_api(header, source, h_parts, c_parts)
+
+
+# ISSUES E-5 at the codec level: <msg>_unpack_checked() is the receiver's counterpart of
+# pack_checked(). It requires size == the DBC length (the plain unpack accepts any size >= the
+# length) and every signal inside its DBC raw range; dst_p is written only on success. Enum
+# values that are in the field but not in the value table are NOT rejected here: a receiver
+# treats them as the documented fallback (see the DBC comments), it does not drop the frame.
+# The E2E check stays the E2E wrapper's job and must run first.
+def _checked_unpack(header: str, source: str, messages: list[Message]) -> tuple[str, str]:
+    h_parts: list[str] = []
+    c_parts: list[str] = []
+    for msg in messages:
+        base = f"platform_{camel_to_snake_case(msg.name)}"
+        checks = [
+            f"{base}_{camel_to_snake_case(sig.name)}_is_in_range(tmp.{camel_to_snake_case(sig.name)})"
+            for sig in msg.signals
+        ]
+        condition = " &&\n            ".join(checks)
+        signature = (
+            f"int {base}_unpack_checked(\n    struct {base}_t *dst_p,\n"
+            "    const uint8_t *src_p,\n    size_t size)"
+        )
+        h_parts.append(
+            "/**\n"
+            f" * Unpack message {msg.name} after checking its length and every signal.\n"
+            " *\n"
+            f" * size must be exactly {base.upper()}_LENGTH (the DBC DLC) and every signal must\n"
+            " * pass its is_in_range() check. dst_p is written only on success. Undefined enum\n"
+            " * values are not rejected (the receiver applies the documented fallback). Run the\n"
+            " * E2E wrapper check first.\n"
+            " *\n"
+            " * @param[out] dst_p Object to unpack into.\n"
+            " * @param[in] src_p Frame data.\n"
+            " * @param[in] size Size of src_p.\n"
+            " *\n"
+            " * @return 0 on success, -EINVAL on a bad argument, wrong length or a value out of\n"
+            " *         range.\n"
+            " */\n"
+            f"{signature};\n"
+        )
+        c_parts.append(
+            f"{signature}\n{{\n"
+            "    int result = (-EINVAL);\n"
+            f"    struct {base}_t tmp = {{0}};\n\n"
+            f"    if ((dst_p != NULL) && (src_p != NULL) && (size == {base.upper()}_LENGTH)) {{\n"
+            f"        result = {base}_unpack(&tmp, src_p, size);\n"
+            f"        if (!({condition})) {{\n"
+            "            result = (-EINVAL);\n"
+            "        }\n"
+            "        if (result == 0) {\n"
+            "            *dst_p = tmp;\n"
+            "        }\n"
+            "    }\n\n"
+            "    return (result);\n}\n"
+        )
+    return _append_api(header, source, h_parts, c_parts)
+
+
+def _append_api(
+    header: str, source: str, h_parts: list[str], c_parts: list[str]
+) -> tuple[str, str]:
+    if not h_parts:
+        return header, source
+    tail = "\n#ifdef __cplusplus\n}\n#endif"
+    cut = header.rindex(tail)
+    header = header[:cut] + "\n".join(h_parts) + header[cut:]
+    return header, source.rstrip("\n") + "\n\n" + "\n".join(c_parts)
+
+
 # --------------------------------------------------------------------------- E2E wrappers
 
 
@@ -324,6 +440,9 @@ def generate_e2e_c(db: Database, target: config.CTarget) -> dict[str, str]:
         h.append(f"#define {up}_E2E_DATA_ID ({_hex(e2e_data_id(m, db), 4)})")
         h.append(f"#define {up}_E2E_TIMEOUT_MS ({cycle * config.E2E_TIMEOUT_CYCLES}u)")
         h.append(f"#define {up}_E2E_MAX_DELTA_COUNTER ({config.E2E_MAX_DELTA_COUNTER}u)")
+        # the DBC DLC: a wrapper refuses any other size (ISSUES E-5); the core library alone
+        # cannot know it and only needs size >= 2
+        h.append(f"#define {up}_E2E_LENGTH ({m.length}u)")
         if _sends(target, m):
             h.append(
                 f"vehicle_e2e_status_t {fn}_protect(uint8_t *data, size_t size, "
@@ -333,7 +452,12 @@ def generate_e2e_c(db: Database, target: config.CTarget) -> dict[str, str]:
                 f"vehicle_e2e_status_t {fn}_protect(uint8_t *data, size_t size, "
                 "vehicle_e2e_tx_state_t *state)",
                 "{",
-                f"    return vehicle_e2e_protect({up}_E2E_DATA_ID, data, size, state);",
+                "    vehicle_e2e_status_t result = VEHICLE_E2E_WRONG_LENGTH; /* buffer untouched */",
+                "",
+                f"    if (size == {up}_E2E_LENGTH) {{",
+                f"        result = vehicle_e2e_protect({up}_E2E_DATA_ID, data, size, state);",
+                "    }",
+                "    return result;",
                 "}",
                 "",
             ]
@@ -350,8 +474,13 @@ def generate_e2e_c(db: Database, target: config.CTarget) -> dict[str, str]:
                 f"vehicle_e2e_status_t {fn}_check(const uint8_t *data, size_t size, "
                 "vehicle_e2e_rx_state_t *state, uint32_t now_ms)",
                 "{",
-                f"    return vehicle_e2e_check({up}_E2E_DATA_ID, {up}_E2E_MAX_DELTA_COUNTER, "
+                "    vehicle_e2e_status_t result = VEHICLE_E2E_WRONG_LENGTH; /* state untouched */",
+                "",
+                f"    if (size == {up}_E2E_LENGTH) {{",
+                f"        result = vehicle_e2e_check({up}_E2E_DATA_ID, {up}_E2E_MAX_DELTA_COUNTER, "
                 f"{up}_E2E_TIMEOUT_MS, data, size, state, now_ms);",
+                "    }",
+                "    return result;",
                 "}",
                 "",
                 f"vehicle_e2e_status_t {fn}_check_timeout(vehicle_e2e_rx_state_t *state, "

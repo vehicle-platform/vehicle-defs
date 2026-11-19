@@ -790,3 +790,151 @@ int platform_heartbeat_conn_pack_checked(
 
     return (result);
 }
+
+int platform_heartbeat_conn_conn_node_mode_encode_checked(float value, uint8_t *raw_p)
+{
+    int result = (-EINVAL);
+
+    if ((raw_p != NULL) && (value >= -3.4028234e+38f) &&
+        (value <= 3.4028234e+38f) &&
+        platform_heartbeat_conn_conn_node_mode_is_in_phys_range(value)) {
+        *raw_p = platform_heartbeat_conn_conn_node_mode_encode(value);
+        result = 0;
+    }
+
+    return (result);
+}
+
+int platform_heartbeat_conn_conn_error_count_encode_checked(float value, uint8_t *raw_p)
+{
+    int result = (-EINVAL);
+
+    if ((raw_p != NULL) && (value >= -3.4028234e+38f) &&
+        (value <= 3.4028234e+38f) &&
+        platform_heartbeat_conn_conn_error_count_is_in_phys_range(value)) {
+        *raw_p = platform_heartbeat_conn_conn_error_count_encode(value);
+        result = 0;
+    }
+
+    return (result);
+}
+
+int platform_heartbeat_conn_conn_uptime_encode_checked(float value, uint16_t *raw_p)
+{
+    int result = (-EINVAL);
+
+    if ((raw_p != NULL) && (value >= -3.4028234e+38f) &&
+        (value <= 3.4028234e+38f) &&
+        platform_heartbeat_conn_conn_uptime_is_in_phys_range(value)) {
+        *raw_p = platform_heartbeat_conn_conn_uptime_encode(value);
+        result = 0;
+    }
+
+    return (result);
+}
+
+int platform_vehicle_speed_unpack_checked(
+    struct platform_vehicle_speed_t *dst_p,
+    const uint8_t *src_p,
+    size_t size)
+{
+    int result = (-EINVAL);
+    struct platform_vehicle_speed_t tmp = {0};
+
+    if ((dst_p != NULL) && (src_p != NULL) && (size == PLATFORM_VEHICLE_SPEED_LENGTH)) {
+        result = platform_vehicle_speed_unpack(&tmp, src_p, size);
+        if (!(platform_vehicle_speed_e2_e_crc_is_in_range(tmp.e2_e_crc) &&
+            platform_vehicle_speed_e2_e_counter_is_in_range(tmp.e2_e_counter) &&
+            platform_vehicle_speed_vehicle_speed_valid_is_in_range(tmp.vehicle_speed_valid) &&
+            platform_vehicle_speed_vehicle_speed_is_in_range(tmp.vehicle_speed) &&
+            platform_vehicle_speed_vehicle_speed_age_is_in_range(tmp.vehicle_speed_age))) {
+            result = (-EINVAL);
+        }
+        if (result == 0) {
+            *dst_p = tmp;
+        }
+    }
+
+    return (result);
+}
+
+int platform_safety_warning_status_unpack_checked(
+    struct platform_safety_warning_status_t *dst_p,
+    const uint8_t *src_p,
+    size_t size)
+{
+    int result = (-EINVAL);
+    struct platform_safety_warning_status_t tmp = {0};
+
+    if ((dst_p != NULL) && (src_p != NULL) && (size == PLATFORM_SAFETY_WARNING_STATUS_LENGTH)) {
+        result = platform_safety_warning_status_unpack(&tmp, src_p, size);
+        if (!(platform_safety_warning_status_e2_e_crc_is_in_range(tmp.e2_e_crc) &&
+            platform_safety_warning_status_e2_e_counter_is_in_range(tmp.e2_e_counter) &&
+            platform_safety_warning_status_cornering_level_is_in_range(tmp.cornering_level) &&
+            platform_safety_warning_status_cornering_source_is_in_range(tmp.cornering_source) &&
+            platform_safety_warning_status_bsm_left_is_in_range(tmp.bsm_left) &&
+            platform_safety_warning_status_bsm_right_is_in_range(tmp.bsm_right) &&
+            platform_safety_warning_status_immobilizer_state_is_in_range(tmp.immobilizer_state))) {
+            result = (-EINVAL);
+        }
+        if (result == 0) {
+            *dst_p = tmp;
+        }
+    }
+
+    return (result);
+}
+
+int platform_heartbeat_rt_core_unpack_checked(
+    struct platform_heartbeat_rt_core_t *dst_p,
+    const uint8_t *src_p,
+    size_t size)
+{
+    int result = (-EINVAL);
+    struct platform_heartbeat_rt_core_t tmp = {0};
+
+    if ((dst_p != NULL) && (src_p != NULL) && (size == PLATFORM_HEARTBEAT_RT_CORE_LENGTH)) {
+        result = platform_heartbeat_rt_core_unpack(&tmp, src_p, size);
+        if (!(platform_heartbeat_rt_core_e2_e_crc_is_in_range(tmp.e2_e_crc) &&
+            platform_heartbeat_rt_core_e2_e_counter_is_in_range(tmp.e2_e_counter) &&
+            platform_heartbeat_rt_core_rt_core_node_mode_is_in_range(tmp.rt_core_node_mode) &&
+            platform_heartbeat_rt_core_rt_core_error_count_is_in_range(tmp.rt_core_error_count) &&
+            platform_heartbeat_rt_core_rt_core_uptime_is_in_range(tmp.rt_core_uptime))) {
+            result = (-EINVAL);
+        }
+        if (result == 0) {
+            *dst_p = tmp;
+        }
+    }
+
+    return (result);
+}
+
+int platform_vehicle_engine_unpack_checked(
+    struct platform_vehicle_engine_t *dst_p,
+    const uint8_t *src_p,
+    size_t size)
+{
+    int result = (-EINVAL);
+    struct platform_vehicle_engine_t tmp = {0};
+
+    if ((dst_p != NULL) && (src_p != NULL) && (size == PLATFORM_VEHICLE_ENGINE_LENGTH)) {
+        result = platform_vehicle_engine_unpack(&tmp, src_p, size);
+        if (!(platform_vehicle_engine_engine_speed_is_in_range(tmp.engine_speed) &&
+            platform_vehicle_engine_battery_voltage_is_in_range(tmp.battery_voltage) &&
+            platform_vehicle_engine_coolant_temp_is_in_range(tmp.coolant_temp) &&
+            platform_vehicle_engine_throttle_pos_is_in_range(tmp.throttle_pos) &&
+            platform_vehicle_engine_engine_speed_valid_is_in_range(tmp.engine_speed_valid) &&
+            platform_vehicle_engine_battery_voltage_valid_is_in_range(tmp.battery_voltage_valid) &&
+            platform_vehicle_engine_coolant_temp_valid_is_in_range(tmp.coolant_temp_valid) &&
+            platform_vehicle_engine_throttle_pos_valid_is_in_range(tmp.throttle_pos_valid) &&
+            platform_vehicle_engine_ecu_present_is_in_range(tmp.ecu_present))) {
+            result = (-EINVAL);
+        }
+        if (result == 0) {
+            *dst_p = tmp;
+        }
+    }
+
+    return (result);
+}

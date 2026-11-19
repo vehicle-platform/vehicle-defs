@@ -149,7 +149,7 @@ def test_protect_and_check_match_reference(lib, max_delta):
             py_rx.synced,
         )
     # every receiver outcome except BAD_ARGUMENT must have been exercised
-    expected = set(e2e.E2EStatus) - {e2e.E2EStatus.BAD_ARGUMENT}
+    expected = set(e2e.E2EStatus) - {e2e.E2EStatus.BAD_ARGUMENT, e2e.E2EStatus.WRONG_LENGTH}
     if max_delta == 1:
         expected.discard(e2e.E2EStatus.OK_SOME_LOST)  # impossible with max delta 1
     assert seen == expected
@@ -412,5 +412,136 @@ def test_e2e_wrapper_constants(platform_db):
         assert f"#define {up}_E2E_DATA_ID (0x{0x1000 + m.frame_id:04X}u)" in header
         assert f"#define {up}_E2E_TIMEOUT_MS ({3 * cycle_time_ms(m)}u)" in header
         fn = "platform_" + camel_to_snake_case(m.name)
-        body = source.split(f"{fn}_e2e_check(const")[1].split("}")[0]
+        assert f"#define {up}_E2E_LENGTH ({m.length}u)" in header
+        body = source.split(f"{fn}_e2e_check(const")[1].split("\n}\n")[0]
         assert f"{up}_E2E_DATA_ID" in body and f"{up}_E2E_TIMEOUT_MS" in body
+        assert f"size == {up}_E2E_LENGTH" in body
+
+
+def test_e2e_wrappers_reject_any_length_but_the_dlc(lib, platform_db):
+    """ISSUES E-5: every generated wrapper refuses a frame whose size is not the DBC DLC,
+    even when its CRC would match (the core library only needs size >= 2)."""
+    from vehicle_codegen.dbc_checks import e2e_data_id, is_e2e_protected
+
+    wrong = int(e2e.E2EStatus.WRONG_LENGTH)
+    for m in platform_db.messages:
+        if not is_e2e_protected(m, platform_db):
+            continue
+        fn = "platform_" + camel_to_snake_case(m.name) + "_e2e"
+        data_id = e2e_data_id(m, platform_db)
+        protect = getattr(lib, f"{fn}_protect")
+        protect.argtypes = [ctypes.c_char_p, ctypes.c_size_t, ctypes.POINTER(TxState)]
+        check = getattr(lib, f"{fn}_check")
+        check.argtypes = [
+            ctypes.c_char_p,
+            ctypes.c_size_t,
+            ctypes.POINTER(RxState),
+            ctypes.c_uint32,
+        ]
+        # a frame of the right DLC that passes, then the same bytes at every other size
+        frame = bytearray(m.length)
+        e2e.protect(data_id, frame, e2e.TxState())
+        buf = ctypes.create_string_buffer(bytes(frame) + b"\x00" * 8, m.length + 8)
+        rx = _rx(synced=False)
+        assert check(buf, m.length, ctypes.byref(rx), 5000) == int(e2e.E2EStatus.INITIAL)
+        for size in sorted(set(range(0, 13)) - {m.length}):
+            # the CRC covers bytes 1..size-1, so make the frame valid for this size as well
+            other = bytearray(frame[:size]) + bytearray(max(0, size - len(frame)))
+            if size >= 2:
+                e2e.protect(data_id, other, e2e.TxState())
+            cbuf = ctypes.create_string_buffer(bytes(other), max(size, 1))
+            rx = _rx()
+            before = _rx_tuple(rx)
+            assert check(cbuf, size, ctypes.byref(rx), 1010) == wrong, (m.name, size)
+            assert _rx_tuple(rx) == before  # state untouched
+            tx = TxState(5)
+            sentinel = b"\x11" * max(size, 1)
+            pbuf = ctypes.create_string_buffer(sentinel, max(size, 1))
+            assert protect(pbuf, size, ctypes.byref(tx)) == wrong, (m.name, size)
+            assert pbuf.raw == sentinel and tx.counter == 5  # nothing written, counter kept
+        tx = TxState(5)
+        pbuf = ctypes.create_string_buffer(b"\x00" * m.length, m.length)
+        assert protect(pbuf, m.length, ctypes.byref(tx)) == int(e2e.E2EStatus.OK)
+
+
+def _wrapper_fns(lib, m):
+    fn = "platform_" + camel_to_snake_case(m.name) + "_e2e"
+    check = getattr(lib, f"{fn}_check")
+    check.argtypes = [ctypes.c_char_p, ctypes.c_size_t, ctypes.POINTER(RxState), ctypes.c_uint32]
+    tmo = getattr(lib, f"{fn}_check_timeout")
+    tmo.argtypes = [ctypes.POINTER(RxState), ctypes.c_uint32]
+    return check, tmo
+
+
+def _e2e_messages(platform_db):
+    from vehicle_codegen.dbc_checks import cycle_time_ms, e2e_data_id, is_e2e_protected
+
+    for m in platform_db.messages:  # the hil_sim library has a check wrapper for every one
+        if is_e2e_protected(m, platform_db):
+            yield m, e2e_data_id(m, platform_db), 3 * cycle_time_ms(m)
+
+
+def test_wrapper_equals_core_at_the_dlc(lib, platform_db):
+    """At size == DLC the wrapper is the core check with the message constants: identical
+    status and rx state over drops, repeats, bad CRCs, timeouts and a uint32 wrap."""
+    for m, data_id, timeout in _e2e_messages(platform_db):
+        check, tmo = _wrapper_fns(lib, m)
+        rng = random.Random(m.frame_id)
+        tx = e2e.TxState()
+        w_rx, c_rx = RxState(), RxState()
+        now = 0xFFFFFF00
+        prev = b"\x00" * m.length
+        for _ in range(600):
+            buf = bytearray(rng.randrange(256) for _ in range(m.length))
+            e2e.protect(data_id, buf, tx)
+            r = rng.random()
+            if r < 0.15:
+                buf[rng.randrange(m.length)] ^= 1 << rng.randrange(8)  # bad CRC or data
+            elif r < 0.3:
+                continue  # dropped frame
+            elif r < 0.4:
+                buf = bytearray(prev)  # repeat
+            prev = bytes(buf)
+            now = (now + rng.choice([timeout // 3, 10, 20, timeout + 5])) & 0xFFFFFFFF
+            data = ctypes.create_string_buffer(bytes(buf), m.length)
+            a = check(data, m.length, ctypes.byref(w_rx), now)
+            b = lib.vehicle_e2e_check(data_id, 1, timeout, data, m.length, ctypes.byref(c_rx), now)
+            assert a == b and _rx_tuple(w_rx) == _rx_tuple(c_rx), m.name
+            assert tmo(ctypes.byref(w_rx), now + 1) == lib.vehicle_e2e_check_timeout(
+                ctypes.byref(c_rx), timeout, now + 1
+            )
+            assert _rx_tuple(w_rx) == _rx_tuple(c_rx)
+
+
+def test_wrong_length_frames_neither_resync_nor_keep_alive(lib, platform_db):
+    """A wrong-length frame between two valid ones: WRONG_LENGTH, the next valid frame is still
+    OK; only wrong-length frames for 3 cycles end in NO_NEW_DATA."""
+    ok, wl = int(e2e.E2EStatus.OK), int(e2e.E2EStatus.WRONG_LENGTH)
+    for m, data_id, timeout in _e2e_messages(platform_db):
+        check, tmo = _wrapper_fns(lib, m)
+        tx = e2e.TxState()
+        frames = []
+        for i in range(3):
+            f = bytearray(m.length)
+            f[m.length - 1] = i
+            e2e.protect(data_id, f, tx)
+            frames.append(bytes(f))
+        rx = RxState()
+        cycle = timeout // 3
+
+        def feed(data, size, now, check=check, rx=rx):
+            buf = ctypes.create_string_buffer(data, max(len(data), 1))
+            return check(buf, size, ctypes.byref(rx), now)
+
+        assert feed(frames[0], m.length, 0) == int(e2e.E2EStatus.INITIAL)
+        assert feed(frames[1], m.length, cycle) == ok
+        bad = frames[2] + b"\x00"  # right bytes, one byte too long
+        before = _rx_tuple(rx)
+        assert feed(bad, m.length + 1, 2 * cycle) == wl
+        assert _rx_tuple(rx) == before
+        assert feed(frames[2], m.length, 2 * cycle + 1) == ok
+        # only wrong-length frames from here on: the timeout is not refreshed
+        t = 2 * cycle + 1
+        for k in range(1, 4):
+            assert feed(bad, m.length + 1, t + k * cycle) == wl
+        assert tmo(ctypes.byref(rx), t + timeout + 1) == int(e2e.E2EStatus.NO_NEW_DATA)

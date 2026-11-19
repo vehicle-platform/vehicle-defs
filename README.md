@@ -16,7 +16,6 @@ Single source of truth for signals in [vehicle-platform](https://github.com/vehi
 | `faults/catalog.yaml` | Vehicle-independent fault catalog, FMEA style (D-084); an entry without a high/medium source is CONFIRM, not displayable |
 | `vehicle/cl250_faults.yaml` | The catalog entries that apply to the CL250 (D-078); their signals must exist in the CL250 defs |
 | `derived/cl250_derived.yaml` | Derived signal definitions (class A/B/C/D, inputs, rate, staleness, range, ride-summary DIDs) and their non-DID sensor inputs; formulas stay in rt-core and the Python reference (D-070) |
-| `mailbox/h755_mailbox.yaml` | STM32H755 M7↔M4 mailbox layout: region, slot order, one HSEM ID per slot; frame IDs and lengths come from `platform.dbc`; generated as `platform_mailbox.h` for rt-core and safety-node (D-093) |
 | `tools/codegen/` | Generator and checks (Python, uv) |
 | `gen/` | Generated output, committed — never edit by hand |
 

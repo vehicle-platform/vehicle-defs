@@ -7,9 +7,11 @@ cantools emit every pattern a fixup rewrites.
 """
 
 import ctypes
+import math
 import random
 import re
 import shutil
+import struct
 import subprocess
 from dataclasses import dataclass, field
 from typing import Any
@@ -46,7 +48,9 @@ class CMessage:
     decode: dict[str, Any]  # struct member -> <msg>_<member>_decode()
     encode: dict[str, Any]  # struct member -> <msg>_<member>_encode()
     in_range: dict[str, Any]  # struct member -> <msg>_<member>_is_in_range()
-    pack_checked: Any | None = None  # <msg>_pack_checked(): messages with a value table only
+    pack_checked: Any | None = None  # <msg>_pack_checked(): every sent message (E-6)
+    unpack_checked: Any | None = None  # <msg>_unpack_checked(): every received message (E-5)
+    encode_checked: dict[str, Any] = field(default_factory=dict)  # <msg>_<member>_encode_checked
     is_defined: dict[str, Any] = field(default_factory=dict)  # enum member -> *_is_defined()
 
 
@@ -100,6 +104,21 @@ def load_api(so, header: str, prefix: str, db) -> dict[str, CMessage]:
             pack_checked=bind(
                 f"{fn}_pack_checked", ctypes.c_int, [ctypes.c_char_p, ptr, ctypes.c_size_t]
             ),
+            unpack_checked=bind(
+                f"{fn}_unpack_checked", ctypes.c_int, [ptr, ctypes.c_char_p, ctypes.c_size_t]
+            ),
+            encode_checked={
+                member: f
+                for member, ctype in fields
+                if (
+                    f := bind(
+                        f"{fn}_{member}_encode_checked",
+                        ctypes.c_int,
+                        [ctypes.c_float, ctypes.POINTER(ctype)],
+                    )
+                )
+                is not None
+            },
             is_defined={
                 member: f
                 for member, ctype in fields
@@ -375,6 +394,79 @@ def check_pack_checked(cm: CMessage, rng: random.Random) -> None:
         assert buf.raw == fill
 
 
+def check_encode_checked(cm: CMessage) -> None:
+    """E-7: NaN, +-Inf and out-of-range floats are refused with *raw_p unchanged."""
+    expected = {m for m in cm.signals if not cm.signals[m].name.startswith("E2E_")}
+    assert set(cm.encode_checked) == expected, cm.msg.name
+    nan, inf = float("nan"), float("inf")
+    for member, fn in cm.encode_checked.items():
+        sig = cm.signals[member]
+        ctype = cm.encode_checked[member].argtypes[1]._type_
+        out = ctype(77)
+        lo, hi = sig.minimum, sig.maximum
+        bad = [nan, inf, -inf]
+        if hi is not None:
+            bad.append(hi + max(1.0, abs(hi)))
+        if lo is not None:
+            bad.append(lo - max(1.0, abs(lo)))
+        for value in bad:
+            out.value = 77
+            assert fn(ctypes.c_float(value), ctypes.byref(out)) < 0, (cm.msg.name, member, value)
+            assert out.value == 77
+        assert fn(ctypes.c_float(0.0), None) < 0
+        for limit, beyond in ((lo, -math.inf), (hi, math.inf)):  # one float32 ulp past a limit
+            if limit is None:
+                continue
+            f32 = struct.unpack("<f", struct.pack("<f", limit))[0]
+            bits = struct.unpack("<i", struct.pack("<f", f32))[0]
+            step = (1 if (f32 > 0) == (beyond > 0) else -1) if f32 != 0 else 1
+            if f32 == 0:
+                nxt = struct.unpack("<f", struct.pack("<i", 1))[0] * (1 if beyond > 0 else -1)
+            else:
+                nxt = struct.unpack("<f", struct.pack("<i", bits + step))[0]
+            if (nxt > f32) != (beyond > 0):  # wrong direction: flip
+                nxt = struct.unpack("<f", struct.pack("<i", bits - step))[0]
+            out.value = 77
+            assert fn(ctypes.c_float(nxt), ctypes.byref(out)) < 0, (cm.msg.name, member, nxt)
+            assert out.value == 77
+        for value in (lo, hi):  # the DBC limits themselves are accepted and match the encode
+            if value is None:
+                continue
+            assert fn(ctypes.c_float(value), ctypes.byref(out)) == 0, (cm.msg.name, member, value)
+            assert out.value == cm.encode[member](ctypes.c_float(value)), (cm.msg.name, member)
+
+
+def check_unpack_checked(cm: CMessage, rng: random.Random) -> None:
+    """E-5 at the codec level: exactly the DBC length, every signal in range, dst untouched."""
+    length = cm.msg.length
+    frame = next(  # a frame whose signals are all in range (a receiver has no plain pack)
+        d
+        for d in (bytes(rng.randrange(256) for _ in range(length)) for _ in range(5000))
+        if all(cm.in_range[m](v) for m, v in _c_unpack(cm, d).items())
+    )
+    good = cm.struct()
+    assert cm.unpack_checked(ctypes.byref(good), frame, length) == 0
+    assert {m: getattr(good, m) for m in cm.signals} == _c_unpack(cm, frame)
+    sentinel = cm.struct(**{m: 1 for m in cm.signals})
+    before = bytes(sentinel)
+    for size in sorted({0, 1, length - 1, length + 1, 12, 64} - {length}):
+        assert cm.unpack_checked(ctypes.byref(sentinel), frame + b"\x00" * 64, size) < 0
+        assert bytes(sentinel) == before  # wrong length: nothing written
+    assert cm.unpack_checked(None, frame, length) < 0
+    assert cm.unpack_checked(ctypes.byref(sentinel), None, length) < 0
+    for _ in range(300):  # random frames: accepted exactly when every signal is in range
+        data = bytes(rng.randrange(256) for _ in range(length))
+        raw = _c_unpack(cm, data)
+        ok = all(cm.in_range[m](v) for m, v in raw.items())
+        dst = cm.struct(**{m: 1 for m in cm.signals})
+        rc = cm.unpack_checked(ctypes.byref(dst), data, length)
+        assert (rc == 0) == ok, (cm.msg.name, raw)
+        if not ok:
+            assert bytes(dst) == before
+        if ok:
+            assert {m: getattr(dst, m) for m in cm.signals} == raw
+
+
 # message -> number of (member, value) pairs that is_in_range() accepts but is_defined() refuses
 cm_refused_by_defined_only: dict[str, int] = {}
 
@@ -394,12 +486,16 @@ def test_node_cantools_code_matches_cantools_python(target, platform_db, tmp_pat
     rng = random.Random(f"c7-{target.directory}")
     for cm in api.values():
         check_round_trip(cm, rng, RANDOM_PAYLOADS)
-    # pack_checked() exists for exactly the sent messages that have a value table; the plain
-    # pack is untouched (check_round_trip above).
-    with_enum = {n for n in sends if any(s.choices for s in by_name[n].msg.signals)}
-    assert {n for n, cm in by_name.items() if cm.pack_checked} == with_enum
-    for name in sorted(with_enum):
+    # pack_checked() exists for exactly the sent messages (E-6, every one, enum or not),
+    # unpack_checked() for exactly the received ones; the plain functions are untouched
+    # (check_round_trip above).
+    assert {n for n, cm in by_name.items() if cm.pack_checked} == sends
+    assert {n for n, cm in by_name.items() if cm.unpack_checked} == receives
+    for name in sorted(sends):
         check_pack_checked(by_name[name], rng)
+        check_encode_checked(by_name[name])
+    for name in sorted(receives):
+        check_unpack_checked(by_name[name], rng)
     if target.directory == "hil_sim":  # is_defined (not is_in_range) is what refuses these
         assert cm_refused_by_defined_only["HeartbeatSafety"] > 0  # NODE_MODE [0|15] vs 0..5
         assert cm_refused_by_defined_only["EkfLean"] > 0  # LEAN_ANGLE_STATE RESERVED = 2

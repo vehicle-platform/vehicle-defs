@@ -464,6 +464,8 @@ def check_dids(data: dict[str, Any], iso: dict[str, Any], vehicle: dict[str, Any
             dtc_names.add(str(name))
             if not item.get("description"):
                 errors.append(f"{label}: description missing")
+            if not isinstance(item.get("diagnostic_only", False), bool):
+                errors.append(f"{label}: diagnostic_only must be true or false")
         if has_server and not errors:
             srv = content["server"]
             longest = 1 + sum(
@@ -651,6 +653,12 @@ def generate_server_c(node: str, content: dict[str, Any], data: dict[str, Any],
     h.append(define("DTC_COUNT", f"{len(dtcs)}u"))
     for t in dtcs:
         h.append(define(f"DTC_{t['name']}", _hex(t["dtc"], 6), t["code"]))
+    h.append("")
+    h.append("/* 1u: diagnostic only (D-118 item 6): never counts toward rt-core's heartbeat")
+    h.append(" * DEGRADED state or ERROR_COUNT and is never a safety input. */")
+    for t in dtcs:
+        flag = "1u" if t.get("diagnostic_only") else "0u"
+        h.append(define(f"DTC_{t['name']}_DIAGNOSTIC_ONLY", f"({flag})"))
     h += ["", "/* Index into platform_uds_dtcs[]. */", "typedef enum {"]
     h += [f"    {p}_DTC_IDX_{t['name']} = {i}," for i, t in enumerate(dtcs)]
     h += ["} platform_uds_dtc_index_t;", ""]

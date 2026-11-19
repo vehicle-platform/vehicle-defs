@@ -42,7 +42,8 @@ typedef enum {
     VEHICLE_E2E_WRONG_SEQUENCE = 4, /* counter jump > max_delta                     */
     VEHICLE_E2E_WRONG_CRC = 5,      /* corrupted or wrong DataID (masquerade)       */
     VEHICLE_E2E_NO_NEW_DATA = 6,    /* timeout expired or never received            */
-    VEHICLE_E2E_BAD_ARGUMENT = 7
+    VEHICLE_E2E_BAD_ARGUMENT = 7,
+    VEHICLE_E2E_WRONG_LENGTH = 8    /* wrapper: size is not the message DLC (E-5)   */
 } vehicle_e2e_status_t;
 
 typedef struct {
