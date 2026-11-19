@@ -824,7 +824,7 @@ struct platform_safety_request_t {
     uint8_t park_mode;
 
     /**
-     * LOCK = the phone or park mode asks the safety MCU to lock the starter relay; it is only a request. LOCK is 3 and 1 and 2 are reserved and read as NONE, so any single-bit error from NONE or LOCK lands on a reserved value. The safety MCU counts a lock only on a NONE -> LOCK transition with E2E OK, after it has seen NONE with E2E OK since its own boot, with IGNITION_STATE = OFF and its own IMU stationary (D-072 item 7). There is no unlock request: unlocking is the partition's own decision (NFC, PIN, hidden bypass).
+     * LOCK = the phone or park mode asks the safety MCU to lock the starter relay; it is only a request. LOCK is 3 and 1 and 2 are reserved and read as NONE, so any single-bit error from NONE or LOCK lands on a reserved value. The safety MCU counts a lock only on a NONE -> LOCK transition with E2E OK, after it has seen NONE with E2E OK since its own boot, with IGNITION_STATE = OFF and its own IMU stationary (D-072 item 7). There is no unlock request: unlocking is the safety MCU's own decision (NFC, PIN, hidden bypass).
      *
      * Range: 0..3 (0..3 -)
      * Scale: 1

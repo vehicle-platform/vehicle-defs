@@ -7,9 +7,11 @@ cantools emit every pattern a fixup rewrites.
 """
 
 import ctypes
+import math
 import random
 import re
 import shutil
+import struct
 import subprocess
 from dataclasses import dataclass, field
 from typing import Any
@@ -412,6 +414,21 @@ def check_encode_checked(cm: CMessage) -> None:
             assert fn(ctypes.c_float(value), ctypes.byref(out)) < 0, (cm.msg.name, member, value)
             assert out.value == 77
         assert fn(ctypes.c_float(0.0), None) < 0
+        for limit, beyond in ((lo, -math.inf), (hi, math.inf)):  # one float32 ulp past a limit
+            if limit is None:
+                continue
+            f32 = struct.unpack("<f", struct.pack("<f", limit))[0]
+            bits = struct.unpack("<i", struct.pack("<f", f32))[0]
+            step = (1 if (f32 > 0) == (beyond > 0) else -1) if f32 != 0 else 1
+            if f32 == 0:
+                nxt = struct.unpack("<f", struct.pack("<i", 1))[0] * (1 if beyond > 0 else -1)
+            else:
+                nxt = struct.unpack("<f", struct.pack("<i", bits + step))[0]
+            if (nxt > f32) != (beyond > 0):  # wrong direction: flip
+                nxt = struct.unpack("<f", struct.pack("<i", bits - step))[0]
+            out.value = 77
+            assert fn(ctypes.c_float(nxt), ctypes.byref(out)) < 0, (cm.msg.name, member, nxt)
+            assert out.value == 77
         for value in (lo, hi):  # the DBC limits themselves are accepted and match the encode
             if value is None:
                 continue

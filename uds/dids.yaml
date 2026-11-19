@@ -209,7 +209,8 @@ nodes:
       - dtc: 0xC16700
         name: SAFETY_HEARTBEAT_LOST
         code: U0167-00
-        description: "Diagnostic only, never an input of a safety decision (D-118 item 6). rt-core monitors the safety MCU's HeartbeatSafety 0x082 with PLATFORM_HEARTBEAT_SAFETY_E2E_TIMEOUT_MS (generated, platform_e2e.h) through platform_heartbeat_safety_e2e_check()/_check_timeout(): it fails when no new valid 0x082 (E2E status OK, OK_SOME_LOST or INITIAL refreshes the timeout) arrived within that time, or when the frame fails its E2E check. Level-triggered: fails while the heartbeat is lost, passes once valid frames flow again."
+        diagnostic_only: true   # generated PLATFORM_UDS_DTC_SAFETY_HEARTBEAT_LOST_DIAGNOSTIC_ONLY
+        description: "Diagnostic only, never an input of a safety decision (D-118 item 6): it does not count toward rt-core's heartbeat DEGRADED state or ERROR_COUNT. rt-core monitors the safety MCU's HeartbeatSafety 0x082 with PLATFORM_HEARTBEAT_SAFETY_E2E_TIMEOUT_MS (generated, platform_e2e.h) through platform_heartbeat_safety_e2e_check_timeout(). It fails only when that check returns NO_NEW_DATA (3 cycles of silence). Single E2E errors (WRONG_SEQUENCE, REPEATED, bad CRC, WRONG_LENGTH) are counted in link health, not in this DTC. Level-triggered: fails while NO_NEW_DATA holds, passes once valid frames flow again."
     routines: []
   SAFETY:
     dids: []

@@ -837,6 +837,13 @@ extern const platform_uds_ride_field_t platform_uds_ride_fields[PLATFORM_UDS_RID
 #define PLATFORM_UDS_DTC_VEHICLE_BUS_OFF_LATCHED (0xC00188u) /* U0001-88 */
 #define PLATFORM_UDS_DTC_SAFETY_HEARTBEAT_LOST (0xC16700u) /* U0167-00 */
 
+/* 1u: diagnostic only (D-118 item 6): never counts toward rt-core's heartbeat
+ * DEGRADED state or ERROR_COUNT and is never a safety input. */
+#define PLATFORM_UDS_DTC_VEHICLE_ECU_COMM_LOST_DIAGNOSTIC_ONLY ((0u))
+#define PLATFORM_UDS_DTC_VEHICLE_TESTER_LATCHED_DIAGNOSTIC_ONLY ((0u))
+#define PLATFORM_UDS_DTC_VEHICLE_BUS_OFF_LATCHED_DIAGNOSTIC_ONLY ((0u))
+#define PLATFORM_UDS_DTC_SAFETY_HEARTBEAT_LOST_DIAGNOSTIC_ONLY ((1u))
+
 /* Index into platform_uds_dtcs[]. */
 typedef enum {
     PLATFORM_UDS_DTC_IDX_VEHICLE_ECU_COMM_LOST = 0,

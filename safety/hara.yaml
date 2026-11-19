@@ -16,7 +16,7 @@ items:
   - {id: blind_spot_warning, name: "Blind-spot warning", description: "Radar based decision on the M4 with mirror LEDs, D-072 item 3"}
   - {id: immobilizer, name: "Immobilizer", description: "Latching relay in the starter-relay coil line, M4 owned, invariant 6"}
   - {id: led_ring_output, name: "LED ring output", description: "Safety output of the cornering warning, never driven by rt-core, D-072 item 5"}
-  - {id: inter_core_mailbox, name: "Inter-core mailbox", description: "SRAM4 mailbox between the M7 (rt-core) and the M4, D-093"}
+  - {id: platform_bus_link, name: "Platform bus link", description: "Platform CAN link rt-core (H743) to the separate safety MCU (G474): 0x020/0x022/0x081/0x120 in, 0x023/0x082 out, D-005 E2E, D-118"}
 
 safety_goals:
   - {id: SG-001, text: "The cornering warning shall not show GREEN while the friction utilisation tan(theta)/mu is at or above the yellow threshold.", derives_from: [D-041, D-100, D-101]}
@@ -25,8 +25,8 @@ safety_goals:
   - {id: SG-004, text: "The immobilizer shall never lock or hold the starter while the engine runs.", derives_from: [invariant-6, D-082, D-097]}
   - {id: SG-005, text: "The immobilizer shall always be recoverable: default unlocked, a passive hidden bypass and a 10 s timeout to unlock.", derives_from: [invariant-6, D-097]}
   - {id: SG-006, text: "A dark or frozen LED ring shall never be readable as GREEN.", derives_from: [D-072]}
-  - {id: SG-007, text: "A stale, mismatched or corrupted mailbox frame shall never be used as a fresh safety input.", derives_from: [D-093, D-026, D-005]}
-  - {id: SG-008, text: "No QM, slow-channel or rt-core software fault shall cause, suppress or degrade a safety decision of the M4 beyond the recorded fallback.", derives_from: [invariant-3, invariant-4, D-072]}
+  - {id: SG-007, text: "A stale, frozen, corrupted, wrong-length or foreign-sender platform-bus frame shall never be used as a fresh safety input; the safety MCU then uses its own-IMU fallback.", derives_from: [D-118, D-005, D-026, D-042]}
+  - {id: SG-008, text: "No QM, slow-channel or rt-core software fault shall cause, suppress or degrade a safety decision of the safety MCU beyond the recorded fallback.", derives_from: [invariant-3, invariant-4, D-072]}
 
 hazards:
   - id: HZ-001
@@ -185,46 +185,47 @@ hazards:
     safety_goal_id: SG-006
     source: [D-072]
   - id: HZ-015
-    item: inter_core_mailbox
-    hazard: "Stale mailbox frame read as fresh (held across a layout mismatch or a stuck sequence)"
-    operational_situation: "Peer image swapped or sender stalled"
+    item: platform_bus_link
+    hazard: "Stale or frozen 0x020/0x022/0x081 accepted as fresh"
+    operational_situation: "rt-core hang or FDCAN2 bus-off backoff 1-30 s"
     effect: "Old lean or heartbeat decides as if current"
     S: TBD
     E: TBD
     C: TBD
     asil: TBD
     safety_goal_id: SG-007
-    source: [D-093, D-026]
+    source: [D-005, D-026, D-118]
   - id: HZ-016
-    item: inter_core_mailbox
-    hazard: "Two images built from different defs misread each other's bytes"
-    operational_situation: "Partial flash update, M4-only reset into another image"
-    effect: "A wrong value passes as a valid frame"
+    item: platform_bus_link
+    hazard: "A second sender (QM node fault, HIL image) puts a correctly protected 0x020/0x022 on the bus"
+    operational_situation: "QM node fault or a test image shipped on a bike"
+    effect: "Forged lean or mu decides; detected as WRONG_SEQUENCE while rt-core also sends, undetected for 0x022 while it has no sender, capped by D-119"
     S: TBD
     E: TBD
     C: TBD
     asil: TBD
     safety_goal_id: SG-007
-    source: [D-093]
+    source: [D-118, D-119]
+    candidate: true   # the 0x022 case is undetected while it has no sender; capped by D-119
   - id: HZ-017
-    item: inter_core_mailbox
-    hazard: "HIL forwarder image lets a platform-bus frame inject a lean into the M4"
-    operational_situation: "Test image shipped on a bike"
-    effect: "A forged lean decides the warning"
+    item: platform_bus_link
+    hazard: "Malformed frame on a safety ID (wrong DLC, RTR, FD) read as data"
+    operational_situation: "Bus fault or a faulty node"
+    effect: "A wrong value passes as a valid frame; mitigation: safety-node link guard and the generated WRONG_LENGTH (E-5)"
     S: TBD
     E: TBD
     C: TBD
     asil: TBD
     safety_goal_id: SG-007
-    source: [D-072]
+    source: [D-118]
   - id: HZ-018
-    item: inter_core_mailbox
-    hazard: "M4 blocks on the hardware semaphore held by the M7"
-    operational_situation: "M7 stalled while holding an HSEM"
-    effect: "Decision schedule is delayed"
+    item: platform_bus_link
+    hazard: "Safety frames delayed by bus load or a babbling QM node on lower IDs"
+    operational_situation: "QM node floods IDs below 0x020"
+    effect: "Timeout leads to DEGRADED, the decision schedule is unaffected"
     S: TBD
     E: TBD
     C: TBD
     asil: TBD
     safety_goal_id: SG-008
-    source: [D-072]
+    source: [D-118]

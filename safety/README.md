@@ -26,7 +26,7 @@ refuses a value that is not a legal ISO 26262 rating, but it does not judge the 
 
 | Term | Meaning here |
 |---|---|
-| item | A function with a safety impact: `cornering_warning`, `blind_spot_warning`, `immobilizer`, `led_ring_output`, `inter_core_mailbox` |
+| item | A function with a safety impact: `cornering_warning`, `blind_spot_warning`, `immobilizer`, `led_ring_output`, `platform_bus_link` |
 | hazard | A malfunctioning behaviour of an item that can lead to harm, in one operational situation |
 | S / E / C | Severity (S0-S3), exposure (E0-E4), controllability (C0-C3) of the hazard in that situation |
 | ASIL | Automotive Safety Integrity Level (QM, A-D) derived from S, E, C; `TBD` everywhere today |
