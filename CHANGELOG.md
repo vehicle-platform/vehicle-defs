@@ -6,7 +6,7 @@ All notable changes to vehicle-defs. Semver (see CLAUDE.md): new message/signal 
 
 PATCH (fault catalog sources only, no signal change): the 12 generic DTC leads of defs#167 (P0562, P0563, P0217, P0480, P0117/P0118, P0171, P0120, P0130, P0505, P0335) were checked against SAE J2012-2002 and are now cited by section (App. B tables) instead of public mirrors; all 12 confirmed, none corrected or removed. They stay `confidence: low` (the standard supports the code meaning only, not the entry), so the displayable set is unchanged; `gen/python/vehicle_defs/faults.py` regenerated.
 
-## [0.30.0] — unreleased
+## [0.30.0] — 2026-11-21
 
 **MINOR in the repo's pre-1.0 sense, with removals and two behaviour changes consumers must adopt (T20; D-118 item 6; QUALITY DEFS-1, DEFS-3; ISSUES E-5, E-6, E-7).** No frame on either bus changes: no ID, signal, bit position, length, scale, value table or cycle time. Do not tag without the user (release-tags-by-user). Needs `safety-reviewer` (E2E wrappers, invariant 8).
 
@@ -23,7 +23,7 @@ PATCH (fault catalog sources only, no signal change): the 12 generic DTC leads o
 - Consumers (T22, after repinning v0.30.0): **server, ml, linux-node** import `vehicle_defs.position` (server `is_position_name`, ml `drop_position_columns`, linux-node blackbox `is_position_path`; the aliases keep call sites unchanged), delete their copy and add a test that runs `external/vehicle-defs/privacy/position_vectors.json` (`pytest -m position_vectors`). **mcp** has no defs submodule: vendor `gen/python/vehicle_defs/position.py` and `privacy/position_vectors.json` from the release (e.g. `src/vehicle_mcp/_position_vendored.py` plus the JSON under `tests/data/`), re-export `is_position_name`, and keep a test that asserts the vendored file is byte-identical to the release asset and passes the vectors (ARCH-2 plan). Adding a vector case fails a stale consumer until it repins.
 - **Added (additive, T36; safety-reviewer 2026-11-19): shared golden wire vectors for the heartbeats 0x081 and 0x082.** `vectors/heartbeat_vectors.json`: 28 byte-exact 8-byte frames per message (NODE_MODE INIT/NORMAL/DEGRADED x ERROR_COUNT 0/255 x UPTIME 0/65535 x E2E counter 0/15, plus NODE_MODE 3/4/5/15 as valid-CRC frames that receivers must treat like DEGRADED), with CRC-8 and Data ID (0x1081, 0x1082) per D-005. Built by `vehicle_codegen.heartbeat_vectors` from cantools plus the Python reference E2E, independent of the generated C; `test_heartbeat_vectors.py` checks the file against that reference and proves that the generated C `pack` + `e2e_protect` produces exactly these bytes. No frame or signal changes. Consumers (safety-node, rt-core, hil-bench) read the file from the submodule after repinning v0.30.0, or embed the relevant cases as literals with a resync comment until then.
 
-## [0.29.0] — unreleased
+## [0.29.0] — 2026-11-15
 
 **MAJOR (breaking, signal names; D-108, PROVISIONAL: Claude's decision under the user's standing order, the user revises; Q-016).** Do not tag before v0.28.0 exists (v0.28.0 is bumped but not tagged yet). No frame on either bus changes: bit positions, lengths, scales, value tables, cycle times and E2E attributes are identical; only identifiers differ.
 
