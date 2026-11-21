@@ -969,6 +969,16 @@ Both modes share the scenario format and the evaluation/report. Before hardware 
 - Not chosen: recording it only as a HARA residual (leaves an undetectable path that loosens a safety warning).
 - Why: narrowing is always allowed in the safety direction; the cost is a more cautious warning on high-grip roads until the EKF estimate exists, which is the state today anyway.
 
+**D-120 — PROVISIONAL — GitHub rulesets and secret scanning for the org** (2026-11-21, Claude under the user's order "hepsini hallet"; QUALITY CI-2/CI-4, T24)
+1. **Branch ruleset `main-protection`** on the default branch of every public repo: pull request required with 0 approvals (solo maintainer; an agent merging with the user's token cannot be a second reviewer), no force-push, no deletion; required checks `ci-ok`, `gitleaks`, `pin-check` from GitHub Actions only (integration 15368), branches need not be up to date. Repository admins may bypass only through a pull request. vehicle-hil-bench and vehicle-io-node have no CI, so they get the PR rule without required checks.
+2. **Tag ruleset `release-tags`** on `refs/tags/v*`: no deletion, update or force-move; creation stays open for `gh release create`; admins may bypass.
+3. **Secret scanning and push protection** on every public repo.
+4. **Private repos** (vehicle-server, vehicle-ml) get neither rulesets nor secret scanning on the free plan; they rely on the CI gitleaks job until the user makes them public (D-033) or buys a plan.
+5. **Code-owner review stays off** while one human authors and merges; it is turned on when a second human contributor exists.
+6. The JSON lives in `vehicle-workspace/scripts/rulesets/`; `gh pr merge --admin` is the documented emergency path.
+- Not chosen: Evaluate mode first (Enterprise only); "require branches up to date" (rebase churn for parallel agent PRs).
+- Why: direct pushes, force-pushes and tag moves become impossible, and a red CI can no longer be merged by accident, at no cost to the PR flow.
+
 ## Open questions (awaiting decision)
 
 | ID | Question | When to resolve | Note |
