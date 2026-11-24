@@ -3,7 +3,7 @@
 
 # The full schema, as in ble/ble_schema.json (vehicle-server decodes from it).
 SCHEMA = {
-    "$schemaDescription": "Single source of truth for the BLE notifications sent by vehicle-connectivity-node to vehicle-mobile: the telemetry packet (current version 4, top level), its low-MTU fallback (the version 2 layout), the IMU sample block, the GPS block and the vehicle-signal block. This file lives in vehicle-defs ble/ (D-061, Q-017 resolved); codegen generates gen/c/conn/ble_schema.h (offset/size macros; vehicle-connectivity-node's packed structs static_assert against them), gen/python/vehicle_defs/ble.py (vehicle-server decodes raw_hex/imu raw bytes driven by SCHEMA) and gen/dart/vehicle_defs (vehicle-mobile decoders), so no consumer keeps a copy of this file. Ported from HondaCl250_Telemetry@legacy-final (version 1) per D-023; version 3 and the IMU block per D-032; version 4 per D-058; the GPS block per D-060; the vehicle-signal block per D-066.",
+    "$schemaDescription": "Single source of truth for the BLE notifications sent by vehicle-connectivity-node to vehicle-mobile: the telemetry packet (current version 4, top level), its low-MTU fallback (the version 2 layout), the IMU sample block, the GPS block and the vehicle-signal block. This file lives in vehicle-defs ble/ (D-061, Q-017 resolved); codegen generates gen/c/conn/ble_schema.h (offset/size macros; vehicle-connectivity-node's packed structs static_assert against them), gen/python/vehicle_defs/ble.py (vehicle-server decodes raw_hex/imu raw bytes driven by SCHEMA) and gen/dart/vehicle_defs (vehicle-mobile decoders), so no consumer keeps a copy of this file. Ported from HondaCl250_Telemetry@legacy-final (version 1) per D-023; version 3 and the IMU block per D-032; version 4 per D-058; the GPS block per D-060; the vehicle-signal block per D-066; the rider-input block per D-121 item 5.",
     "gatt": {
         "serviceUuid": "4fafc201-1fb5-459e-8fcc-c5c9c331914b",
         "characteristics": {
@@ -26,6 +26,11 @@ SCHEMA = {
                 "uuid": "c362c514-72cb-4c05-84a7-ec797efe75cf",
                 "properties": ["notify"],
                 "carries": "VehicleSignalBlock (D-066)",
+            },
+            "riderInput": {
+                "uuid": "83308595-093c-4e33-a437-37590a4793bc",
+                "properties": ["notify"],
+                "carries": "RiderInputBlock (D-121 item 5)",
             },
             "telematicsRx": {
                 "uuid": "828919fe-e41c-40ee-b4c6-2c974c2d3345",
@@ -307,6 +312,48 @@ SCHEMA = {
             {"name": "raw", "offset": 5, "size": 4, "type": "uint32", "description": "Value or NRC, see `rawRule` and `decodeRule`."},
         ],
     },
+    "riderInputBlock": {
+        "packetName": "RiderInputBlock",
+        "characteristic": "riderInput",
+        "version": 1,
+        "endianness": "little",
+        "packed": True,
+        "totalBytes": 8,
+        "purpose": "D-121 item 5: the handlebar push-to-talk button (D-047), read by vehicle-connectivity-node, reaches vehicle-mobile as one event per button edge so the app starts listening through the rider's intercom. Informational only (D-047 item 3, invariant 3): nothing on a safety path reads it, it is not a CAN signal and nothing is sent on the vehicle bus.",
+        "eventDriven": "The block is notified once per button event, never periodically; there is no notify period. The sender debounces the input (the debounce time is firmware, not schema) and sends no block while the button does not change.",
+        "eventRule": "`event` is the edge that caused the block: press when the debounced button went down, release when it went up, longPress once while the button is still held after the node's long-press time (firmware constant, D-047 item 1). `flags.buttonDown` is the debounced button state right after the event (press and longPress: set, release: clear), so a receiver that lost a block can resynchronise from the next one. Any `event` value outside `event.values` is dropped.",
+        "sequenceRule": "seq is a rolling 0-255 counter incremented once per block the sender hands to the BLE stack; receivers drop a block whose seq equals the previous one (a duplicate) and count lost blocks as (seq - prev.seq - 1) mod 256. After a lost block the receiver follows `flags.buttonDown` of the next one.",
+        "timeRule": "deviceTimeMs is the node clock (the same clock as the telemetry, IMU, GPS and vehicle-signal `deviceTimeMs`) when the debounced edge was accepted, so a late-delivered event is not mistaken for a new press (the app ignores a press older than its own freshness limit).",
+        "mtuRule": "The block is 8 bytes and always fits the default ATT MTU payload (20), so it is never suspended or truncated.",
+        "event": {
+            "field": "event",
+            "values": [
+                {"name": "press", "value": 1, "description": "The button went down: the app starts listening."},
+                {"name": "release", "value": 2, "description": "The button went up."},
+                {"name": "longPress", "value": 3, "description": "The button has been held for the node's long-press time; sent once per hold."},
+            ],
+        },
+        "flags": {
+            "field": "flags",
+            "bits": [
+                {"bit": 0, "name": "buttonDown", "description": "Debounced button state right after this event: 1 = held down."},
+                {"bit": 1, "name": "reserved"},
+                {"bit": 2, "name": "reserved"},
+                {"bit": 3, "name": "reserved"},
+                {"bit": 4, "name": "reserved"},
+                {"bit": 5, "name": "reserved"},
+                {"bit": 6, "name": "reserved"},
+                {"bit": 7, "name": "reserved"},
+            ],
+        },
+        "fields": [
+            {"name": "version", "offset": 0, "size": 1, "type": "uint8", "description": "Rider-input block format version, 1."},
+            {"name": "seq", "offset": 1, "size": 1, "type": "uint8", "description": "Rolling 0-255 counter, see `sequenceRule`."},
+            {"name": "deviceTimeMs", "offset": 2, "size": 4, "type": "uint32", "description": "Node clock in ms when the edge was accepted, see `timeRule`."},
+            {"name": "event", "offset": 6, "size": 1, "type": "uint8", "description": "See `riderInputBlock.event` and `eventRule`."},
+            {"name": "flags", "offset": 7, "size": 1, "type": "uint8", "description": "See `riderInputBlock.flags`."},
+        ],
+    },
 }
 
 CURRENT_VERSION = 4
@@ -323,6 +370,10 @@ GPS_TOTAL_BYTES = 26
 VSIG_BLOCK_VERSION = 1
 VSIG_HEADER_BYTES = 10
 VSIG_RECORD_BYTES = 9
+# D-121 item 5 rider-input block (characteristic `riderInput`): handlebar push-to-talk.
+RIDER_INPUT_BLOCK_VERSION = 1
+RIDER_INPUT_TOTAL_BYTES = 8
+RIDER_INPUT_EVENTS = {1: "press", 2: "release", 3: "longPress"}
 VSIG_STATES = {0: "neverReceived", 1: "valid", 2: "stale", 3: "skipped", 4: "negativeResponse"}
 
 
@@ -333,6 +384,11 @@ def telemetry_fields(version: int) -> list[dict]:
     if version not in TOTAL_BYTES_BY_VERSION:
         raise ValueError(f"no telemetry layout for version {version}")
     return [f for f in SCHEMA["fields"] if f.get("sinceVersion", 3) <= version]
+
+
+def rider_input_fields() -> list[dict]:
+    """Field table of the rider-input block (D-121 item 5)."""
+    return SCHEMA["riderInputBlock"]["fields"]
 
 
 def gps_fields() -> list[dict]:

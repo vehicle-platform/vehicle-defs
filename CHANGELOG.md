@@ -4,6 +4,14 @@ All notable changes to vehicle-defs. Semver (see CLAUDE.md): new message/signal 
 
 ## [Unreleased]
 
+## [0.31.0] — 2026-11-24
+
+**MINOR (additive, BLE only; D-121 item 5).** Adds the handlebar push-to-talk event that conn sends to the phone so vehicle-mobile starts listening through the rider's intercom. No CAN frame, signal, DID or VSS path changes and nothing goes on either vehicle bus; informational only (D-047 item 3, invariant 3). The telemetry (v4), IMU, GPS and vehicle-signal layouts are unchanged. Do not tag without the user (release-tags-by-user).
+
+- **Added: GATT characteristic `riderInput`** (notify, UUID `83308595-093c-4e33-a437-37590a4793bc`) and the **rider-input block** (`riderInputBlock`, version 1, 8 bytes, little-endian, one block per debounced button edge, never periodic): `version` u8 @0, `seq` u8 @1 (rolling 0-255, receivers drop duplicates and count loss as (seq - prev - 1) mod 256), `deviceTimeMs` u32 @2 (the node clock shared with the other blocks), `event` u8 @6 (1 press, 2 release, 3 longPress; 0 unused), `flags` u8 @7 (bit 0 `buttonDown` = debounced state after the event). Always fits the default ATT MTU.
+- Codegen: `gen/c/conn/ble_schema.h` (`BLE_GATT_RIDER_INPUT_CHAR_UUID`, `BLE_RIDER_INPUT_*`), `gen/python/vehicle_defs/ble.py` (`RIDER_INPUT_*`, `rider_input_fields()`), `gen/dart/vehicle_defs` (`BleRiderInput*`, `riderInputCharacteristicUuid`); `vehicle-codegen check` validates the layout, event values, flag bits, UUID uniqueness and the default-MTU fit; golden test in `test_ble.py`.
+- Consumers: **vehicle-connectivity-node** debounces the handlebar button and notifies the block (debounce and long-press times are firmware constants); **vehicle-mobile** subscribes to `riderInput`, drops duplicate `seq` and stale presses, and starts speech recognition on `press`; vehicle-server needs no change. Each bumps its `external/vehicle-defs` pin together (D-061).
+
 PATCH (fault catalog sources only, no signal change): the 12 generic DTC leads of defs#167 (P0562, P0563, P0217, P0480, P0117/P0118, P0171, P0120, P0130, P0505, P0335) were checked against SAE J2012-2002 and are now cited by section (App. B tables) instead of public mirrors; all 12 confirmed, none corrected or removed. They stay `confidence: low` (the standard supports the code meaning only, not the entry), so the displayable set is unchanged; `gen/python/vehicle_defs/faults.py` regenerated.
 
 ## [0.30.0] — 2026-11-21

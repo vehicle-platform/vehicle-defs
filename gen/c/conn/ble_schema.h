@@ -16,6 +16,7 @@
 #define BLE_GATT_IMU_CHAR_UUID "f62bc083-e25d-46b3-aa0b-2e9e6bc8f1e5"
 #define BLE_GATT_GPS_CHAR_UUID "3c8f9255-ba3f-4bda-90b3-8c30bcbcace1"
 #define BLE_GATT_VEHICLE_SIGNALS_CHAR_UUID "c362c514-72cb-4c05-84a7-ec797efe75cf"
+#define BLE_GATT_RIDER_INPUT_CHAR_UUID "83308595-093c-4e33-a437-37590a4793bc"
 #define BLE_GATT_TELEMATICS_RX_CHAR_UUID "828919fe-e41c-40ee-b4c6-2c974c2d3345"
 #define BLE_GATT_REQUESTED_MTU (185u)
 
@@ -286,5 +287,30 @@
 #define BLE_VSIG_STATE_STALE (2u)
 #define BLE_VSIG_STATE_SKIPPED (3u)
 #define BLE_VSIG_STATE_NEGATIVE_RESPONSE (4u)
+
+/* Rider-input block (characteristic `riderInput`, D-121 item 5): one event per
+ * handlebar push-to-talk edge; informational only, never read by a safety path. */
+#define BLE_RIDER_INPUT_BLOCK_VERSION (1u)
+#define BLE_RIDER_INPUT_TOTAL_BYTES (8u)
+
+/* Rider-input block (8 bytes) */
+#define BLE_RIDER_INPUT_VERSION_OFFSET (0u) /* uint8 */
+#define BLE_RIDER_INPUT_VERSION_SIZE (1u)
+#define BLE_RIDER_INPUT_SEQ_OFFSET (1u) /* uint8 */
+#define BLE_RIDER_INPUT_SEQ_SIZE (1u)
+#define BLE_RIDER_INPUT_DEVICE_TIME_MS_OFFSET (2u) /* uint32 */
+#define BLE_RIDER_INPUT_DEVICE_TIME_MS_SIZE (4u)
+#define BLE_RIDER_INPUT_EVENT_OFFSET (6u) /* uint8 */
+#define BLE_RIDER_INPUT_EVENT_SIZE (1u)
+#define BLE_RIDER_INPUT_FLAGS_OFFSET (7u) /* uint8 */
+#define BLE_RIDER_INPUT_FLAGS_SIZE (1u)
+
+/* Rider-input `event` values (eventRule) */
+#define BLE_RIDER_INPUT_EVENT_PRESS (1u)
+#define BLE_RIDER_INPUT_EVENT_RELEASE (2u)
+#define BLE_RIDER_INPUT_EVENT_LONG_PRESS (3u)
+
+/* Rider-input block `flags` bits */
+#define BLE_RIDER_INPUT_FLAG_BUTTON_DOWN (1u << 0u) /* Debounced button state right after this event: 1 = held down. */
 
 #endif /* BLE_SCHEMA_H */
