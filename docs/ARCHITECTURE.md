@@ -23,7 +23,7 @@ If this file conflicts with the raw document, **this file + DECISIONS.md** gover
 | Safety MCU | separate STM32G474RE, **Cortex-M4F** 170 MHz (board NUCLEO-G474RE; fallback G431RB; D-118) | 128 KB / 512 KB | FDCAN (platform bus only, E2E; D-118) | `vehicle-safety-node` | Lean-angle safety decision (Layer 1, closed form, D-041), own fallback IMU (D-042), blind-spot decision with 2 radars, immobilizer, LED ring and mirror LEDs (Q-026 resolved) |
 | ~~Zone/I/O~~ | ~~STM32G0~~ — retired by D-072 | — | — | `vehicle-io-node` (no code; archive pending) | functions moved to the safety MCU (blind spot, immobilizer) and rt-core (power, park mode) |
 | Connectivity, bike | ESP32-S3 (WROOM module) | 512 KB (+PSRAM) | TWAI x1 (classic) | `vehicle-connectivity-node` | Temporary vehicle-bus tester until rt-core (D-023); then platform bus ↔ BLE bridge to the phone and the helmet, Wi-Fi |
-| Connectivity, helmet | ESP32-S3 N16R8 (D-073) | 512 KB + 8 MB PSRAM | none | `vehicle-connectivity-node` (helmet env) | Visor HUD (informational), helmet microphone, push-to-talk, ESP-SR voice command, voice prompts |
+| Connectivity, helmet | ESP32-S3 N16R8 (D-073) | 512 KB + 8 MB PSRAM | none | `vehicle-connectivity-node` (helmet env) | Visor HUD (informational) only; voice goes through the rider's intercom via the phone (D-121) |
 | HPC | Raspberry Pi 5 8 GB | 8 GB | 2-channel CAN HAT (SocketCAN) | `vehicle-linux-node`, `vehicle-mcp` | Kuksa, CAN→VSS, lane tracking, anomaly model, HMI, OTA distribution, MCP |
 | HIL simulator | STM32F4 (F407/F429) | 192 KB / 1 MB | bxCAN x2 | `vehicle-hil-bench/simulator` | Restbus (CL250 + platform nodes), vehicle dynamics model |
 | HIL fault/power | STM32F103 | 20 KB / 64 KB | bxCAN x1 | `vehicle-hil-bench` | Fault injection, programmable power supply |
@@ -144,10 +144,10 @@ tests/host/             host-native unit tests with Unity (pure logic: EKF, ISO-
 | Telemetry/logging | rt-core → microSD (binary, block CRC) → Wi-Fi (ESP/Raspi) → vehicle-server → MDF4/Parquet | SD/Wi-Fi | latency-tolerant |
 | VSS | vehicle + platform CAN → kuksa-can-provider → Kuksa Databroker → Raspi applications (gRPC) | local | ms |
 | Cloud (D-077) | Kuksa → local vehicle-server on the Raspi (every ride, offline) → live stream (MQTT/Zenoh or HTTP, open) + end-of-ride batch → remote vehicle-server (user's machine now, VPS-ready: containers, TLS proxy, per-device token) | Wi-Fi/LTE | latency-tolerant |
-| LLM assistant | vehicle-mcp (read-only) on the Raspi (localhost, offline) and on the remote vehicle-server (TLS + auth, D-077) → LLM; position and windowed slices allowed provisionally (D-076, Q-035); the LLM does no math | local/HTTPS | none |
+| LLM assistant | vehicle-server `/chat` → one read-only vehicle-mcp tool → local open-weight LLM in llama-server phrases the result, number guard, template fallback (D-121, zero cost, no cloud LLM); vehicle-mcp on the Raspi (localhost, offline) and on the remote vehicle-server (TLS + auth, D-077); position and windowed slices allowed provisionally (D-076, Q-035); the LLM does no math | local/HTTPS | none |
 | OTA | vehicle-server → Raspi → UDS bootloader (platform CAN) → MCU A/B bank | CAN | controlled |
 | Engineering analysis (D-081) | vehicle + platform CAN (USB adapter, listen-only), recorded logs or the vehicle-server live stream (`/ws/live`; only a mock source for now, the real source via the Raspi is open under D-077) → vehicle-analyzer (web host, later Tauri desktop); decodes only from the pinned defs, never transmits on a vehicle bus | USB/local/HTTPS | none |
-| Rider layer (D-085) | own motorcycle (Raspi, remote vehicle-server) → vehicle-mobile over the vehicle-server API (D-115, provisional); explanations from the LLM through vehicle-mcp; high-severity catalog results shown directly, without the LLM | local/HTTPS | none (advice, QM) |
+| Rider layer (D-085) | own motorcycle (Raspi, remote vehicle-server) → vehicle-mobile (Flutter on phone and computer, per-user host list; voice through the Bluetooth intercom on the phone) over the vehicle-server API (D-115, D-121, provisional); explanations from the LLM through vehicle-mcp; high-severity catalog results shown directly, without the LLM | local/HTTPS | none (advice, QM) |
 
 ---
 
