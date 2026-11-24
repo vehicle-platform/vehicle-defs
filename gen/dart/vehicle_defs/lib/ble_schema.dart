@@ -8,6 +8,7 @@ abstract final class BleGatt {
   static const String imuCharacteristicUuid = 'f62bc083-e25d-46b3-aa0b-2e9e6bc8f1e5';
   static const String gpsCharacteristicUuid = '3c8f9255-ba3f-4bda-90b3-8c30bcbcace1';
   static const String vehicleSignalsCharacteristicUuid = 'c362c514-72cb-4c05-84a7-ec797efe75cf';
+  static const String riderInputCharacteristicUuid = '83308595-093c-4e33-a437-37590a4793bc';
   static const String telematicsRxCharacteristicUuid = '828919fe-e41c-40ee-b4c6-2c974c2d3345';
   /// ATT MTU the central requests.
   static const int requestedMtu = 185;
@@ -631,4 +632,54 @@ abstract final class BleVehicleSignalState {
   static const int skipped = 3;
   /// The DID's last answer was a negative response (not 0x78); raw holds the NRC, e.g. 0x31 requestOutOfRange for an unsupported DID.
   static const int negativeResponse = 4;
+}
+
+/// Rider-input block format (characteristic `riderInput`, D-121 item 5): handlebar push-to-talk events, informational only.
+abstract final class BleRiderInputBlock {
+  static const int version = 1;
+  static const int totalBytes = 8;
+}
+
+/// Rider-input block: byte offset of each field.
+abstract final class BleRiderInputOffsets {
+  /// Rider-input block format version, 1.
+  static const int version = 0;
+  /// Rolling 0-255 counter, see `sequenceRule`.
+  static const int seq = 1;
+  /// Node clock in ms when the edge was accepted, see `timeRule`.
+  static const int deviceTimeMs = 2;
+  /// See `riderInputBlock.event` and `eventRule`.
+  static const int event = 6;
+  /// See `riderInputBlock.flags`.
+  static const int flags = 7;
+}
+
+/// Rider-input block: byte size of each field.
+abstract final class BleRiderInputSizes {
+  /// Rider-input block format version, 1.
+  static const int version = 1;
+  /// Rolling 0-255 counter, see `sequenceRule`.
+  static const int seq = 1;
+  /// Node clock in ms when the edge was accepted, see `timeRule`.
+  static const int deviceTimeMs = 4;
+  /// See `riderInputBlock.event` and `eventRule`.
+  static const int event = 1;
+  /// See `riderInputBlock.flags`.
+  static const int flags = 1;
+}
+
+/// Rider-input `event` values (eventRule).
+abstract final class BleRiderInputEvent {
+  /// The button went down: the app starts listening.
+  static const int press = 1;
+  /// The button went up.
+  static const int release = 2;
+  /// The button has been held for the node's long-press time; sent once per hold.
+  static const int longPress = 3;
+}
+
+/// Rider-input block `flags` bit masks.
+abstract final class BleRiderInputFlagBits {
+  /// Debounced button state right after this event: 1 = held down.
+  static const int buttonDown = 1 << 0;
 }

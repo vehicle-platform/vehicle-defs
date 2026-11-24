@@ -256,7 +256,53 @@ def _mutate_vsig_period(s):
     _vsig(s)["notifyPeriodMs"] = 0
 
 
+def _ri(s):
+    return s["riderInputBlock"]
+
+
+def _mutate_ri_gap(s):
+    next(f for f in _ri(s)["fields"] if f["name"] == "event")["offset"] += 1
+
+
+def _mutate_ri_total(s):
+    _ri(s)["totalBytes"] = 9
+
+
+def _mutate_ri_too_big(s):
+    _ri(s).update(totalBytes=21)
+    _ri(s)["fields"][-1].update(type="uint16", size=2)
+    _ri(s)["fields"].append({"name": "spare", "offset": 9, "size": 12, "type": "uint8"})
+
+
+def _mutate_ri_event_zero(s):
+    _ri(s)["event"]["values"][0]["value"] = 0
+
+
+def _mutate_ri_event_duplicate(s):
+    _ri(s)["event"]["values"][1]["value"] = 1
+
+
+def _mutate_ri_flag_duplicate(s):
+    _ri(s)["flags"]["bits"][1]["bit"] = 0
+
+
+def _mutate_ri_characteristic(s):
+    del s["gatt"]["characteristics"]["riderInput"]
+
+
+def _mutate_ri_uuid_duplicate(s):
+    s["gatt"]["characteristics"]["riderInput"]["uuid"] = s["gatt"]["characteristics"]["gps"]["uuid"]
+
+
 MUTATIONS = [
+    (_mutate_ri_gap, "riderInputBlock.fields"),
+    (_mutate_ri_total, "riderInputBlock.fields: fields end at 8, but the declared total is 9"),
+    (_mutate_ri_too_big, "riderInputBlock.totalBytes 21 does not fit the default ATT"),
+    (_mutate_ri_event_zero, "0 stays unused"),
+    (_mutate_ri_event_duplicate, "riderInputBlock.event.values"),
+    (_mutate_ri_flag_duplicate, "riderInputBlock.flags.bits: bit 0"),
+    (_mutate_ri_characteristic, "riderInputBlock.characteristic must name a gatt characteristic"),
+    (_mutate_ri_uuid_duplicate, "UUIDs must be unique"),
     (_mutate_vsig_record_gap, "vehicleSignalBlock.recordFields"),
     (_mutate_vsig_record_bytes, "recordFields: fields end at 9, but the declared total is 10"),
     (_mutate_vsig_header_order, "headerFields must start with"),
@@ -614,3 +660,40 @@ def test_header_compiles_strict_and_values_hold(tmp_path):
     header_dir = config.GEN_DIR / "c" / "conn"
     subprocess.run([CC, *flags, "-I", str(header_dir), str(src), "-o", str(exe)], check=True)
     assert subprocess.run([str(exe)], check=False).returncode == 0
+
+
+# D-121 item 5: the handlebar push-to-talk event, informational only (D-047 item 3).
+RIDER_INPUT_LAYOUT = [
+    ("version", 0, 1), ("seq", 1, 1), ("deviceTimeMs", 2, 4), ("event", 6, 1), ("flags", 7, 1),
+]  # fmt: skip
+
+
+def test_rider_input_block_agrees_in_c_python_and_dart(real, outputs):
+    c, dart, py = outputs
+    macros = _c_macros(c)
+    fields = py["rider_input_fields"]()
+    assert [(f["name"], f["offset"], f["size"]) for f in fields] == RIDER_INPUT_LAYOUT
+    dart_off = _dart_class(dart, "BleRiderInputOffsets")
+    dart_size = _dart_class(dart, "BleRiderInputSizes")
+    for f in fields:
+        snake = gen_ble._upper_snake(f["name"])
+        assert macros[f"BLE_RIDER_INPUT_{snake}_OFFSET"] == dart_off[f["name"]] == f["offset"]
+        assert macros[f"BLE_RIDER_INPUT_{snake}_SIZE"] == dart_size[f["name"]] == f["size"]
+    assert macros["BLE_RIDER_INPUT_TOTAL_BYTES"] == py["RIDER_INPUT_TOTAL_BYTES"] == 8
+    assert _dart_class(dart, "BleRiderInputBlock") == {"version": 1, "totalBytes": 8}
+    assert macros["BLE_RIDER_INPUT_BLOCK_VERSION"] == py["RIDER_INPUT_BLOCK_VERSION"] == 1
+    events = {"press": 1, "release": 2, "longPress": 3}
+    assert _dart_class(dart, "BleRiderInputEvent") == events
+    assert py["RIDER_INPUT_EVENTS"] == {v: k for k, v in events.items()}
+    assert macros["BLE_RIDER_INPUT_EVENT_LONG_PRESS"] == 3
+    assert _dart_class(dart, "BleRiderInputFlagBits") == {"buttonDown": 1}
+    assert "#define BLE_RIDER_INPUT_FLAG_BUTTON_DOWN (1u << 0u)" in c
+    uuid = real["gatt"]["characteristics"]["riderInput"]["uuid"]
+    assert f'BLE_GATT_RIDER_INPUT_CHAR_UUID "{uuid}"' in c
+    assert f"'{uuid}'" in dart
+
+
+def test_rider_input_has_no_notify_period_and_fits_default_mtu(real):
+    ri = real["riderInputBlock"]
+    assert "notifyPeriodMs" not in ri and ri["totalBytes"] <= gen_ble.DEFAULT_ATT_PAYLOAD
+    assert real["gatt"]["characteristics"]["riderInput"]["properties"] == ["notify"]

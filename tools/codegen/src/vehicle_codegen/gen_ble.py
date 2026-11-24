@@ -366,11 +366,33 @@ def check_vehicle_signal_table(schema: dict[str, Any], vehicle: dict[str, Any]) 
     return errors
 
 
+def _check_rider_input(schema: dict[str, Any], errors: list[str]) -> None:
+    ri = schema.get("riderInputBlock", {})
+    for key in ("version", "totalBytes"):
+        if not _is_int(ri.get(key)) or ri[key] <= 0:
+            errors.append(f"ble: riderInputBlock.{key} must be a positive integer")
+            return
+    _check_layout("riderInputBlock.fields", ri.get("fields"), ri["totalBytes"], errors)
+    if ri["totalBytes"] > DEFAULT_ATT_PAYLOAD:
+        errors.append(
+            f"ble: riderInputBlock.totalBytes {ri['totalBytes']} does not fit the default ATT "
+            f"MTU payload ({DEFAULT_ATT_PAYLOAD}); the block is never suspended (mtuRule)"
+        )
+    if ri.get("characteristic") not in schema.get("gatt", {}).get("characteristics", {}):
+        errors.append("ble: riderInputBlock.characteristic must name a gatt characteristic")
+    _check_bits("riderInputBlock.flags.bits", ri.get("flags", {}).get("bits"), errors)
+    _check_values("riderInputBlock.event.values", ri.get("event", {}).get("values"), errors)
+    if any(v.get("value") == 0 for v in ri.get("event", {}).get("values") or []):
+        errors.append(
+            "ble: riderInputBlock.event.values: 0 stays unused (a zeroed block is invalid)"
+        )
+
+
 def _check_gatt(schema: dict[str, Any], errors: list[str]) -> None:
     gatt = schema.get("gatt", {})
     uuids = {"serviceUuid": gatt.get("serviceUuid")}
     chars = gatt.get("characteristics", {})
-    for name in ("telemetry", "imu", "gps", "vehicleSignals", "telematicsRx"):
+    for name in ("telemetry", "imu", "gps", "vehicleSignals", "riderInput", "telematicsRx"):
         uuids[f"characteristics.{name}.uuid"] = chars.get(name, {}).get("uuid")
     for label, uuid in uuids.items():
         if not isinstance(uuid, str) or not _UUID.fullmatch(uuid):
@@ -389,6 +411,7 @@ def check_schema(schema: dict[str, Any]) -> list[str]:
         ("imu", _check_imu),
         ("gps", _check_gps),
         ("vehicle signals", _check_vehicle_signals),
+        ("rider input", _check_rider_input),
         ("gatt", _check_gatt),
     ):
         try:
@@ -583,7 +606,23 @@ def generate_c(schema: dict[str, Any]) -> dict[str, str]:
     h.append("/* Vehicle-signal record `state` values (stateRule: the first that applies) */")
     for v in vs["state"]["values"]:
         h.append(f"#define BLE_VSIG_STATE_{_upper_snake(v['name'])} {u(v['value'])}")
-    h += ["", "#endif /* BLE_SCHEMA_H */", ""]
+    h.append("")
+
+    ri = schema["riderInputBlock"]
+    h += [
+        "/* Rider-input block (characteristic `riderInput`, D-121 item 5): one event per",
+        " * handlebar push-to-talk edge; informational only, never read by a safety path. */",
+        f"#define BLE_RIDER_INPUT_BLOCK_VERSION {u(ri['version'])}",
+        f"#define BLE_RIDER_INPUT_TOTAL_BYTES {u(ri['totalBytes'])}",
+        "",
+    ]
+    layout("BLE_RIDER_INPUT", ri["fields"], f"Rider-input block ({ri['totalBytes']} bytes)")
+    h.append("/* Rider-input `event` values (eventRule) */")
+    for v in ri["event"]["values"]:
+        h.append(f"#define BLE_RIDER_INPUT_EVENT_{_upper_snake(v['name'])} {u(v['value'])}")
+    h.append("")
+    bits("BLE_RIDER_INPUT_FLAG", ri["flags"]["bits"], "Rider-input block `flags` bits")
+    h += ["#endif /* BLE_SCHEMA_H */", ""]
     return {"ble_schema.h": "\n".join(h)}
 
 
@@ -639,6 +678,15 @@ def generate_python(schema: dict[str, Any]) -> str:
         f"VSIG_BLOCK_VERSION = {schema['vehicleSignalBlock']['version']}",
         f"VSIG_HEADER_BYTES = {schema['vehicleSignalBlock']['headerBytes']}",
         f"VSIG_RECORD_BYTES = {schema['vehicleSignalBlock']['recordBytes']}",
+        "# D-121 item 5 rider-input block (characteristic `riderInput`): handlebar push-to-talk.",
+        f"RIDER_INPUT_BLOCK_VERSION = {schema['riderInputBlock']['version']}",
+        f"RIDER_INPUT_TOTAL_BYTES = {schema['riderInputBlock']['totalBytes']}",
+        "RIDER_INPUT_EVENTS = {"
+        + ", ".join(
+            f"{v['value']}: {json.dumps(v['name'])}"
+            for v in schema["riderInputBlock"]["event"]["values"]
+        )
+        + "}",
         "VSIG_STATES = {"
         + ", ".join(
             f"{v['value']}: {json.dumps(v['name'])}"
@@ -654,6 +702,11 @@ def generate_python(schema: dict[str, Any]) -> str:
         "    if version not in TOTAL_BYTES_BY_VERSION:",
         '        raise ValueError(f"no telemetry layout for version {version}")',
         '    return [f for f in SCHEMA["fields"] if f.get("sinceVersion", 3) <= version]',
+        "",
+        "",
+        "def rider_input_fields() -> list[dict]:",
+        '    """Field table of the rider-input block (D-121 item 5)."""',
+        '    return SCHEMA["riderInputBlock"]["fields"]',
         "",
         "",
         "def gps_fields() -> list[dict]:",
@@ -922,6 +975,33 @@ def generate_dart(schema: dict[str, Any]) -> dict[str, str]:
             for v in vs["state"]["values"]
         ],
     )
+
+    ri = schema["riderInputBlock"]
+    cls(
+        "BleRiderInputBlock",
+        "Rider-input block format (characteristic `riderInput`, D-121 item 5): handlebar "
+        "push-to-talk events, informational only.",
+        [
+            ("int", "version", str(ri["version"]), ""),
+            ("int", "totalBytes", str(ri["totalBytes"]), ""),
+        ],
+    )
+    for key, kind in (("offset", "Offsets"), ("size", "Sizes")):
+        offsets(
+            "BleRiderInput" + kind,
+            f"Rider-input block: byte {key} of each field.",
+            ri["fields"],
+            key,
+        )
+    cls(
+        "BleRiderInputEvent",
+        "Rider-input `event` values (eventRule).",
+        [
+            ("int", v["name"], str(v["value"]), v.get("description", ""))
+            for v in ri["event"]["values"]
+        ],
+    )
+    flag_bits("BleRiderInputFlagBits", "Rider-input block `flags` bit masks.", ri["flags"]["bits"])
 
     pubspec = (
         "# GENERATED by vehicle-defs tools/codegen from ble/ble_schema.json. DO NOT EDIT.\n"
