@@ -1,0 +1,1176 @@
+{
+ "meta": {
+  "locale": "en",
+  "started_utc": "2026-11-25T21:01:43+00:00",
+  "models_seen": [
+   "pi/models/qwen2.5-1.5b-instruct-q4_k_m.gguf"
+  ],
+  "questions_run": 44
+ },
+ "scores": {
+  "questions": 44,
+  "errors": 0,
+  "tool_accuracy": 0.45454545454545453,
+  "tool_name_accuracy": 0.45454545454545453,
+  "fact_coverage": 0.4594594594594595,
+  "facts_required": 37,
+  "facts_hit": 17,
+  "forbidden_hits": 22,
+  "answers_with_forbidden": 19,
+  "guard_fallbacks": 3,
+  "llm_answers": 18,
+  "sources": {
+   "llm": 18,
+   "unsupported": 22,
+   "template": 3,
+   "error": 1
+  },
+  "latency_p50_ms": 3702.0,
+  "latency_p95_ms": 21173.0,
+  "by_topic": {
+   "last_ride": {
+    "n": 3,
+    "tool_ok": 3,
+    "facts_required": 6,
+    "facts_hit": 5
+   },
+   "distance": {
+    "n": 2,
+    "tool_ok": 1,
+    "facts_required": 2,
+    "facts_hit": 1
+   },
+   "time": {
+    "n": 2,
+    "tool_ok": 2,
+    "facts_required": 2,
+    "facts_hit": 1
+   },
+   "stops": {
+    "n": 2,
+    "tool_ok": 1,
+    "facts_required": 2,
+    "facts_hit": 1
+   },
+   "idle": {
+    "n": 2,
+    "tool_ok": 2,
+    "facts_required": 2,
+    "facts_hit": 2
+   },
+   "coolant": {
+    "n": 4,
+    "tool_ok": 4,
+    "facts_required": 4,
+    "facts_hit": 3
+   },
+   "warmup": {
+    "n": 2,
+    "tool_ok": 1,
+    "facts_required": 2,
+    "facts_hit": 1
+   },
+   "battery": {
+    "n": 3,
+    "tool_ok": 0,
+    "facts_required": 4,
+    "facts_hit": 0
+   },
+   "speed": {
+    "n": 3,
+    "tool_ok": 0,
+    "facts_required": 3,
+    "facts_hit": 0
+   },
+   "rpm": {
+    "n": 3,
+    "tool_ok": 0,
+    "facts_required": 3,
+    "facts_hit": 0
+   },
+   "compare": {
+    "n": 3,
+    "tool_ok": 0,
+    "facts_required": 0,
+    "facts_hit": 0
+   },
+   "history": {
+    "n": 3,
+    "tool_ok": 1,
+    "facts_required": 3,
+    "facts_hit": 1
+   },
+   "specific_ride": {
+    "n": 2,
+    "tool_ok": 0,
+    "facts_required": 2,
+    "facts_hit": 0
+   },
+   "faults": {
+    "n": 3,
+    "tool_ok": 2,
+    "facts_required": 2,
+    "facts_hit": 2
+   },
+   "symptoms": {
+    "n": 4,
+    "tool_ok": 0,
+    "facts_required": 0,
+    "facts_hit": 0
+   },
+   "out_of_scope": {
+    "n": 3,
+    "tool_ok": 3,
+    "facts_required": 0,
+    "facts_hit": 0
+   }
+  }
+ },
+ "items": [
+  {
+   "id": "summary-1",
+   "topic": "last_ride",
+   "question": "How was my last ride?",
+   "answer": "Your last ride covered 20.6 kilometers in 1215 seconds, with 2 stops. The ride was warm up at 280 seconds and cool down at 280 seconds. The coolant temperature varied between 30°C and 90°C.",
+   "source": "llm",
+   "tool": "get_ride_summary",
+   "arguments": {
+    "session_id": "20261118-090000-8394"
+   },
+   "model": "pi/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+   "latency_ms": 3392,
+   "server_ms": 3384,
+   "tool_ok": true,
+   "tool_name_ok": true,
+   "guard": "pass",
+   "guard_ok": true,
+   "facts_required": 2,
+   "facts_hit": 2,
+   "facts_missing": [],
+   "forbidden_hits": [
+    "model_path"
+   ],
+   "error": null
+  },
+  {
+   "id": "summary-2",
+   "topic": "last_ride",
+   "question": "Give me a summary of my latest ride.",
+   "answer": "Your latest ride covered 20.6 kilometers in 1215 seconds, with 2 stops. The ride was 280 seconds in the warmup phase and 280 seconds in the cool down. The coolant temperature varied between 30°C and 90°C.",
+   "source": "llm",
+   "tool": "get_ride_summary",
+   "arguments": {
+    "session_id": "20261118-090000-8394"
+   },
+   "model": "pi/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+   "latency_ms": 5009,
+   "server_ms": 4995,
+   "tool_ok": true,
+   "tool_name_ok": true,
+   "guard": "pass",
+   "guard_ok": true,
+   "facts_required": 2,
+   "facts_hit": 2,
+   "facts_missing": [],
+   "forbidden_hits": [
+    "model_path"
+   ],
+   "error": null
+  },
+  {
+   "id": "summary-3",
+   "topic": "last_ride",
+   "question": "What are the numbers of my last ride?",
+   "answer": "You rode 20.6 kilometers at an average speed of 22.4 km/h.",
+   "source": "llm",
+   "tool": "get_ride_summary",
+   "arguments": {
+    "session_id": "20261118-090000-8394"
+   },
+   "model": "pi/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+   "latency_ms": 3268,
+   "server_ms": 3252,
+   "tool_ok": true,
+   "tool_name_ok": true,
+   "guard": "pass",
+   "guard_ok": true,
+   "facts_required": 2,
+   "facts_hit": 1,
+   "facts_missing": [
+    "ride_time: not in answer"
+   ],
+   "forbidden_hits": [
+    "model_path"
+   ],
+   "error": null
+  },
+  {
+   "id": "distance-1",
+   "topic": "distance",
+   "question": "How far did I ride on my last ride?",
+   "answer": "You rode 20.6458 kilometers on your last ride.",
+   "source": "llm",
+   "tool": "get_ride_summary",
+   "arguments": {
+    "session_id": "20261118-090000-8394"
+   },
+   "model": "pi/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+   "latency_ms": 2504,
+   "server_ms": 2496,
+   "tool_ok": true,
+   "tool_name_ok": true,
+   "guard": "pass",
+   "guard_ok": true,
+   "facts_required": 1,
+   "facts_hit": 1,
+   "facts_missing": [],
+   "forbidden_hits": [
+    "long_decimals",
+    "model_path"
+   ],
+   "error": null
+  },
+  {
+   "id": "distance-2",
+   "topic": "distance",
+   "question": "How many kilometres was my last trip?",
+   "answer": "I cannot answer that from the bike's data.",
+   "source": "unsupported",
+   "tool": null,
+   "arguments": {},
+   "model": null,
+   "latency_ms": 2785,
+   "server_ms": 2773,
+   "tool_ok": false,
+   "tool_name_ok": false,
+   "guard": "none",
+   "guard_ok": null,
+   "facts_required": 1,
+   "facts_hit": 0,
+   "facts_missing": [
+    "ride_distance: no tool"
+   ],
+   "forbidden_hits": [],
+   "error": null
+  },
+  {
+   "id": "time-1",
+   "topic": "time",
+   "question": "How long was my last ride?",
+   "answer": "Your last ride was 20.6 kilometers long.",
+   "source": "llm",
+   "tool": "get_ride_summary",
+   "arguments": {
+    "session_id": "20261118-090000-8394"
+   },
+   "model": "pi/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+   "latency_ms": 4011,
+   "server_ms": 3990,
+   "tool_ok": true,
+   "tool_name_ok": true,
+   "guard": "pass",
+   "guard_ok": true,
+   "facts_required": 1,
+   "facts_hit": 0,
+   "facts_missing": [
+    "ride_time: not in answer"
+   ],
+   "forbidden_hits": [
+    "model_path"
+   ],
+   "error": null
+  },
+  {
+   "id": "time-2",
+   "topic": "time",
+   "question": "How long did my last ride take in total?",
+   "answer": "Your last ride took approximately 1215 seconds, which is about 2 hours and 15 minutes.",
+   "source": "llm",
+   "tool": "get_ride_summary",
+   "arguments": {
+    "session_id": "20261118-090000-8394"
+   },
+   "model": "pi/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+   "latency_ms": 4466,
+   "server_ms": 4432,
+   "tool_ok": true,
+   "tool_name_ok": true,
+   "guard": "pass",
+   "guard_ok": true,
+   "facts_required": 1,
+   "facts_hit": 1,
+   "facts_missing": [],
+   "forbidden_hits": [
+    "model_path"
+   ],
+   "error": null
+  },
+  {
+   "id": "stops-1",
+   "topic": "stops",
+   "question": "How many times did I stop on my last ride?",
+   "answer": "You stopped 2 times on your last ride.",
+   "source": "llm",
+   "tool": "get_ride_summary",
+   "arguments": {
+    "session_id": "20261118-090000-8394"
+   },
+   "model": "pi/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+   "latency_ms": 3597,
+   "server_ms": 3577,
+   "tool_ok": true,
+   "tool_name_ok": true,
+   "guard": "pass",
+   "guard_ok": true,
+   "facts_required": 1,
+   "facts_hit": 1,
+   "facts_missing": [],
+   "forbidden_hits": [
+    "model_path"
+   ],
+   "error": null
+  },
+  {
+   "id": "stops-2",
+   "topic": "stops",
+   "question": "How many stops did I make?",
+   "answer": "I cannot answer that from the bike's data.",
+   "source": "unsupported",
+   "tool": null,
+   "arguments": {},
+   "model": null,
+   "latency_ms": 2044,
+   "server_ms": 2031,
+   "tool_ok": false,
+   "tool_name_ok": false,
+   "guard": "none",
+   "guard_ok": null,
+   "facts_required": 1,
+   "facts_hit": 0,
+   "facts_missing": [
+    "ride_stop_count: no tool"
+   ],
+   "forbidden_hits": [],
+   "error": null
+  },
+  {
+   "id": "idle-1",
+   "topic": "idle",
+   "question": "How long did I stay idling?",
+   "answer": "You stayed idling for 135.8 seconds.",
+   "source": "llm",
+   "tool": "get_ride_summary",
+   "arguments": {
+    "session_id": "20261118-090000-8394"
+   },
+   "model": "pi/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+   "latency_ms": 2366,
+   "server_ms": 2359,
+   "tool_ok": true,
+   "tool_name_ok": true,
+   "guard": "pass",
+   "guard_ok": true,
+   "facts_required": 1,
+   "facts_hit": 1,
+   "facts_missing": [],
+   "forbidden_hits": [
+    "model_path"
+   ],
+   "error": null
+  },
+  {
+   "id": "idle-2",
+   "topic": "idle",
+   "question": "How much of my last ride was spent at idle?",
+   "answer": "Your last ride was spent approximately 136 seconds (2 minutes and 16 seconds) at idle.",
+   "source": "llm",
+   "tool": "get_ride_summary",
+   "arguments": {
+    "session_id": "20261118-090000-8394"
+   },
+   "model": "pi/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+   "latency_ms": 5940,
+   "server_ms": 5807,
+   "tool_ok": true,
+   "tool_name_ok": true,
+   "guard": "pass",
+   "guard_ok": true,
+   "facts_required": 1,
+   "facts_hit": 1,
+   "facts_missing": [],
+   "forbidden_hits": [
+    "model_path"
+   ],
+   "error": null
+  },
+  {
+   "id": "overheat-1",
+   "topic": "coolant",
+   "question": "Did the engine overheat?",
+   "answer": "The engine coolant temperature has a mean of 79.86°C, a maximum of 90.0°C, and a standard deviation of 16.19°C. The temperature has not exceeded the maximum limit.",
+   "source": "llm",
+   "tool": "compute_signal_stats",
+   "arguments": {
+    "signal": "did.COOLANT_TEMP",
+    "session_id": "20261118-090000-8394"
+   },
+   "model": "pi/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+   "latency_ms": 5180,
+   "server_ms": 4819,
+   "tool_ok": true,
+   "tool_name_ok": true,
+   "guard": "pass",
+   "guard_ok": true,
+   "facts_required": 1,
+   "facts_hit": 1,
+   "facts_missing": [],
+   "forbidden_hits": [
+    "model_path"
+   ],
+   "error": null
+  },
+  {
+   "id": "overheat-2",
+   "topic": "coolant",
+   "question": "Was the engine too hot on my last ride?",
+   "answer": "The coolant temperature was 79.86 degrees Celsius, which is within the normal range. The average temperature was 87.0 degrees Celsius, indicating the engine was not excessively hot.",
+   "source": "llm",
+   "tool": "compute_signal_stats",
+   "arguments": {
+    "signal": "did.COOLANT_TEMP",
+    "session_id": "20261118-090000-8394"
+   },
+   "model": "pi/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+   "latency_ms": 5215,
+   "server_ms": 5194,
+   "tool_ok": true,
+   "tool_name_ok": true,
+   "guard": "pass",
+   "guard_ok": true,
+   "facts_required": 1,
+   "facts_hit": 0,
+   "facts_missing": [
+    "coolant_temp_max: not in answer"
+   ],
+   "forbidden_hits": [
+    "model_path"
+   ],
+   "error": null
+  },
+  {
+   "id": "coolant-max",
+   "topic": "coolant",
+   "question": "What was the highest coolant temperature on my last ride?",
+   "answer": "The highest coolant temperature on your last ride was 90.0 degrees Celsius.",
+   "source": "llm",
+   "tool": "compute_signal_stats",
+   "arguments": {
+    "signal": "did.COOLANT_TEMP",
+    "session_id": "20261118-090000-8394"
+   },
+   "model": "pi/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+   "latency_ms": 3941,
+   "server_ms": 3925,
+   "tool_ok": true,
+   "tool_name_ok": true,
+   "guard": "pass",
+   "guard_ok": true,
+   "facts_required": 1,
+   "facts_hit": 1,
+   "facts_missing": [],
+   "forbidden_hits": [
+    "model_path"
+   ],
+   "error": null
+  },
+  {
+   "id": "coolant-mean",
+   "topic": "coolant",
+   "question": "What was the average coolant temperature?",
+   "answer": "The average coolant temperature was 79.86 degrees Celsius.",
+   "source": "llm",
+   "tool": "compute_signal_stats",
+   "arguments": {
+    "signal": "did.COOLANT_TEMP",
+    "session_id": "20261118-090000-8394"
+   },
+   "model": "pi/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+   "latency_ms": 4103,
+   "server_ms": 4089,
+   "tool_ok": true,
+   "tool_name_ok": true,
+   "guard": "pass",
+   "guard_ok": true,
+   "facts_required": 1,
+   "facts_hit": 1,
+   "facts_missing": [],
+   "forbidden_hits": [
+    "model_path"
+   ],
+   "error": null
+  },
+  {
+   "id": "warmup-1",
+   "topic": "warmup",
+   "question": "How long did the engine take to warm up?",
+   "answer": "I cannot answer that from the bike's data.",
+   "source": "unsupported",
+   "tool": null,
+   "arguments": {},
+   "model": null,
+   "latency_ms": 2583,
+   "server_ms": 2570,
+   "tool_ok": false,
+   "tool_name_ok": false,
+   "guard": "none",
+   "guard_ok": null,
+   "facts_required": 1,
+   "facts_hit": 0,
+   "facts_missing": [
+    "ride_warmup_time: no tool"
+   ],
+   "forbidden_hits": [],
+   "error": null
+  },
+  {
+   "id": "warmup-2",
+   "topic": "warmup",
+   "question": "What was the warm-up time on my last ride?",
+   "answer": "The warm-up time for your last ride was 280 seconds.",
+   "source": "llm",
+   "tool": "get_ride_summary",
+   "arguments": {
+    "session_id": "20261118-090000-8394"
+   },
+   "model": "pi/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+   "latency_ms": 3254,
+   "server_ms": 3237,
+   "tool_ok": true,
+   "tool_name_ok": true,
+   "guard": "pass",
+   "guard_ok": true,
+   "facts_required": 1,
+   "facts_hit": 1,
+   "facts_missing": [],
+   "forbidden_hits": [
+    "model_path"
+   ],
+   "error": null
+  },
+  {
+   "id": "battery-1",
+   "topic": "battery",
+   "question": "How is my battery voltage?",
+   "answer": "I cannot answer that from the bike's data.",
+   "source": "unsupported",
+   "tool": null,
+   "arguments": {},
+   "model": null,
+   "latency_ms": 3749,
+   "server_ms": 3731,
+   "tool_ok": false,
+   "tool_name_ok": false,
+   "guard": "none",
+   "guard_ok": null,
+   "facts_required": 1,
+   "facts_hit": 0,
+   "facts_missing": [
+    "battery_voltage_mean: no tool"
+   ],
+   "forbidden_hits": [],
+   "error": null
+  },
+  {
+   "id": "battery-2",
+   "topic": "battery",
+   "question": "What were the lowest and highest battery voltage on my last ride?",
+   "answer": "You rode 20.6 km in about 20 min 15 s. You stopped 2 times and idled 2 min 16 s.\nWarm-up time: 4 min 40 s\nMax coolant rise (°C/min): 22.36\nThermal cycles: 1",
+   "source": "template",
+   "tool": "get_ride_summary",
+   "arguments": {
+    "session_id": "20261118-090000-8394"
+   },
+   "model": null,
+   "latency_ms": 6244,
+   "server_ms": 6221,
+   "tool_ok": false,
+   "tool_name_ok": false,
+   "guard": "fallback",
+   "guard_ok": true,
+   "facts_required": 2,
+   "facts_hit": 0,
+   "facts_missing": [
+    "battery_voltage_min: not in result",
+    "battery_voltage_max: not in result"
+   ],
+   "forbidden_hits": [],
+   "error": null
+  },
+  {
+   "id": "battery-3",
+   "topic": "battery",
+   "question": "Is the battery charging properly?",
+   "answer": "I cannot answer that from the bike's data.",
+   "source": "unsupported",
+   "tool": null,
+   "arguments": {},
+   "model": null,
+   "latency_ms": 3915,
+   "server_ms": 3898,
+   "tool_ok": false,
+   "tool_name_ok": false,
+   "guard": "none",
+   "guard_ok": null,
+   "facts_required": 1,
+   "facts_hit": 0,
+   "facts_missing": [
+    "battery_voltage_min|ride_cranking_dip: no tool"
+   ],
+   "forbidden_hits": [],
+   "error": null
+  },
+  {
+   "id": "speed-max",
+   "topic": "speed",
+   "question": "What was my top speed?",
+   "answer": "I cannot answer that from the bike's data.",
+   "source": "unsupported",
+   "tool": null,
+   "arguments": {},
+   "model": null,
+   "latency_ms": 3017,
+   "server_ms": 3000,
+   "tool_ok": false,
+   "tool_name_ok": false,
+   "guard": "none",
+   "guard_ok": null,
+   "facts_required": 1,
+   "facts_hit": 0,
+   "facts_missing": [
+    "vehicle_speed_max: no tool"
+   ],
+   "forbidden_hits": [],
+   "error": null
+  },
+  {
+   "id": "speed-mean",
+   "topic": "speed",
+   "question": "What was my average speed on my last ride?",
+   "answer": "The bike's data is not available right now.",
+   "source": "error",
+   "tool": null,
+   "arguments": {},
+   "model": null,
+   "latency_ms": 2482,
+   "server_ms": 2472,
+   "tool_ok": false,
+   "tool_name_ok": false,
+   "guard": "none",
+   "guard_ok": null,
+   "facts_required": 1,
+   "facts_hit": 0,
+   "facts_missing": [
+    "vehicle_speed_mean: no tool"
+   ],
+   "forbidden_hits": [],
+   "error": null
+  },
+  {
+   "id": "speed-3",
+   "topic": "speed",
+   "question": "How fast did I go?",
+   "answer": "I cannot answer that from the bike's data.",
+   "source": "unsupported",
+   "tool": null,
+   "arguments": {},
+   "model": null,
+   "latency_ms": 3233,
+   "server_ms": 3218,
+   "tool_ok": false,
+   "tool_name_ok": false,
+   "guard": "none",
+   "guard_ok": null,
+   "facts_required": 1,
+   "facts_hit": 0,
+   "facts_missing": [
+    "vehicle_speed_max: no tool"
+   ],
+   "forbidden_hits": [],
+   "error": null
+  },
+  {
+   "id": "rpm-max",
+   "topic": "rpm",
+   "question": "What was the maximum engine rpm?",
+   "answer": "I cannot answer that from the bike's data.",
+   "source": "unsupported",
+   "tool": null,
+   "arguments": {},
+   "model": null,
+   "latency_ms": 1925,
+   "server_ms": 1916,
+   "tool_ok": false,
+   "tool_name_ok": false,
+   "guard": "none",
+   "guard_ok": null,
+   "facts_required": 1,
+   "facts_hit": 0,
+   "facts_missing": [
+    "engine_speed_max: no tool"
+   ],
+   "forbidden_hits": [],
+   "error": null
+  },
+  {
+   "id": "rpm-mean",
+   "topic": "rpm",
+   "question": "What was the average engine rpm on my last ride?",
+   "answer": "The average engine RPM on your last ride was 1214.9999999999905 seconds.",
+   "source": "llm",
+   "tool": "get_ride_summary",
+   "arguments": {
+    "session_id": "20261118-090000-8394"
+   },
+   "model": "pi/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+   "latency_ms": 5228,
+   "server_ms": 5214,
+   "tool_ok": false,
+   "tool_name_ok": false,
+   "guard": "pass",
+   "guard_ok": true,
+   "facts_required": 1,
+   "facts_hit": 0,
+   "facts_missing": [
+    "engine_speed_mean: not in result"
+   ],
+   "forbidden_hits": [
+    "long_decimals",
+    "model_path"
+   ],
+   "error": null
+  },
+  {
+   "id": "rpm-3",
+   "topic": "rpm",
+   "question": "Did I over-rev the engine?",
+   "answer": "I cannot answer that from the bike's data.",
+   "source": "unsupported",
+   "tool": null,
+   "arguments": {},
+   "model": null,
+   "latency_ms": 2649,
+   "server_ms": 2634,
+   "tool_ok": false,
+   "tool_name_ok": false,
+   "guard": "none",
+   "guard_ok": null,
+   "facts_required": 1,
+   "facts_hit": 0,
+   "facts_missing": [
+    "engine_speed_max|ride_over_rev_time: no tool"
+   ],
+   "forbidden_hits": [],
+   "error": null
+  },
+  {
+   "id": "compare-1",
+   "topic": "compare",
+   "question": "Compare the coolant temperature of rides 20261118-090000-8394 and 20261122-090000-5fa8.",
+   "answer": "signal: did.COOLANT_TEMP\nlabel: coolant temp\nsession_id: 20261118-090000-8394\nunit: degC\nvalues: 7 items\nsamples: ...\nduration: ...",
+   "source": "template",
+   "tool": "compute_signal_stats",
+   "arguments": {
+    "signal": "did.COOLANT_TEMP",
+    "session_id": "20261118-090000-8394"
+   },
+   "model": null,
+   "latency_ms": 11798,
+   "server_ms": 11784,
+   "tool_ok": false,
+   "tool_name_ok": false,
+   "guard": "fallback",
+   "guard_ok": false,
+   "facts_required": 0,
+   "facts_hit": 0,
+   "facts_missing": [],
+   "forbidden_hits": [
+    "internal_prefix",
+    "snake_case"
+   ],
+   "error": null
+  },
+  {
+   "id": "compare-2",
+   "topic": "compare",
+   "question": "Compare the engine speed of rides 20261118-090000-8394 and 20261122-090000-5fa8.",
+   "answer": "I cannot answer that from the bike's data.",
+   "source": "unsupported",
+   "tool": null,
+   "arguments": {},
+   "model": null,
+   "latency_ms": 5478,
+   "server_ms": 5458,
+   "tool_ok": false,
+   "tool_name_ok": false,
+   "guard": "none",
+   "guard_ok": null,
+   "facts_required": 0,
+   "facts_hit": 0,
+   "facts_missing": [],
+   "forbidden_hits": [],
+   "error": null
+  },
+  {
+   "id": "compare-3",
+   "topic": "compare",
+   "question": "Which was faster, ride 20261118-090000-8394 or ride 20261122-090000-5fa8? Compare the vehicle speed.",
+   "answer": "I cannot answer that from the bike's data.",
+   "source": "unsupported",
+   "tool": null,
+   "arguments": {},
+   "model": null,
+   "latency_ms": 6117,
+   "server_ms": 6100,
+   "tool_ok": false,
+   "tool_name_ok": false,
+   "guard": "none",
+   "guard_ok": null,
+   "facts_required": 0,
+   "facts_hit": 0,
+   "facts_missing": [],
+   "forbidden_hits": [],
+   "error": null
+  },
+  {
+   "id": "history-1",
+   "topic": "history",
+   "question": "Which rides did I take between 2026-11-14 and 2026-11-20?",
+   "answer": "I cannot answer that from the bike's data.",
+   "source": "unsupported",
+   "tool": null,
+   "arguments": {},
+   "model": null,
+   "latency_ms": 3838,
+   "server_ms": 3824,
+   "tool_ok": false,
+   "tool_name_ok": false,
+   "guard": "none",
+   "guard_ok": null,
+   "facts_required": 1,
+   "facts_hit": 0,
+   "facts_missing": [
+    "count: no tool"
+   ],
+   "forbidden_hits": [],
+   "error": null
+  },
+  {
+   "id": "history-2",
+   "topic": "history",
+   "question": "List my rides from 2026-11-22 to 2026-11-26.",
+   "answer": "I cannot answer that from the bike's data.",
+   "source": "unsupported",
+   "tool": null,
+   "arguments": {},
+   "model": null,
+   "latency_ms": 3812,
+   "server_ms": 3799,
+   "tool_ok": false,
+   "tool_name_ok": false,
+   "guard": "none",
+   "guard_ok": null,
+   "facts_required": 1,
+   "facts_hit": 0,
+   "facts_missing": [
+    "count: no tool"
+   ],
+   "forbidden_hits": [],
+   "error": null
+  },
+  {
+   "id": "history-3",
+   "topic": "history",
+   "question": "How many rides are stored?",
+   "answer": "There are 8 rides stored.",
+   "source": "llm",
+   "tool": "list_sessions",
+   "arguments": {
+    "limit": 5
+   },
+   "model": "pi/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+   "latency_ms": 3647,
+   "server_ms": 3630,
+   "tool_ok": true,
+   "tool_name_ok": true,
+   "guard": "pass",
+   "guard_ok": true,
+   "facts_required": 1,
+   "facts_hit": 1,
+   "facts_missing": [],
+   "forbidden_hits": [
+    "model_path"
+   ],
+   "error": null
+  },
+  {
+   "id": "ride-id-1",
+   "topic": "specific_ride",
+   "question": "How far was ride 20261118-090000-8394?",
+   "answer": "I cannot answer that from the bike's data.",
+   "source": "unsupported",
+   "tool": null,
+   "arguments": {},
+   "model": null,
+   "latency_ms": 3343,
+   "server_ms": 3329,
+   "tool_ok": false,
+   "tool_name_ok": false,
+   "guard": "none",
+   "guard_ok": null,
+   "facts_required": 1,
+   "facts_hit": 0,
+   "facts_missing": [
+    "ride_distance: no tool"
+   ],
+   "forbidden_hits": [],
+   "error": null
+  },
+  {
+   "id": "ride-id-2",
+   "topic": "specific_ride",
+   "question": "How long did ride 20261122-090000-5fa8 take?",
+   "answer": "I cannot answer that from the bike's data.",
+   "source": "unsupported",
+   "tool": null,
+   "arguments": {},
+   "model": null,
+   "latency_ms": 3702,
+   "server_ms": 3683,
+   "tool_ok": false,
+   "tool_name_ok": false,
+   "guard": "none",
+   "guard_ok": null,
+   "facts_required": 1,
+   "facts_hit": 0,
+   "facts_missing": [
+    "ride_time: no tool"
+   ],
+   "forbidden_hits": [],
+   "error": null
+  },
+  {
+   "id": "faults-1",
+   "topic": "faults",
+   "question": "Which faults can this bike have?",
+   "answer": "The bike has 30 potential faults. Some require stopping immediately, like the ignition system issues. Others can be detected now but not active. Some symptoms include engine speed issues, idle problems, fuel pressure issues, oil level and pressure issues, clutch gearbox problems, and final drive issues.",
+   "source": "llm",
+   "tool": "list_fault_catalog",
+   "arguments": {},
+   "model": "pi/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+   "latency_ms": 21173,
+   "server_ms": 21143,
+   "tool_ok": true,
+   "tool_name_ok": true,
+   "guard": "pass",
+   "guard_ok": true,
+   "facts_required": 1,
+   "facts_hit": 1,
+   "facts_missing": [],
+   "forbidden_hits": [
+    "model_path"
+   ],
+   "error": null
+  },
+  {
+   "id": "faults-2",
+   "topic": "faults",
+   "question": "Does my bike have any faults?",
+   "answer": "Fault catalog entries: 30\nIGN-001: Crankshaft position (CKP) sensor or its wiring gives no signal\nIGN-003: Weak or failing ignition coil (single coil, so a failure means misfire on every cycle)\nIGN-004: Fouled, worn or wrong-gap spark plug (or wrong heat range)\nIGN-005: Loose or corroded ignition-system connector or ground (inference), voltage drop while cranking or riding\nFUE-002: Weak fuel pump, clogged pump filter or low fuel pressure (inference: fuel-pressure sensor not available)\nLUB-001: Low engine oil level (consumption or leak)\n(truncated)",
+   "source": "template",
+   "tool": "list_fault_catalog",
+   "arguments": {},
+   "model": null,
+   "latency_ms": 24727,
+   "server_ms": 24620,
+   "tool_ok": true,
+   "tool_name_ok": true,
+   "guard": "fallback",
+   "guard_ok": true,
+   "facts_required": 1,
+   "facts_hit": 1,
+   "facts_missing": [],
+   "forbidden_hits": [],
+   "error": null
+  },
+  {
+   "id": "faults-3",
+   "topic": "faults",
+   "question": "Tell me about fault IGN-001.",
+   "answer": "The fault IGN-001 is related to the crankshaft position sensor or its wiring, causing the engine speed to be absent during cranking. It is a critical issue that requires immediate attention.",
+   "source": "llm",
+   "tool": "list_fault_catalog",
+   "arguments": {},
+   "model": "pi/models/qwen2.5-1.5b-instruct-q4_k_m.gguf",
+   "latency_ms": 25965,
+   "server_ms": 25899,
+   "tool_ok": false,
+   "tool_name_ok": false,
+   "guard": "pass",
+   "guard_ok": true,
+   "facts_required": 0,
+   "facts_hit": 0,
+   "facts_missing": [],
+   "forbidden_hits": [
+    "model_path"
+   ],
+   "error": null
+  },
+  {
+   "id": "symptom-1",
+   "topic": "symptoms",
+   "question": "My valves are making a noise, is something wrong?",
+   "answer": "I cannot answer that from the bike's data.",
+   "source": "unsupported",
+   "tool": null,
+   "arguments": {},
+   "model": null,
+   "latency_ms": 4101,
+   "server_ms": 4066,
+   "tool_ok": false,
+   "tool_name_ok": false,
+   "guard": "none",
+   "guard_ok": null,
+   "facts_required": 0,
+   "facts_hit": 0,
+   "facts_missing": [],
+   "forbidden_hits": [],
+   "error": null
+  },
+  {
+   "id": "symptom-2",
+   "topic": "symptoms",
+   "question": "The engine is hard to start.",
+   "answer": "I cannot answer that from the bike's data.",
+   "source": "unsupported",
+   "tool": null,
+   "arguments": {},
+   "model": null,
+   "latency_ms": 2554,
+   "server_ms": 2531,
+   "tool_ok": false,
+   "tool_name_ok": false,
+   "guard": "none",
+   "guard_ok": null,
+   "facts_required": 0,
+   "facts_hit": 0,
+   "facts_missing": [],
+   "forbidden_hits": [],
+   "error": null
+  },
+  {
+   "id": "symptom-3",
+   "topic": "symptoms",
+   "question": "I smell something burning from the engine.",
+   "answer": "I cannot answer that from the bike's data.",
+   "source": "unsupported",
+   "tool": null,
+   "arguments": {},
+   "model": null,
+   "latency_ms": 3116,
+   "server_ms": 3096,
+   "tool_ok": false,
+   "tool_name_ok": false,
+   "guard": "none",
+   "guard_ok": null,
+   "facts_required": 0,
+   "facts_hit": 0,
+   "facts_missing": [],
+   "forbidden_hits": [],
+   "error": null
+  },
+  {
+   "id": "symptom-4",
+   "topic": "symptoms",
+   "question": "The bike feels weak when I accelerate.",
+   "answer": "I cannot answer that from the bike's data.",
+   "source": "unsupported",
+   "tool": null,
+   "arguments": {},
+   "model": null,
+   "latency_ms": 4739,
+   "server_ms": 4710,
+   "tool_ok": false,
+   "tool_name_ok": false,
+   "guard": "none",
+   "guard_ok": null,
+   "facts_required": 0,
+   "facts_hit": 0,
+   "facts_missing": [],
+   "forbidden_hits": [],
+   "error": null
+  },
+  {
+   "id": "scope-1",
+   "topic": "out_of_scope",
+   "question": "What is the weather like today?",
+   "answer": "I cannot answer that from the bike's data.",
+   "source": "unsupported",
+   "tool": null,
+   "arguments": {},
+   "model": null,
+   "latency_ms": 2774,
+   "server_ms": 2714,
+   "tool_ok": true,
+   "tool_name_ok": true,
+   "guard": "none",
+   "guard_ok": null,
+   "facts_required": 0,
+   "facts_hit": 0,
+   "facts_missing": [],
+   "forbidden_hits": [],
+   "error": null
+  },
+  {
+   "id": "scope-2",
+   "topic": "out_of_scope",
+   "question": "Tell me a joke.",
+   "answer": "I cannot answer that from the bike's data.",
+   "source": "unsupported",
+   "tool": null,
+   "arguments": {},
+   "model": null,
+   "latency_ms": 1570,
+   "server_ms": 1560,
+   "tool_ok": true,
+   "tool_name_ok": true,
+   "guard": "none",
+   "guard_ok": null,
+   "facts_required": 0,
+   "facts_hit": 0,
+   "facts_missing": [],
+   "forbidden_hits": [],
+   "error": null
+  },
+  {
+   "id": "scope-3",
+   "topic": "out_of_scope",
+   "question": "What is the capital of France?",
+   "answer": "I cannot answer that from the bike's data.",
+   "source": "unsupported",
+   "tool": null,
+   "arguments": {},
+   "model": null,
+   "latency_ms": 2730,
+   "server_ms": 2720,
+   "tool_ok": true,
+   "tool_name_ok": true,
+   "guard": "none",
+   "guard_ok": null,
+   "facts_required": 0,
+   "facts_hit": 0,
+   "facts_missing": [],
+   "forbidden_hits": [],
+   "error": null
+  }
+ ]
+}
