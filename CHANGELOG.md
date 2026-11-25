@@ -4,7 +4,7 @@ All notable changes to vehicle-defs. Semver (see CLAUDE.md): new message/signal 
 
 ## [Unreleased]
 
-## [0.33.0] — unreleased
+## [0.33.0] — 2026-11-26
 
 **MINOR (additive; D-129 item 2, PROVISIONAL; T48).** In-ride alert rules as data. No CAN frame, signal, DID, VSS path, BLE layout or `tester_policy` change; `gen/c` and `gen/vss` are untouched. Do not tag without the user (release-tags-by-user).
 
