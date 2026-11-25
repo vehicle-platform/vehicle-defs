@@ -148,6 +148,7 @@ tests/host/             host-native unit tests with Unity (pure logic: EKF, ISO-
 | OTA | vehicle-server → Raspi → UDS bootloader (platform CAN) → MCU A/B bank | CAN | controlled |
 | Engineering analysis (D-081) | vehicle + platform CAN (USB adapter, listen-only), recorded logs or the vehicle-server live stream (`/ws/live`; only a mock source for now, the real source via the Raspi is open under D-077) → vehicle-analyzer (web host, later Tauri desktop); decodes only from the pinned defs, never transmits on a vehicle bus | USB/local/HTTPS | none |
 | Rider layer (D-085) | own motorcycle (Raspi, remote vehicle-server) → vehicle-mobile (Flutter on phone and computer, per-user host list; voice through the Bluetooth intercom on the phone) over the vehicle-server API (D-115, D-121, provisional); explanations from the LLM through vehicle-mcp; high-severity catalog results shown directly, without the LLM | local/HTTPS | none (advice, QM) |
+| Rider accounts and notifications (D-122, D-123) | vehicle-server accounts (username + password, vehicles claimed by vehicle ID + one-time claim code) → session token per host in vehicle-mobile; notifications generated on the server from computed ride, fault-catalog and data-quality results, pulled by the app (local notifications + inbox), no third-party push | local/HTTPS | none (advice, QM) |
 
 ---
 
