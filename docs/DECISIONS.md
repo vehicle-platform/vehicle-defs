@@ -1018,6 +1018,14 @@ Both modes share the scenario format and the evaluation/report. Before hardware 
 - Not chosen: keys only on the device (re-entered per device, sent with every request in clear on a LAN without TLS); a single hosted router as the only cloud path (one more third party in every request).
 - Why: the free local default stays, while a rider who wants a stronger model can bring one without code changes; one OpenAI-compatible adapter covers most distributors.
 
+**D-125 — English-only artifacts; user-facing text is multilingual with English as the default** (2026-11-25, user: "it will not be bilingual, only English, the project is only English"; "the docs in the repos are all English"; asked about the rider-facing parts: "the interface is multilingual, English by default"; amends D-121 items 1 and 5, D-123 item 1, D-022)
+1. **Repositories are English only, never bilingual.** Code, comments, docs, READMEs, test results, fixtures, prompts, commit messages, PR texts and file names are English. No Turkish (or other non-English) text in the repos: no quotes with translations, no side-by-side tables. The rule is in PLATFORM-RULES.md and the rendered AGENTS.md / GEMINI.md for every AI tool. Replies to the user in chat stay Turkish.
+2. **One exception: translation resources.** User-facing strings live in the i18n layer's resource files (Flutter ARB files in vehicle-mobile; locale message tables in vehicle-server for templates and notifications); a non-English locale file is the only place another language may appear.
+3. **User-facing default is English.** The app UI, the rider assistant's answers and its system prompt, notification texts, chat templates and the voice locale default to English (`en`, `en-US`); Turkish (`tr`, `tr-TR`) becomes an additional locale chosen in the app settings and sent with each request (the existing `locale` field of `/chat`). The LLM benchmark set gets an English prompt set as the default; a Turkish set may exist only as a locale resource.
+4. **Legacy:** `docs/archive/` (D-038, Turkish originals) is the only remaining exception until it is moved out of the public repos (the user decides where). Existing Turkish strings in code are moved into locale resources by the i18n work; existing test-result write-ups are made English-only.
+- Not chosen: Turkish-only rider UI (the product will be commercial and multi-market, D-078); bilingual documentation (doubles the maintenance and breaks the English-only rule).
+- Why: one language keeps the public repos readable for every reviewer and tool, while the i18n layer keeps the product usable in Turkish.
+
 ## Open questions (awaiting decision)
 
 | ID | Question | When to resolve | Note |
