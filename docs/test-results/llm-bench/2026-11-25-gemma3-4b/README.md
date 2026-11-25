@@ -20,21 +20,21 @@ Same prompts, tool and Pi as [run 1](../2026-11-25-qwen2.5-1.5b/README.md) and [
 | Total latency median / p95 (s) | 6.57 / 11.30 | 13.14 / 14.19 | 29.90 / 35.90 |
 | Generation speed median (tok/s) | 6.5 | 9.9 | 3.6 |
 
-Raw output: `gemma3-4b-pi5.json|md`.
+The raw outputs (Turkish answers) are kept outside the public repository (D-125); the evaluated language was Turkish. Numeric summaries: see the `*.metrics.json` files in this folder.
 
 ## Human review of the Turkish (Claude, 2026-11-25)
 
-The most natural Turkish of the three (correct grammar, units kept: "Ön lastikleriniz 225 kPa" ("Your front tires are 225 kPa")), but:
+The most natural Turkish of the three (correct grammar, units kept: "Your front tires are 225 kPa"), but:
 
-- it computes on its own: "42.8 km'lik bir yolculukta 1.46 litre yakıt harcadın" ("on a 42.8 km trip you burned 1.46 litres of fuel") (#7), against invariant 7; the number guard did not flag it;
-- a false claim from a number in the result: "Servis yapmanız gerekiyor, 14000 kilometrelere ulaştınız" ("You need to have a service, you have reached 14000 kilometres") at 12874 km (#10);
+- it computes on its own: "on a 42.8 km trip you burned 1.46 litres of fuel" (#7), against invariant 7; the number guard did not flag it;
+- a false claim from a number in the result: "You need to have a service, you have reached 14000 kilometres" at 12874 km (#10);
 - unsolicited service/stop advice in nearly every answer; internal field names read out ("advise_stop true", #7, #9; internal field name "advise_stop");
 - decimal point instead of comma in most answers.
 
 
 ## Prompts and answers (English translation)
 
-Literal translation for readers; the evaluated output is the Turkish text in the raw files.
+Literal translation for readers; the evaluated output was Turkish text (not committed, D-125).
 
 | # | Question (EN) | Answer (EN, literal) | Note |
 |---|---|---|---|

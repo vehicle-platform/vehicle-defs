@@ -1,0 +1,11 @@
+{
+  "label": "qwen2.5-1.5b pi5 2t",
+  "prompts": 10,
+  "errors": 0,
+  "grounded": 9,
+  "ttft_median_s": 2.77,
+  "ttft_p95_s": 3.19,
+  "total_median_s": 6.57,
+  "total_p95_s": 11.3,
+  "tokens_per_s_median": 6.5
+}
