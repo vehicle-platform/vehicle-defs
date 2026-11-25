@@ -30,12 +30,47 @@ Raw output: `mac-m1-cpu2t.json|md`, `pi5-cpu2t.json|md`.
 
 Answers that a rider could hear unchanged: about 3-4 of 10 on both hosts. Recurring problems:
 
-- mixed person ("Son sürüşümde … hızınız"), broken word order ("Motor ısındı en fazla 118 derece");
-- English words and misspelling ("Front lastik basınçınız");
+- mixed person ("Son sürüşümde … hızınız" ("In my last ride … your speed")), broken word order ("Motor ısındı en fazla 118 derece" ("Engine heated at most 118 degrees"));
+- English words and misspelling ("Front lastik basınçınız" ("Front tire pressure of yours"));
 - decimal point instead of the Turkish comma ("112.4");
-- an invented explanation of a fault code (#9, "gerilim kontrolü (fuel trim)") that the number guard cannot catch;
-- Pi #8: lean angle phrased as "38.5 derece yüksek düşme yaptınız" (reads like a crash), a dangerous wording;
+- an invented explanation of a fault code (#9, "gerilim kontrolü (fuel trim)", "voltage control (fuel trim)") that the number guard cannot catch;
+- Pi #8: lean angle phrased as "38.5 derece yüksek düşme yaptınız" ("you made a 38.5-degree high fall") (reads like a crash), a dangerous wording;
 - the one "ungrounded" flag (#7, "100" in "litre / 100 km") is a unit, a false positive of the guard.
+
+
+## Prompts and answers (English translation)
+
+Literal translation for readers; the evaluated output is the Turkish text in the raw files.
+
+### Mac (proxy)
+
+| # | Question (EN) | Answer (EN, literal) | Note |
+|---|---|---|---|
+| 1 | What was my top speed on my last ride? | In my last ride your top speed was 112.4 km/h. |  |
+| 2 | How many kilometres was my last ride and how long did it take? | The driver, from his last ride shows 42.8 km distance. | Garbled; no duration |
+| 3 | Is the engine temperature normal? | Engine temperature is 92 degrees and oil temperature is 104 degrees. I prefer to recommend checking the engine. | Unsolicited advice |
+| 4 | How hot did the engine get at most? | Engine heated at most 118 degrees. | Broken word order |
+| 5 | How is the battery voltage? | Battery voltage is 12.6V and loading voltage is 14.2V. |  |
+| 6 | What are my tire pressures? | Result: Front tire pressure of yours is 225 kPa and rear tire pressure of yours is 250 kPa. | English words, misspelling |
+| 7 | What is my average fuel consumption? | Average fuel consumption of yours is 3.4 litres 100 km. | Unit garbled |
+| 8 | How much did I lean at most on this ride? | Sorry, there is no data in this vehicle result. | No answer given |
+| 9 | Which fault codes are there? | Fault code is P0171, found as "Fuel trim lean, bank 1". This code shows that the engine's voltage control (fuel trim) is missing in the bank 1 range. | Invented explanation of the code |
+| 10 | How many kilometres have I done in total? | You did 12874 kilometres in total. |  |
+
+### Raspberry Pi 5
+
+| # | Question (EN) | Answer (EN, literal) | Note |
+|---|---|---|---|
+| 1 | What was my top speed on my last ride? | In my last ride your top speed was 112.4 km/h. |  |
+| 2 | How many kilometres was my last ride and how long did it take? | My last ride was 42.8 km distance and lasted 51 minutes lasted. | Mixed person, repeated word |
+| 3 | Is the engine temperature normal? | Engine temperature is 92°C. |  |
+| 4 | How hot did the engine get at most? | Engine heated at most 118 degrees. | Broken word order |
+| 5 | How is the battery voltage? | Battery voltage is 12.6V and loading voltage is 14.2V. |  |
+| 6 | What are my tire pressures? | Result: Front tire pressure of yours is 225 kPa and rear tire pressure of yours is 250 kPa. | English words, misspelling |
+| 7 | What is my average fuel consumption? | Average fuel consumption of yours is 3.4 litres 100 km. | Unit garbled; guard flag is a false positive ("100") |
+| 8 | How much did I lean at most on this ride? | The driver, in this ride at most 38.5 degrees high fall you made. | Reads like a crash; dangerous wording |
+| 9 | Which fault codes are there? | Fault code is P0171, found as "Fuel trim lean, bank 1". This code means that the engine's voltage control (fuel trim) is missing in the bank 1 range. | Invented explanation of the code |
+| 10 | How many kilometres have I done in total? | You did 12874 kilometres in total. |  |
 
 ## Conclusions
 
