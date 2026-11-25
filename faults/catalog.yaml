@@ -7,8 +7,14 @@
 # occurrence, detectability: 1-10}, detectable_now, advise_stop, rider_text, action,
 # sources [{ref, confidence high|medium|low}]. Signal names: did.<DID name>,
 # derived.<signal>, sensor.<sensor>; codegen refuses a signal defs does not define for an
-# applied entry (invariant 2). An entry without a high/medium source is CONFIRM: generated
-# `displayable: false`, never shown to a rider (D-084 item 5).
+# applied entry (invariant 2). Optional `complaints: [str]` (D-127): short English phrases a rider
+# would say about the fault (sound, smell, feel, light, behaviour; "ticking noise from the engine
+# top"); the vehicle-mcp `check_symptom` tool matches the rider's words against them. Other
+# languages live only in faults/i18n/<locale>.yaml (id -> phrases; the D-125 exception). The
+# subsystem `engine_mechanical` is for faults a rider notices by ear or feel that no signal sees:
+# its `symptoms` and `needs` may be empty (then detectable_now must be false).
+# An entry without a high/medium source is CONFIRM: generated `displayable: false`, never shown to a
+# rider (D-084 item 5).
 
 schema_version: 1
 
@@ -16,6 +22,7 @@ entries:
   - id: CHG-001
     # generic OBD P0562 (system voltage low) in third-party lists; not confirmed for the CL250
     subsystem: charging
+    complaints: ["battery keeps going flat", "lights dim while riding", "battery warning light on"]
     root_cause: Stator winding open or shorted (burnt phase); alternator output collapses
     symptoms:
       - signal: did.BATTERY_VOLTAGE
@@ -42,6 +49,7 @@ entries:
   - id: CHG-002
     # generic OBD P0562, unconfirmed for the CL250
     subsystem: charging
+    complaints: ["battery not charging", "battery light on while riding", "voltage stays low when revving"]
     root_cause: Regulator/rectifier failed open (no rectified output)
     symptoms:
       - signal: did.BATTERY_VOLTAGE
@@ -64,6 +72,7 @@ entries:
   - id: CHG-003
     # generic OBD P0563 (system voltage high), unconfirmed for the CL250
     subsystem: charging
+    complaints: ["bulbs keep blowing", "headlight too bright", "battery gets hot or swollen"]
     root_cause: Shunt regulator fails to limit the voltage (overcharge)
     symptoms:
       - signal: did.BATTERY_VOLTAGE
@@ -85,6 +94,7 @@ entries:
   - id: CHG-004
     # the melted-connector cause is an inference of the research agent; an engine-case vibration correlation needs the planned vibration sensor (Q-025)
     subsystem: charging
+    complaints: ["lights flicker while riding", "charging cuts in and out", "burning smell near the battery or under the seat"]
     root_cause: Stator-to-regulator connector overheated or corroded (intermittent output)
     symptoms:
       - signal: did.BATTERY_VOLTAGE
@@ -104,6 +114,7 @@ entries:
 
   - id: CHG-005
     subsystem: charging
+    complaints: ["lights dim at idle", "electrics weak at idle"]
     root_cause: Poor ground or battery-terminal connection makes the charging voltage read low
     symptoms:
       - signal: did.BATTERY_VOLTAGE
@@ -122,6 +133,7 @@ entries:
 
   - id: BAT-001
     subsystem: battery_starting
+    complaints: ["engine cranks slowly", "battery will not hold charge", "hard to start in cold weather"]
     root_cause: Aged or sulfated battery with low capacity
     symptoms:
       - signal: derived.cranking_dip
@@ -148,6 +160,7 @@ entries:
   - id: BAT-002
     # an absent starter current needs the planned battery-current sensor (ACS758, Wave 2)
     subsystem: battery_starting
+    complaints: ["clicking sound when starting", "click but no crank", "starter does not turn"]
     root_cause: Starter relay contacts worn or relay coil starved (click, no crank)
     symptoms:
       - signal: did.ENGINE_SPEED
@@ -171,6 +184,7 @@ entries:
   - id: BAT-003
     # abnormal starter current needs the planned battery-current sensor
     subsystem: battery_starting
+    complaints: ["grinding noise when starting", "starter spins slowly", "starter whines or sounds rough"]
     root_cause: Starter motor worn (brushes, commutator) or seized
     symptoms:
       - signal: derived.cranking_dip
@@ -193,6 +207,7 @@ entries:
 
   - id: BAT-004
     subsystem: battery_starting
+    complaints: ["starter cable gets hot", "lights dim when starting", "slow crank with a good battery"]
     root_cause: Corroded or loose battery or starter cable (high resistance)
     symptoms:
       - signal: did.ENGINE_SPEED
@@ -216,6 +231,7 @@ entries:
   - id: BAT-005
     # the drain mechanism is unsourced; a current measurement needs the planned battery-current sensor
     subsystem: battery_starting
+    complaints: ["battery dead after parking", "battery goes flat overnight", "dead battery after a few days"]
     root_cause: Parasitic drain or deeply discharged battery (engine stopped)
     symptoms:
       - signal: did.BATTERY_VOLTAGE
@@ -235,6 +251,7 @@ entries:
   - id: COL-001
     # generic OBD P0217 (engine overtemperature), unconfirmed for the CL250
     subsystem: cooling
+    complaints: ["engine overheating", "temperature gauge very high", "coolant boiling over"]
     root_cause: Thermostat stuck closed
     symptoms:
       - signal: did.COOLANT_TEMP
@@ -259,6 +276,7 @@ entries:
   - id: COL-002
     # a fuel-trim symptom is an inference of the research agent and is left out
     subsystem: cooling
+    complaints: ["engine takes long to warm up", "temperature stays low", "bike runs cold"]
     root_cause: Thermostat stuck open (slow warm-up, runs cold)
     symptoms:
       - signal: did.COOLANT_TEMP
@@ -278,6 +296,7 @@ entries:
   - id: COL-003
     # generic OBD P0480 (cooling fan control circuit), unconfirmed for the CL250
     subsystem: cooling
+    complaints: ["overheating in traffic", "fan does not come on", "engine hot at stop lights"]
     root_cause: Cooling fan not running (motor, fuse, relay or fan control)
     symptoms:
       - signal: did.COOLANT_TEMP
@@ -301,6 +320,7 @@ entries:
   - id: COL-004
     # generic OBD P0217, unconfirmed for the CL250
     subsystem: cooling
+    complaints: ["coolant level keeps dropping", "coolant puddle under the bike", "sweet smell from the engine"]
     root_cause: Coolant level low from an external leak (hose, radiator, cap)
     symptoms:
       - signal: did.COOLANT_TEMP
@@ -325,6 +345,7 @@ entries:
   - id: COL-005
     # a changed pump noise needs the planned engine-case vibration sensor (Q-025)
     subsystem: cooling
+    complaints: ["coolant dripping from the engine side", "engine overheats at speed"]
     root_cause: Water pump seal or impeller failure (leak or reduced flow)
     symptoms:
       - signal: did.COOLANT_TEMP
@@ -345,6 +366,7 @@ entries:
   - id: COL-006
     # generic OBD P0117/P0118 (ECT circuit low/high), unconfirmed for the CL250; the fuel-trim drift is an inference and is left out
     subsystem: cooling
+    complaints: ["temperature gauge reads wrong", "temperature reading jumps around"]
     root_cause: Coolant temperature sensor open or shorted (false reading)
     symptoms:
       - signal: did.COOLANT_TEMP
@@ -366,6 +388,7 @@ entries:
   # medium source is a Honda owner's manual page of another model, everything else is low ----
   - id: IGN-001
     subsystem: ignition
+    complaints: ["engine suddenly will not start", "engine cuts out while riding", "cranks but does not start"]
     root_cause: Crankshaft position (CKP) sensor or its wiring gives no signal
     symptoms:
       - {signal: did.ENGINE_SPEED, direction: absent, condition: "cranking, RPM stays at 0 while the starter turns (engine cranks but does not start)"}
@@ -381,6 +404,7 @@ entries:
 
   - id: IGN-002
     subsystem: ignition
+    complaints: ["engine cuts out randomly", "stalls when hot", "starts again after cooling down"]
     root_cause: Intermittent CKP sensor or connector fault (heat or vibration sensitive), engine cuts out and restarts after cooling
     symptoms:
       - {signal: did.ENGINE_SPEED, direction: unstable, condition: "warm_idle or cruise, RPM suddenly drops to zero then recovers, or engine stalls hot and restarts after cooling"}
@@ -398,6 +422,7 @@ entries:
 
   - id: IGN-003
     subsystem: ignition
+    complaints: ["engine misfires", "stutters under throttle", "loss of power with rough running"]
     root_cause: Weak or failing ignition coil (single coil, so a failure means misfire on every cycle)
     symptoms:
       - {signal: derived.idle_rpm_std, direction: up, condition: "warm_idle, uneven idle from inconsistent spark"}
@@ -414,6 +439,7 @@ entries:
 
   - id: IGN-004
     subsystem: ignition
+    complaints: ["hard to start", "misfire at idle", "engine runs rough"]
     root_cause: Fouled, worn or wrong-gap spark plug (or wrong heat range)
     symptoms:
       - {signal: derived.idle_rpm_std, direction: up, condition: "warm_idle, rough idle from intermittent misfire"}
@@ -430,6 +456,7 @@ entries:
 
   - id: IGN-005
     subsystem: ignition
+    complaints: ["starts only sometimes", "intermittent starting problem", "electrics drop out when cranking"]
     root_cause: Loose or corroded ignition-system connector or ground (inference), voltage drop while cranking or riding
     symptoms:
       - {signal: derived.cranking_dip, direction: up, condition: "cranking, deeper battery-voltage dip than normal (inference)"}
@@ -445,6 +472,7 @@ entries:
 
   - id: FUE-001
     subsystem: fuel_air
+    complaints: ["high idle", "hissing noise from the intake", "rough idle", "engine surges"]
     root_cause: Intake (vacuum) leak, cracked intake boot or loose throttle-body/manifold joint
     symptoms:
       - {signal: did.LONG_TERM_FUEL_TRIM_B1, direction: up, condition: "warm_idle, positive trim that falls toward zero at higher RPM"}
@@ -464,6 +492,7 @@ entries:
 
   - id: FUE-002
     subsystem: fuel_air
+    complaints: ["loses power at high speed", "hesitates under load", "stalls and restarts after a wait"]
     root_cause: "Weak fuel pump, clogged pump filter or low fuel pressure (inference: fuel-pressure sensor not available)"
     symptoms:
       - {signal: did.LONG_TERM_FUEL_TRIM_B1, direction: up, condition: "cruise, trim rises with load/RPM while idle trim stays near zero"}
@@ -482,6 +511,7 @@ entries:
 
   - id: FUE-003
     subsystem: fuel_air
+    complaints: ["smell of fuel", "petrol smell near the engine", "fuel smell in the oil", "hard to start when hot"]
     root_cause: Leaking fuel injector (internal drip into cylinder, or external seal leak)
     symptoms:
       - {signal: did.SHORT_TERM_FUEL_TRIM_B1, direction: down, condition: "warm_idle, negative trim as ECU removes fuel (inference)"}
@@ -498,6 +528,7 @@ entries:
 
   - id: FUE-004
     subsystem: fuel_air
+    complaints: ["hesitates when accelerating", "rough idle", "poor acceleration"]
     root_cause: Clogged or sticking fuel injector (lean on the single cylinder)
     symptoms:
       - {signal: did.LONG_TERM_FUEL_TRIM_B1, direction: up, condition: "warm_idle and cruise, positive trim at all RPM"}
@@ -513,6 +544,7 @@ entries:
 
   - id: FUE-005
     subsystem: fuel_air
+    complaints: ["erratic idle", "engine hesitates", "engine warning light on"]
     root_cause: MAP sensor, vacuum port or wiring fault (reading wrong or erratic)
     symptoms:
       - {signal: did.INTAKE_MAP, direction: unstable, condition: "warm_idle, reading erratic or not near the expected low idle pressure (inference on thresholds); at key_on it should read ambient pressure"}
@@ -528,6 +560,7 @@ entries:
 
   - id: FUE-006
     subsystem: fuel_air
+    complaints: ["throttle response is jerky", "idle speed is wrong", "engine warning light on"]
     root_cause: Throttle position sensor (TPS) fault or wiring
     symptoms:
       - {signal: did.THROTTLE_POS, direction: unstable, condition: "cruise, jumps or dropouts while the grip is held steady"}
@@ -544,6 +577,7 @@ entries:
 
   - id: FUE-007
     subsystem: fuel_air
+    complaints: ["hard to start when hot", "runs rich or lean", "engine warning light on"]
     root_cause: Intake air temperature (IAT) sensor or wiring fault (reads wrong temperature)
     symptoms:
       - {signal: did.INTAKE_AIR_TEMP, direction: down, condition: "key_on after a long soak, reads well below did.AMBIENT_AIR_TEMP (implausible; the opposite direction is also possible)"}
@@ -559,6 +593,7 @@ entries:
 
   - id: LUB-001
     subsystem: lubrication
+    complaints: ["oil light on", "oil level low", "oil warning light flickers"]
     root_cause: Low engine oil level (consumption or leak)
     symptoms:
       - {signal: derived.coolant_rate, direction: up, condition: "warm_idle, faster heating from extra friction (inference, weak indicator)"}
@@ -574,6 +609,7 @@ entries:
 
   - id: LUB-002
     subsystem: lubrication
+    complaints: ["oil pressure light on", "engine noise together with the oil light"]
     root_cause: Low oil pressure (worn pump, blocked pickup or strainer, leak, wrong viscosity)
     symptoms:
       - {signal: did.COOLANT_TEMP, direction: up, condition: "cruise, rising above normal band (inference, late and indirect)"}
@@ -589,6 +625,7 @@ entries:
 
   - id: LUB-003
     subsystem: lubrication
+    complaints: ["oil smells of petrol", "oil looks thin", "oil turns black quickly"]
     root_cause: Oil degradation or fuel dilution (short trips, rich running, leaking injector, overdue change)
     symptoms:
       - {signal: did.SHORT_TERM_FUEL_TRIM_B1, direction: down, condition: "warm_idle, persistently negative trim as a possible upstream cause of fuel dilution (inference)"}
@@ -604,6 +641,7 @@ entries:
 
   - id: LUB-004
     subsystem: lubrication
+    complaints: ["oil level above the mark", "blue smoke from the exhaust", "oil overfilled"]
     root_cause: "Oil overfilled (inference: foaming and drag)"
     symptoms:
       - {signal: derived.cranking_dip, direction: up, condition: "cranking, more crank drag and a deeper voltage dip (inference)"}
@@ -623,6 +661,7 @@ entries:
 
   - id: CLU-001
     subsystem: clutch_gearbox
+    complaints: ["clutch slipping", "revs rise but the bike does not accelerate", "burning smell from the clutch"]
     root_cause: Clutch slip from worn friction plates, fatigued springs or wrong oil (friction modifiers)
     symptoms:
       - {signal: derived.clutch_slip_ratio, direction: up, condition: ratio rises under high throttle in higher gears while clutch lever is released (inference from Haynes symptom text)}
@@ -640,6 +679,7 @@ entries:
 
   - id: CLU-002
     subsystem: clutch_gearbox
+    complaints: ["bike creeps with the clutch pulled", "hard to find neutral", "grinding when selecting first gear", "lurches when engaging a gear"]
     root_cause: Clutch drag from too little lever free play, stretched or kinked cable, warped plates or worn springs
     symptoms:
       - {signal: derived.clutch_state, direction: unstable, condition: state reads engaged-like or inconsistent while lever is pulled (inference)}
@@ -657,6 +697,7 @@ entries:
 
   - id: CLU-003
     subsystem: clutch_gearbox
+    complaints: ["clutch lever has too much play", "clutch lever has no free play"]
     root_cause: Incorrect clutch lever free play or stretched cable causing premature clutch wear or poor engagement
     symptoms:
       - {signal: derived.clutch_slip_ratio, direction: up, condition: slip grows gradually over weeks of use (inference; trend only)}
@@ -673,6 +714,7 @@ entries:
 
   - id: CLU-004
     subsystem: clutch_gearbox
+    complaints: ["jumps out of gear", "gear pops out under load", "gear slips out"]
     root_cause: Gear jumping out of mesh from worn gear dogs, bent or worn shift fork, or worn shift quadrant/detent
     symptoms:
       - {signal: derived.gearbox_ratio_measured, direction: unstable, condition: measured ratio steps toward neutral value or changes without a rider shift (inference)}
@@ -691,6 +733,7 @@ entries:
 
   - id: CLU-005
     subsystem: clutch_gearbox
+    complaints: ["clutch lever feels tight", "grinding gear changes", "clutch bites too late"]
     root_cause: Clutch cable too tight (slip, heat) or too loose (grinding, hard gear changes) from stretch or poor adjustment
     symptoms:
       - {signal: derived.clutch_slip_ratio, direction: up, condition: slip under load when cable is too tight (inference)}
@@ -706,6 +749,7 @@ entries:
 
   - id: FDR-001
     subsystem: final_drive
+    complaints: ["chain is loose", "clunk when opening or closing the throttle", "jerky drive", "chain slapping noise"]
     root_cause: Excessive chain slack from wear/stretch or missed adjustment
     symptoms:
       - {signal: sensor.imu_accel_x, direction: unstable, condition: longitudinal jerk spikes at throttle on/off transitions (inference)}
@@ -718,11 +762,13 @@ entries:
     rider_text: The chain may be too slack, which can cause jerky drive and damage the bike. Have the chain slack checked and adjusted soon.
     action: Measure slack at several points per the CL250 manual and adjust or replace the chain and sprockets.
     sources:
+      - {ref: "Honda CL250 Owner's Manual (2023, Japanese edition), Drive Chain p.60 (local copy only, not committed): slack check 30-40 mm; do not ride at 50 mm or more; if the chain does not turn smoothly or makes abnormal noise, clean and lubricate it. CL250-specific; supports the slack check and the noise advice, not the jerk signature", confidence: medium}
       - {ref: "Owner's Manual, Drive Chain Inspection p.151 and Adjustment p.153 (file owner_CB1000RC_RAC_EN) - Honda, 2020, https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CB1000RC_RAC_EN/2500_2500/0160.pdf", confidence: medium}
       # The page states excess slack can damage the lower part of the frame and slack should be checked at intervals; the jerk signature is inference.
 
   - id: FDR-002
     subsystem: final_drive
+    complaints: ["chain is worn out", "chain keeps needing adjustment", "chain looks stretched"]
     root_cause: Chain worn beyond limit (stretch), shown by the wear label red zone after proper adjustment
     symptoms:
       - {signal: derived.coast_down_rolling_resistance, direction: up, condition: rolling resistance rises over weeks without tyre change (inference)}
@@ -739,6 +785,7 @@ entries:
 
   - id: FDR-003
     subsystem: final_drive
+    complaints: ["chain is noisy", "squeaking chain", "rusty or dry chain", "chain rattle"]
     root_cause: Poor lubrication leaving dry or rusted links, kinked or binding links, damaged O-rings
     symptoms:
       - {signal: derived.coast_down_rolling_resistance, direction: up, condition: higher drag in coast-down than baseline (inference)}
@@ -750,11 +797,13 @@ entries:
     rider_text: The chain may be dry or stiff. Have it cleaned and lubricated soon.
     action: Clean and lubricate with chain lube, check slack stays constant along the chain.
     sources:
+      - {ref: "Honda CL250 Owner's Manual (2023, Japanese edition), Drive Chain p.60 (local copy only, not committed): slack check 30-40 mm; do not ride at 50 mm or more; if the chain does not turn smoothly or makes abnormal noise, clean and lubricate it. CL250-specific; supports the slack check and the noise advice, not the jerk signature", confidence: medium}
       - {ref: "Owner's Manual, Drive Chain Inspection p.151 (file owner_CB1000RC_RAC_EN) - Honda, 2020, https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CB1000RC_RAC_EN/2500_2500/0158.pdf", confidence: medium}
       - {ref: "Owner's Manual, Drive Chain Lubrication (file owner_CRF250RD_EN) - Honda, 2020, https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CRF250RD_EN/2500_2500/0100.pdf", confidence: medium}
 
   - id: FDR-004
     subsystem: final_drive
+    complaints: ["chain stiff in places", "chain tight in some spots", "jerking at constant speed"]
     root_cause: Kinked or binding chain links making slack vary along the chain
     symptoms:
       - {signal: sensor.imu_accel_x, direction: unstable, condition: once-per-chain-revolution jolt in longitudinal acceleration (inference)}
@@ -770,6 +819,7 @@ entries:
 
   - id: FDR-005
     subsystem: final_drive
+    complaints: ["rough chain drive", "whining from the chain and sprockets", "hooked sprocket teeth"]
     root_cause: Worn sprocket teeth or chain rollers causing rough drive (sprockets worn with the chain)
     symptoms:
       - {signal: sensor.imu_accel_x, direction: unstable, condition: tooth-pass vibration grows in longitudinal acceleration (inference)}
@@ -786,6 +836,7 @@ entries:
 
   - id: BRK-001
     subsystem: brakes_abs
+    complaints: ["squealing brakes", "brake pads worn", "metal grinding when braking"]
     root_cause: Brake pads worn to the limit (cutout reached); fluid reservoir level drops as pads wear
     symptoms:
       - {signal: derived.vehicle_accel, direction: down, condition: braking deceleration weaker than baseline for similar lever input (inference)}
@@ -802,6 +853,7 @@ entries:
 
   - id: BRK-002
     subsystem: brakes_abs
+    complaints: ["brake lever feels soft", "brake fluid level dropping", "brake fluid leak"]
     root_cause: Brake fluid low from leak (hoses, fittings, seals) or unexplained level drop
     symptoms:
       - {signal: derived.vehicle_accel, direction: down, condition: braking deceleration drops or lever feels spongy then weak (inference)}
@@ -818,6 +870,7 @@ entries:
 
   - id: BRK-003
     subsystem: brakes_abs
+    complaints: ["spongy brake lever", "brake lever goes to the bar", "weak brakes"]
     root_cause: Air in the brake lines (after service or leak) giving soft lever and weaker braking
     symptoms:
       - {signal: derived.vehicle_accel, direction: down, condition: deceleration lower for the same lever travel (inference)}
@@ -834,6 +887,7 @@ entries:
 
   - id: BRK-004
     subsystem: brakes_abs
+    complaints: ["brake pulsing", "vibration when braking", "handlebar shakes when braking"]
     root_cause: Warped or unevenly worn disc (thickness variation, hot spots from overheating)
     symptoms:
       - {signal: sensor.imu_accel_x, direction: unstable, condition: pulsating longitudinal acceleration during braking (inference)}
@@ -851,6 +905,7 @@ entries:
 
   - id: BRK-005
     subsystem: brakes_abs
+    complaints: ["brakes drag", "brake disc very hot", "burning smell from the brake", "bike feels held back"]
     root_cause: Sticking caliper piston or seized slider keeping the pad against the disc
     symptoms:
       - {signal: derived.coast_down_rolling_resistance, direction: up, condition: coast-down drag higher than baseline (inference)}
@@ -868,6 +923,7 @@ entries:
 
   - id: BRK-006
     subsystem: brakes_abs
+    complaints: ["ABS light on", "ABS not working"]
     root_cause: ABS fault (wheel speed sensor, pulser ring, wrong tyre size, or ABS unit) so ABS is inoperative; indicator stays on or blinks
     symptoms:
       - {signal: did.VEHICLE_SPEED, direction: unstable, condition: ECU speed and sensor.gps_ground_speed disagree at steady speed (inference)}
@@ -886,6 +942,7 @@ entries:
 
   - id: TYR-001
     subsystem: wheels_tyres
+    complaints: ["tyre looks flat", "bike feels unstable", "steering feels heavy", "low tyre pressure"]
     root_cause: Low tyre pressure from neglected checks (underinflation)
     symptoms:
       - {signal: derived.coast_down_rolling_resistance, direction: up, condition: coast-down drag rises versus baseline (inference)}
@@ -904,6 +961,7 @@ entries:
 
   - id: TYR-002
     subsystem: wheels_tyres
+    complaints: ["tyre losing air", "nail in the tyre", "flat tyre", "bulge in the tyre"]
     root_cause: Slow puncture or embedded object, cut, bulge in tyre
     symptoms:
       - {signal: derived.coast_down_rolling_resistance, direction: up, condition: drag rises gradually over rides (inference)}
@@ -921,6 +979,7 @@ entries:
 
   - id: TYR-003
     subsystem: wheels_tyres
+    complaints: ["humming from the wheel", "rumbling noise from the wheel", "wheel has play"]
     root_cause: Wheel bearing wear (play, rough rotation) from age, water ingress or impact
     symptoms:
       - {signal: derived.coast_down_rolling_resistance, direction: up, condition: higher drag with no brake cause (inference)}
@@ -938,6 +997,7 @@ entries:
 
   - id: TYR-004
     subsystem: wheels_tyres
+    complaints: ["vibration at speed", "handlebar shake", "wobble at high speed"]
     root_cause: Wheel imbalance or uneven tyre wear/damage causing vibration at speed
     symptoms:
       - {signal: sensor.imu_accel_z, direction: unstable, condition: vibration amplitude rises in a speed band (inference)}
@@ -957,6 +1017,7 @@ entries:
   # unless the ref says otherwise; medium = Haynes, high = the DVSA MOT inspection manual ----
   - id: SUS-001
     subsystem: suspension_steering
+    complaints: ["oil on the fork", "fork leaking", "front end feels soft"]
     root_cause: Fork seal leak (cracked seal, grit under lip, or nicked fork tube) lets fork oil escape; damping falls and oil can reach the front brake.
     symptoms:
       - {signal: derived.road_roughness, direction: up, condition: 'rougher ride metric than baseline at same speed over weeks (inference)'}
@@ -974,6 +1035,7 @@ entries:
       - {ref: "Leaking fork seals FAQs - Motorcyclist, n.d., https://www.motorcyclistonline.com/how-to/leaking-fork-seals-faqs/", confidence: low}
   - id: SUS-002
     subsystem: suspension_steering
+    complaints: ["steering feels notchy", "steering feels loose", "clunk from the front when braking", "handlebar wobble"]
     root_cause: Steering-head bearing worn, dry or wrongly adjusted; steering becomes notchy, stiff or loose.
     symptoms:
       - {signal: sensor.imu_gyro_z, direction: unstable, condition: 'yaw oscillation or wander at steady speed (inference)'}
@@ -990,6 +1052,7 @@ entries:
       - {ref: "Five things that will ruin your motorcycle's handling - RevZilla Common Tread, n.d., https://www.cyclegear.com/common-tread/five-things-that-will-ruin-your-motorcycles-handling", confidence: low}
   - id: SUS-003
     subsystem: suspension_steering
+    complaints: ["rear bounces", "rear end feels soft", "rear shock leaking"]
     root_cause: Rear shock loses damping (oil leak, foaming or wear); rear bounces after bumps and squats under load.
     symptoms:
       - {signal: sensor.imu_accel_z, direction: unstable, condition: 'repeated oscillation after a single bump (inference)'}
@@ -1004,6 +1067,7 @@ entries:
       - {ref: "6 Motorcycle Suspension Problems To Watch Out For - Haynes, n.d., https://us.haynes.com/blogs/tips-tutorials/6-motorcycle-suspension-problems-to-watch-out-for", confidence: medium}
   - id: SUS-004
     subsystem: suspension_steering
+    complaints: ["rattle from the suspension", "something feels loose at the front or rear", "clunking over bumps"]
     root_cause: Loose suspension, axle or steering fasteners (inference; no opened page covers torque loss on this bike).
     symptoms:
       - {signal: sensor.imu_accel_y, direction: unstable, condition: 'new lateral shake or rattle with speed (inference)'}
@@ -1019,6 +1083,7 @@ entries:
       - {ref: "MOT inspection manual for motorcycles, 2. Steering - GOV.UK (DVSA), n.d., https://gov.uk/guidance/mot-inspection-manual-for-motorcycles/2-steering", confidence: high}
   - id: WIR-001
     subsystem: wiring
+    complaints: ["electrics act strangely", "lights flicker", "several things fail at once"]
     root_cause: Corroded or loose ground connection; several circuits share one earth, so many items misbehave together.
     symptoms:
       - {signal: did.BATTERY_VOLTAGE, direction: unstable, condition: 'drops or flicker under load such as lights or indicators (inference)'}
@@ -1033,6 +1098,7 @@ entries:
       - {ref: "How to cure electrical faults on your motorbike - Haynes, n.d., https://uk.haynes.com/blogs/tips-tutorials/how-to-cure-electrical-faults-on-your-motorbike", confidence: medium}
   - id: WIR-002
     subsystem: wiring
+    complaints: ["intermittent electrical fault", "lights cut out over bumps", "dash goes off randomly"]
     root_cause: Corroded or loose connector terminal, often from water ingress, giving intermittent contact.
     symptoms:
       - {signal: did.BATTERY_VOLTAGE, direction: unstable, condition: 'intermittent drops that follow bumps or wet weather (inference)'}
@@ -1047,6 +1113,7 @@ entries:
       - {ref: "How to cure electrical faults on your motorbike - Haynes, n.d., https://uk.haynes.com/blogs/tips-tutorials/how-to-cure-electrical-faults-on-your-motorbike", confidence: medium}
   - id: WIR-003
     subsystem: wiring
+    complaints: ["burning smell from the wiring", "wires rubbing", "electrics cut when turning the handlebar"]
     root_cause: Chafed harness rubbing through insulation at a steering or frame rub point, causing a short or open circuit.
     symptoms:
       - {signal: did.BATTERY_VOLTAGE, direction: down, condition: 'sudden sag when the handlebar turns or a short occurs (inference)'}
@@ -1061,6 +1128,7 @@ entries:
       - {ref: "Motorcycle wiring harness chafe search summary; BMW S 1000 RR bulletin cited, not opened - various, n.d., https://static.nhtsa.gov/odi/tsbs/2013/MC-10150156-9999.pdf", confidence: low}
   - id: WIR-004
     subsystem: wiring
+    complaints: ["fuse blown", "something stopped working", "no power to one circuit"]
     root_cause: Blown fuse from a short or overload; the protected circuit goes dead (a repeat blow points to an underlying short).
     symptoms:
       - {signal: did.BATTERY_VOLTAGE, direction: absent, condition: 'load on one circuit disappears while battery voltage stays normal (inference)'}
@@ -1076,6 +1144,7 @@ entries:
       - {ref: "Motorcycle LED turn signal hyperflash search results (blown fuse as common cause), not opened - Eagle Lights, n.d., https://eaglelights.com/pages/motorcycle-hyperflashing", confidence: low}
   - id: LIT-001
     subsystem: lighting
+    complaints: ["headlight not working", "headlight went out"]
     root_cause: Headlight failure (LED module, connector, fuse or ground), leaving no forward illumination at night.
     symptoms:
       - {signal: did.BATTERY_VOLTAGE, direction: absent, condition: 'no load step when the headlight is switched (inference)'}
@@ -1090,6 +1159,7 @@ entries:
       - {ref: "How to cure electrical faults on your motorbike - Haynes, n.d., https://uk.haynes.com/blogs/tips-tutorials/how-to-cure-electrical-faults-on-your-motorbike", confidence: medium}
   - id: LIT-002
     subsystem: lighting
+    complaints: ["brake light not working", "tail light out"]
     root_cause: Tail or brake light failure (LED, wiring, brake switch or ground), so following traffic gets no warning.
     symptoms:
       - {signal: did.BATTERY_VOLTAGE, direction: absent, condition: 'no load step when the brake is applied (inference)'}
@@ -1104,6 +1174,7 @@ entries:
       - {ref: "How to cure electrical faults on your motorbike - Haynes, n.d., https://uk.haynes.com/blogs/tips-tutorials/how-to-cure-electrical-faults-on-your-motorbike", confidence: medium}
   - id: LIT-003
     subsystem: lighting
+    complaints: ["indicators flash fast", "indicator not working", "turn signal blinks too fast"]
     root_cause: Indicator fails or hyper-flashes; typical after an LED swap on a load-dependent flasher, or from a blown fuse or bad bulb connection.
     symptoms:
       - {signal: did.BATTERY_VOLTAGE, direction: unstable, condition: 'flash-rate ripple on the supply is faster than normal (inference)'}
@@ -1118,6 +1189,7 @@ entries:
       - {ref: "Motorcycle LED turn signal hyper flash search results, summary only; page returned 403 - Eagle Lights, n.d., https://eaglelights.com/pages/motorcycle-hyperflashing", confidence: low}
   - id: LIT-004
     subsystem: lighting
+    complaints: ["dash backlight out", "warning light does not light", "dash is dark"]
     root_cause: Dash illumination or warning lamp failure (backlight, connector or supply drop).
     symptoms:
       - {signal: did.BATTERY_VOLTAGE, direction: down, condition: 'low or unstable supply dims instruments (inference)'}
@@ -1135,6 +1207,7 @@ entries:
   # every source low (CONFIRM) until a PGM-FI service manual section is read ----
   - id: FUE-008
     subsystem: fuel_air
+    complaints: ["engine warning light on", "fuel consumption went up", "idle hunts when warm"]
     root_cause: >-
       O2 sensor slow, drifting or with a failed heater (inference): the ECU loses reliable
       closed-loop feedback, so fuelling is corrected late or not at all. Fuel trims wander or
@@ -1175,6 +1248,7 @@ entries:
         confidence: low
   - id: FUE-009
     subsystem: fuel_air
+    complaints: ["idle too high", "idle hunts up and down", "stalls at stops", "stalls when cold"]
     root_cause: >-
       Idle air control or fast-idle valve fault (inference): stuck, clogged or electrically failed
       valve gives wrong idle speed, especially cold (fast idle missing) or hot (idle too high or
@@ -1216,3 +1290,42 @@ entries:
       - {ref: "SAE J2012-2002 §B.6 (P05XX), P0505: generic DTC for the idle air control system. Checked against the standard's DTC table: confirms only that the generic code exists with this meaning, not any CL250 or Honda motorcycle behaviour nor this entry's symptoms; stays low and CONFIRM until the CL250 service manual is read", confidence: low}
       - ref: 'Honda Motorcycle Aftersales Plus One, DTC and PGM-FI diagnostics article - Honda Motor Co., 2025, https://global.honda/en/motorcycle-aftersales/plusone/202506.html (supports only: PGM-FI stores DTCs; idle-valve failure behaviour is inferred)'
         confidence: low
+
+  # Mechanical entries (D-127 item 3): sound or feel only, no signal of ours sees them (empty symptoms and needs,
+  # allowed for engine_mechanical only; detectable_now stays false until a vibration sensor exists, Q-025).
+  - id: ENG-001
+    subsystem: engine_mechanical
+    complaints: ["ticking noise from the top of the engine", "tapping noise that follows engine speed", "tapping at idle", "valves are noisy", "valves make a noise", "engine sounds like a sewing machine"]
+    root_cause: Valve clearance grown too loose (valve train wear or missed periodic check), so the valve train ticks
+    symptoms: []
+    needs: []
+    rating: {severity: 5, occurrence: 5, detectability: 9} # Claude/agent judgement, AIAG-VDA scales
+    detectable_now: false
+    advise_stop: false
+    rider_text: >-
+      A light ticking or tapping from the top of the engine can mean the valve clearance has opened up. It is usually a slow wear problem, but it should not be ignored. First check the engine oil level with the bike upright and the engine cold; if it is low, do not ride until it is topped up. Then have the valve clearance checked at a Honda dealer. If the noise gets loud, or the engine loses power or shows a warning light, stop riding and have it inspected.
+    action: >-
+      Check the engine oil level first (low oil also makes the top end tick). Then have the valve clearance inspected cold against the service manual's values and adjusted if out of range; check the periodic-maintenance interval for this item.
+    # CONFIRM for the CL250: the service-manual interval and clearance values (the CL250 owner's manual does not list valve clearance); a rocker or tensioner fault can make a similar tick
+    sources:
+      - {ref: "Honda CRF250R Owner's Manual, Valve Clearance p.68 (file owner_CRF250RJ_EN) - Honda, https://www.bike-parts.fr/thumbs/pdf_url/img/owner_manuals/owner_CRF250RJ_EN/2500_2500/0073.pdf: 'Excessive valve clearance will cause noise and eventual engine damage'; check cold at the Maintenance Schedule intervals. Same maker and a single-cylinder DOHC four-stroke, but another model: supports the cause-and-effect and the periodic check, not CL250 values", confidence: medium}
+      - {ref: "Honda Transalp (XL750) Owner's Manual, Maintenance Schedule, https://webom.hondamotopub.com/webom/HMEE/MLC250/html/GMT004001.html : lists Valve Clearance as a scheduled inspection item. Another model: supports only that Honda treats valve clearance as a periodic check item", confidence: medium}
+      - {ref: "Honda CL250 Owner's Manual (2023, Japanese edition), Daily inspection list p.39 (local copy only, not committed): engine starting condition and abnormal noise are listed daily-check items. Supports checking abnormal engine noise, not the valve cause", confidence: low}
+
+  - id: ENG-002
+    subsystem: engine_mechanical
+    complaints: ["rattle on cold start", "rattling noise from the engine chain side", "chain rattle from inside the engine", "rattle that fades as the engine warms up"]
+    root_cause: Cam chain tensioner not holding tension, or worn cam chain or guide (cold-start rattle first), so the cam chain slaps
+    symptoms: []
+    needs: []
+    rating: {severity: 8, occurrence: 3, detectability: 9} # Claude/agent judgement, AIAG-VDA scales
+    detectable_now: false
+    advise_stop: true
+    rider_text: >-
+      A rattle from inside the engine, especially on a cold start or at idle, can mean the cam chain or its tensioner is no longer holding tension. A slack cam chain can damage the engine badly. Do not keep riding with it: switch off, check the engine oil level, and have the bike inspected at a Honda dealer before riding again.
+    action: >-
+      Check the engine oil level, then inspect the cam chain, tensioner and guide against the service manual; replace worn parts before riding further.
+    # CONFIRM: no Honda motorcycle source for cam-chain tensioner symptoms was found (a Honda car bulletin, forum reports); the CL250 service manual settles it; stays CONFIRM (not displayable) until a medium or high source exists
+    sources:
+      - {ref: "Honda car service bulletin summary, https://m.carcomplaints.com/Honda/CR-V/2015/tsbs/tsb-a19-019-.shtml: cold-start knock or click traced to the cam chain tensioner check valve on a car engine; search summary only, not opened, and another vehicle type", confidence: low}
+      - {ref: "Cafe Husky forum, 'Cam chain slap only when cold', https://www.cafehusky.com/threads/cam-chain-slap-only-when-cold.84842 (single-cylinder motorcycle, not Honda); search summary only, not opened", confidence: low}

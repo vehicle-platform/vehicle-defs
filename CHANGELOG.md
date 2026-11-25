@@ -4,6 +4,17 @@ All notable changes to vehicle-defs. Semver (see CLAUDE.md): new message/signal 
 
 ## [Unreleased]
 
+## [0.32.0] — 2026-11-25
+
+**MINOR (additive, fault catalog only; D-127 items 2 and 3, PROVISIONAL).** Rider complaint phrases for the deterministic symptom check of the rider assistant (vehicle-mcp `check_symptom`). No CAN frame, signal, DID, VSS path, BLE layout or `tester_policy` change; `gen/c`, `gen/dart` and `gen/vss` are untouched. Do not tag without the user (release-tags-by-user).
+
+- **Schema: optional entry key `complaints: [str]`** in `faults/catalog.yaml`: short English phrases a rider would say (sound, smell, feel, light, behaviour). Codegen requires a non-empty list of distinct non-empty strings when the key is present. New subsystem `engine_mechanical` for faults a rider notices by ear or feel that no signal sees: only there may `symptoms` and `needs` be empty, and `detectable_now` must be false.
+- **Locale resource files `faults/i18n/<locale>.yaml`** (`schema_version`, `locale`, `complaints: {id: [phrase]}`); the one place non-English text may live (D-125). First file: `tr.yaml`. Codegen refuses an unknown locale, a `locale` that differs from the file name and any id that is not a catalog entry.
+- **Generated Python (`vehicle_defs.faults`):** every `FAULTS[id]` gains `complaints: tuple[str, ...]` (empty when the entry has none); new `COMPLAINTS_I18N: dict[str, dict[str, tuple[str, ...]]]` (locale -> entry id -> phrases). Existing keys are unchanged.
+- **Complaints added to all 66 existing entries** (English in the catalog, Turkish in `tr.yaml`): overheating, hard start, stalling, rough idle, charging and battery, misfire, clutch slip, chain noise, brake and tyre feel, warning lights.
+- **New entries:** `ENG-001` valve clearance too loose (ticking or tapping from the engine top; two medium Honda owner's-manual sources, so displayable) and `ENG-002` cam chain or tensioner rattle (`advise_stop: true`; only low sources, so CONFIRM and not displayable until a medium or high source is found). Both applied to the CL250 (water-cooled DOHC single, 249 cm3, per the CL factbook). `FDR-001` and `FDR-003` gain the CL250 owner's manual drive chain page (p.60) as a medium source; drive-chain slack and noise are otherwise already covered by FDR-001 to FDR-005.
+- Consumers: vehicle-mcp `check_symptom` (D-127 item 2) reads the generated module; nothing needs to change elsewhere. Pin after the user tags.
+
 ## [0.31.0] — 2026-11-24
 
 **MINOR (additive, BLE only; D-121 item 5).** Adds the handlebar push-to-talk event that conn sends to the phone so vehicle-mobile starts listening through the rider's intercom. No CAN frame, signal, DID or VSS path changes and nothing goes on either vehicle bus; informational only (D-047 item 3, invariant 3). The telemetry (v4), IMU, GPS and vehicle-signal layouts are unchanged. Do not tag without the user (release-tags-by-user).

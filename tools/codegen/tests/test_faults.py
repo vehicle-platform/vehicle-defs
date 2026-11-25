@@ -170,3 +170,92 @@ def test_an_intake_air_leak_is_not_a_fuel_leak(catalog, applic, refs):
     assert _check(catalog, applic, refs) == []
     e["root_cause"] = "Leaking fuel injector seal"
     assert _has(_check(catalog, applic, refs), "advise_stop: true")
+
+
+# --- complaints and locale files (D-127) ---
+
+
+@pytest.fixture
+def locales():
+    return copy.deepcopy(faults.load_locales(config.FAULT_I18N_DIR))
+
+
+def test_committed_locales_are_consistent(catalog, locales):
+    assert "tr" in locales
+    assert faults.check_locales(catalog, locales) == []
+
+
+@pytest.mark.parametrize(
+    ("value", "parts"),
+    [
+        ([], ("complaints", "non-empty list")),
+        ("ticking", ("complaints", "non-empty list")),
+        ([" "], ("complaints", "non-empty")),
+        (["Ticking", "ticking"], ("complaints", "twice")),
+    ],
+)
+def test_complaints_schema(catalog, applic, refs, value, parts):
+    _entry(catalog)["complaints"] = value
+    assert _has(_check(catalog, applic, refs), *parts)
+
+
+def test_complaints_are_optional(catalog, applic, refs):
+    _entry(catalog).pop("complaints", None)
+    assert _check(catalog, applic, refs) == []
+
+
+def test_locale_unknown_id(catalog, locales):
+    locales["tr"]["complaints"]["ZZZ-999"] = ["x"]
+    assert _has(faults.check_locales(catalog, locales), "ZZZ-999", "not a catalog entry")
+
+
+def test_locale_unknown_locale(catalog, locales):
+    locales["xx"] = {"schema_version": 1, "locale": "xx", "complaints": {}}
+    assert _has(faults.check_locales(catalog, locales), "xx", "unknown locale")
+
+
+def test_locale_name_must_match_file(catalog, locales):
+    locales["tr"]["locale"] = "de"
+    assert _has(faults.check_locales(catalog, locales), "must equal the file name")
+
+
+def test_locale_phrases_must_be_lists_of_text(catalog, locales):
+    first = next(iter(locales["tr"]["complaints"]))
+    locales["tr"]["complaints"][first] = "not a list"
+    assert _has(faults.check_locales(catalog, locales), first, "non-empty list")
+
+
+def test_sensorless_entry_rules(catalog, applic, refs):
+    e = next(x for x in catalog["entries"] if x["subsystem"] == "engine_mechanical")
+    assert e["symptoms"] == [] and e["needs"] == [] and e["detectable_now"] is False
+    assert _check(catalog, applic, refs) == []
+    e["detectable_now"] = True
+    assert _has(_check(catalog, applic, refs), "detectable_now: false")
+    e["detectable_now"] = False
+    e["subsystem"] = "charging"
+    assert _has(_check(catalog, applic, refs), "symptoms must be a non-empty list")
+
+
+def test_valve_complaint_matches_the_rider_report(catalog):
+    """The rider's own words ('valves make a noise') must reach a catalog entry."""
+    hits = [e["id"] for e in catalog["entries"] if "valves make a noise" in e.get("complaints", [])]
+    assert hits == ["ENG-001"]
+
+
+def test_generated_complaints(catalog, applic, locales):
+    ns: dict = {}
+    exec(faults.generate_python(catalog, applic, locales), ns)  # noqa: S102 - own output
+    for e in catalog["entries"]:
+        assert ns["FAULTS"][e["id"]]["complaints"] == tuple(e.get("complaints", ()))
+    assert set(ns["COMPLAINTS_I18N"]) == set(locales)
+    tr = ns["COMPLAINTS_I18N"]["tr"]
+    assert set(tr) == set(locales["tr"]["complaints"])
+    assert all(isinstance(v, tuple) and v for v in tr.values())
+    assert set(tr) <= set(ns["FAULTS"])
+
+
+def test_displayable_entries_have_complaints(catalog):
+    """A displayable entry nobody can reach by words is dead weight; most carry complaints."""
+    shown = [e for e in catalog["entries"] if faults.displayable(e)]
+    assert shown
+    assert all(e.get("complaints") for e in shown)
