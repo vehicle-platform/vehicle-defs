@@ -7,6 +7,7 @@ decision: a run feeds a decision in `../DECISIONS.md`, which cites the run folde
 | Family | What | Index |
 |---|---|---|
 | `llm-bench/` | Rider-assistant LLM (D-121, D-124): latency, speed, number grounding, Turkish quality | [llm-bench/README.md](llm-bench/README.md) |
+| `chat-eval/` | Rider-assistant `/chat` end to end: tool accuracy, fact coverage, forbidden patterns, latency (T41) | [chat-eval/README.md](chat-eval/README.md) |
 
 ## Rules for every run
 
