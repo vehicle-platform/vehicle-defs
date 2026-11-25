@@ -11,7 +11,7 @@ decision: a run feeds a decision in `../DECISIONS.md`, which cites the run folde
 ## Rules for every run
 
 - **Synthetic inputs only** (public repo, D-033): no real ride data, position or personal data.
-- **Raw output committed next to the write-up** (`*.json`, `*.md` as the tool wrote them).
+- **Raw output committed next to the write-up when it is English; non-English raw output stays outside the repository (D-125)** (`*.json`, `*.md` as the tool wrote them).
 - **Conditions recorded**: hardware, power supply and `vcgencmd get_throttled`, cooling,
   software versions and commits, model files with SHA-256, service limits.
 - **Human review where a tool cannot judge** (for example Turkish quality), marked as such.

@@ -33,7 +33,7 @@ Answers that a rider could hear unchanged: about 3-4 of 10 on both hosts. Recurr
 - mixed person ("In my last ride … your speed"), broken word order ("Engine heated at most 118 degrees");
 - English words and misspelling ("Front tire pressure of yours");
 - decimal point instead of the Turkish comma ("112.4");
-- an invented explanation of a fault code (#9, "gerilim kontrolü (fuel trim)", "voltage control (fuel trim)") that the number guard cannot catch;
+- an invented explanation of a fault code (#9, "voltage control (fuel trim)") that the number guard cannot catch;
 - Pi #8: lean angle phrased as "you made a 38.5-degree high fall" (reads like a crash), a dangerous wording;
 - the one "ungrounded" flag (#7, "100" in "litre / 100 km") is a unit, a false positive of the guard.
 
