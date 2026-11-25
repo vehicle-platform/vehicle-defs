@@ -1026,6 +1026,15 @@ Both modes share the scenario format and the evaluation/report. Before hardware 
 - Not chosen: Turkish-only rider UI (the product will be commercial and multi-market, D-078); bilingual documentation (doubles the maintenance and breaks the English-only rule).
 - Why: one language keeps the public repos readable for every reviewer and tool, while the i18n layer keeps the product usable in Turkish.
 
+**D-126 — Storage at scale: SQLite + Parquet on every edge Pi, PostgreSQL + TimescaleDB + S3-compatible object storage on the central server, edges sync to the center** (2026-11-25, user: "don't we need a separate database server? we will hold a lot of data and it will be needed as users grow"; approved Claude's proposal: "save it, we will do it this way"; extends D-077, D-122, D-123, D-078, Q-035)
+1. **Edge (each vehicle's Raspberry Pi).** vehicle-server keeps its current storage: SQLite (`index.sqlite`, `auth.sqlite`, `notifications.sqlite`) and Parquet/report files under `VEHICLE_DATA_DIR`. It works offline and stays the source of truth for rides recorded on that vehicle until they are synced.
+2. **Center (the remote vehicle-server of D-077, VPS-ready).** A separate database server: **PostgreSQL** for accounts, vehicles, devices, claim codes, user tokens, provider settings, notifications and the ride/session index; the **TimescaleDB** extension for time-series that are queried across rides and users; **S3-compatible object storage** (for example MinIO self-hosted, or a provider's S3) for the raw uploads and Parquet files, referenced from PostgreSQL.
+3. **Sync.** Edge Pis push completed rides (upload archive + derived files + notifications state) to the center over the authenticated API (D-077 item 3: TLS + per-device token); the center is the multi-user view. Accounts and vehicle ownership (D-122) are authoritative on the center once it exists; an edge-only setup keeps working without it.
+4. **Code shape.** vehicle-server gets a storage interface with two backends (SQLite/filesystem for the edge, PostgreSQL/TimescaleDB/S3 for the center), selected by configuration; tests run against both. New runtime dependencies for the center backend need the D-091 licence check when they are added.
+5. **Not now.** This is the target architecture; the current single-user prototype keeps SQLite until the center is built (trigger: the first second user, a fleet, or hosting the user does not control, as in Q-035).
+- Not chosen: SQLite on the center (single writer, no concurrent multi-user access at scale); PostgreSQL on every Pi (RAM and maintenance cost on the edge, offline sync harder); a managed time-series database only (accounts and relations still need a relational store).
+- Why: the edge stays light and offline-capable, while the center gets a proper concurrent relational store, time-series queries across users and cheap bulk storage.
+
 ## Open questions (awaiting decision)
 
 | ID | Question | When to resolve | Note |
