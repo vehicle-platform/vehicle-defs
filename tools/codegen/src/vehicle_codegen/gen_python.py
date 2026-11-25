@@ -251,6 +251,7 @@ def generate_init_py() -> str:
         "# vehicle_constants (CL250 constants for the derived signals, D-070),\n"
         "# vehicle_derived (derived signal definitions, D-070),\n"
         "# faults (fault catalog and CL250 applicability, D-084),\n"
+        "# alert_rules (in-ride alert rules and gates, D-129),\n"
         "# position (the D-076 position rule: is_position_key, redact; T22).\n"
     )
 

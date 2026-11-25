@@ -23,6 +23,7 @@ DERIVED_YAML = REPO_ROOT / "derived" / "cl250_derived.yaml"  # D-070 item 3
 FAULT_CATALOG_YAML = REPO_ROOT / "faults" / "catalog.yaml"  # D-084
 POSITION_RULE_YAML = REPO_ROOT / "privacy" / "position_rule.yaml"  # D-076, T22
 POSITION_VECTORS_JSON = REPO_ROOT / "privacy" / "position_vectors.json"
+ALERT_RULES_YAML = REPO_ROOT / "faults" / "alert_rules.yaml"  # D-129 item 2
 FAULT_I18N_DIR = REPO_ROOT / "faults" / "i18n"  # D-127 locale resource files
 FAULTS_CL250_YAML = REPO_ROOT / "vehicle" / "cl250_faults.yaml"  # D-084 item 2, D-078
 CATALOG_MD = REPO_ROOT / "docs" / "vehicle-data-catalog.md"  # derived `catalog` rows

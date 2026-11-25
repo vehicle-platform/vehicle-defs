@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 from . import (
+    alert_rules,
     config,
     faults,
     gen_ble,
@@ -89,6 +90,12 @@ def run_checks(with_vss: bool = True) -> list[str]:
     errors += faults.check_locales(
         load_yaml(config.FAULT_CATALOG_YAML), faults.load_locales(config.FAULT_I18N_DIR)
     )
+    errors += alert_rules.check_alert_rules(
+        load_yaml(config.ALERT_RULES_YAML),
+        load_yaml(config.FAULT_CATALOG_YAML),
+        load_yaml(config.VEHICLE_YAML),
+        load_yaml(config.DERIVED_YAML),
+    )
     if with_vss:
         base = gen_vss.fetch_base()
         errors += gen_vss.check_overlay(
@@ -153,6 +160,12 @@ def render_all(with_vss: bool = True) -> dict[Path, str]:
         load_yaml(config.FAULT_CATALOG_YAML),
         load_yaml(config.FAULTS_CL250_YAML),
         faults.load_locales(config.FAULT_I18N_DIR),
+    )
+    alerts = load_yaml(config.ALERT_RULES_YAML)
+    catalog = load_yaml(config.FAULT_CATALOG_YAML)
+    files[py / "alert_rules.py"] = alert_rules.generate_python(alerts, catalog)
+    files[Path("dart") / "vehicle_defs" / "lib" / "alert_rules.dart"] = alert_rules.generate_dart(
+        alerts, catalog
     )
     if with_vss:
         files[Path("vss") / "vss_dbc.json"] = gen_vss.export_json(gen_vss.fetch_base())
