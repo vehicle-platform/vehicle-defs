@@ -1012,7 +1012,11 @@ def generate_dart(schema: dict[str, Any]) -> dict[str, str]:
         "environment:\n"
         '  sdk: ">=3.0.0 <4.0.0"\n'
     )
-    barrel = DART_BANNER + "\nexport 'ble_schema.dart';\nexport 'vehicle_signals.dart';\n"
+    barrel = (
+        DART_BANNER
+        + "\nexport 'alert_rules.dart';\nexport 'ble_schema.dart';"
+        + "\nexport 'vehicle_signals.dart';\n"
+    )
     return {
         "pubspec.yaml": pubspec,
         "lib/ble_schema.dart": "\n".join(out).rstrip("\n") + "\n",

@@ -4,6 +4,16 @@ All notable changes to vehicle-defs. Semver (see CLAUDE.md): new message/signal 
 
 ## [Unreleased]
 
+## [0.33.0] — unreleased
+
+**MINOR (additive; D-129 item 2, PROVISIONAL; T48).** In-ride alert rules as data. No CAN frame, signal, DID, VSS path, BLE layout or `tester_policy` change; `gen/c` and `gen/vss` are untouched. Do not tag without the user (release-tags-by-user).
+
+- **New file `faults/alert_rules.yaml`** (schema documented in its header): `gates` (named while-conditions on a defs signal: `engine_running`, `moving`, `stationary`, `warm`) and `rules` with `id` (ALR-000), `class` (P1 or P2; P0 is refused, safety stays on safety-node, invariant 3; P3 is the post-ride notifications), `signal` (`did.<NAME>` or `derived.<name>`), optional `fault_id`, `text`, `condition` (`above`, `below`, `rate_above`, `rate_below`, `absent`), `threshold`, `unit`, `rate_window_s`, `sustain_s`, `clear_hysteresis`, `cooldown_s`, `max_spoken_per_ride`, `while`, `status` (PROVISIONAL or TUNED) and `source {ref, confidence}`.
+- **Codegen checks:** unique `ALR-000` ids, known class, signal resolved like the fault catalog (unit must equal the signal's defs unit; rate conditions take `<unit>/min`), known gates (their signal and unit are checked too), positive times, cap >= 1, `absent` has no threshold or hysteresis, a linked `fault_id` must be a catalog entry. The alert text is the linked entry's `rider_text` only when that entry is displayable (D-084 item 5); a CONFIRM entry or no link needs the rule's own `text` (never "safe to ride"). A low-confidence rule cannot be TUNED.
+- **Seed rules (CL250, all PROVISIONAL, confidence low):** ALR-001 coolant above 110 degC (P1, COL-001), ALR-002 battery below 12.4 V while running (P1, CHG-002), ALR-003 battery above 15.2 V while running (P1, CHG-003), ALR-004 engine speed absent while moving (P2, data dropout), ALR-005 coolant rising above 2 degC/min while warm (P2). The linked catalog entries are all CONFIRM, so their texts are the rules' own.
+- **Generated:** Python `vehicle_defs.alert_rules` (`AlertRule` and `AlertGate` frozen dataclasses, `ALERT_RULES`, `ALERT_RULES_BY_ID`, `ALERT_GATES`) and Dart `lib/alert_rules.dart` in the `vehicle_defs` package (`AlertClass`, `AlertCondition`, `AlertGateOp`, `AlertRule`, `AlertGate`, `alertRules`, `alertGates`), exported by `vehicle_defs.dart`. Existing outputs are unchanged.
+- Consumers: vehicle-server (T49) evaluates the rules on the live stream; vehicle-mobile evaluates them on BLE telemetry in the ESP32-only prototype. Nothing else needs to change. Pin after the user tags.
+
 ## [0.32.0] — 2026-11-25
 
 **MINOR (additive, fault catalog only; D-127 items 2 and 3, PROVISIONAL).** Rider complaint phrases for the deterministic symptom check of the rider assistant (vehicle-mcp `check_symptom`). No CAN frame, signal, DID, VSS path, BLE layout or `tester_policy` change; `gen/c`, `gen/dart` and `gen/vss` are untouched. Do not tag without the user (release-tags-by-user).

@@ -1,0 +1,163 @@
+# In-ride alert rules (D-129 item 2, PROVISIONAL): data only. vehicle-server evaluates them on the
+# live stream (D-129 item 3); the phone app evaluates the same generated rules on its BLE
+# telemetry in the ESP32-only prototype. No consumer hand-writes a rule or a threshold
+# (invariant 2). Generated for Python (vehicle_defs.alert_rules) and Dart (alert_rules.dart).
+# Informational only: nothing here changes a safety output or touches either bus (D-129 item 6).
+#
+# Rule keys (all required unless marked optional):
+#   id                ALR-000, unique.
+#   class             P1 = urgent and actionable, spoken at once plus a banner; P2 = advisory,
+#                     queued until the bike is stationary for a few seconds or ride end.
+#                     P0 is forbidden here (safety decisions stay on safety-node, invariant 3).
+#                     P3 is the post-ride notifications of D-123 and is not a rule.
+#   signal            did.<NAME> (uds/vehicle_cl250.yaml) or derived.<name>
+#                     (derived/cl250_derived.yaml). Codegen refuses any other name.
+#   fault_id          optional link to a catalog entry (faults/catalog.yaml, must exist).
+#   text              fixed template sentence spoken and shown. Required unless fault_id names a
+#                     displayable entry (D-084 item 5); then the entry's rider_text is the text
+#                     and `text` must be omitted. A linked entry that is CONFIRM (no high or
+#                     medium source) therefore needs its own `text`: a plain statement of the
+#                     measurement, never a diagnosis and never "safe to ride" (D-084 item 4).
+#   condition         above        value > threshold
+#                     below        value < threshold
+#                     rate_above   rate of change per minute > threshold
+#                     rate_below   rate of change per minute < threshold
+#                     absent       no valid sample for sustain_s (the signal's stale_after_ms
+#                                  rule); has no threshold and no clear_hysteresis
+#   threshold         number; omitted for `absent`.
+#   unit              must equal the signal's defs unit. For rate_* conditions it is that unit
+#                     per minute (degC -> degC/min). Omitted values are never guessed.
+#   rate_window_s     rate_* only: the window the slope is taken over, > 0.
+#   sustain_s         debounce: the breach must hold this long before the alert fires (> 0).
+#   clear_hysteresis  >= 0, in `unit`: above/rate_above clears below threshold - hysteresis,
+#                     below/rate_below clears above threshold + hysteresis. Omitted for `absent`
+#                     (clears on the first valid sample).
+#   cooldown_s        minimum time before the same rule may fire again (> 0).
+#   max_spoken_per_ride  integer >= 1 cap on spoken alerts of this rule per ride; later firings
+#                     stay banner-only and are still stored (D-129 item 5).
+#   while             optional list of gate names (all must hold). Gates are defined in `gates`
+#                     below, each from a defs signal; the rule is not evaluated, and its
+#                     sustain timer is reset, while a gate is false.
+#   status            PROVISIONAL (thresholds not tuned on recorded rides, D-129 item 2) or
+#                     TUNED (needs a high or medium source).
+#   source            {ref, confidence: high|medium|low} like the fault catalog. A threshold
+#                     without a real source is PROVISIONAL, confidence low, and says so.
+#
+# Gate keys: signal (did.* or derived.*), op (gt|ge|lt|le|eq), value, unit (must equal the
+# signal's unit), source. A gate value that is invalid or stale makes the gate false.
+
+schema_version: 1
+
+gates:
+  engine_running:
+    signal: did.ENGINE_SPEED
+    op: gt
+    value: 0.0
+    unit: rpm
+    source: "Same definition as the W2_CRANK/W1_KEY_ON windows in derived/cl250_derived.yaml (engine speed above a valid 0)"
+  moving:
+    signal: did.VEHICLE_SPEED
+    op: gt
+    value: 0.0
+    unit: km/h
+    source: "Complement of the standstill test of W3_WARM_IDLE (VEHICLE_SPEED eq 0)"
+  stationary:
+    signal: did.VEHICLE_SPEED
+    op: eq
+    value: 0.0
+    unit: km/h
+    source: "Standstill test of W3_WARM_IDLE in derived/cl250_derived.yaml"
+  warm:
+    signal: did.COOLANT_TEMP
+    op: gt
+    value: 80.0
+    unit: degC
+    source: "vehicle/cl250_constants.yaml derived_operating_coolant_degc (80 degC, provisional, D-103); keeps the normal warm-up slope from firing a trend alert"
+
+rules:
+  - id: ALR-001
+    class: P1
+    signal: did.COOLANT_TEMP
+    fault_id: COL-001
+    text: "Coolant temperature is very high. Stop somewhere safe, switch off and let the engine cool."
+    condition: above
+    threshold: 110.0
+    unit: degC
+    sustain_s: 10
+    clear_hysteresis: 5.0
+    cooldown_s: 180
+    max_spoken_per_ride: 2
+    while: [engine_running]
+    status: PROVISIONAL
+    source:
+      ref: "No CL250 limit in defs or the manual yet. 110 degC is above the generic thermoswitch fan-on range 95-105 degC cited in vehicle/cl250_constants.yaml (ride_fan_on_temperature_coolant_min_degc) and above the usual 80-85 degC thermostat opening; replace by the coolant plateau and fan-on temperature of the first recorded rides (D-103). COL-001 is CONFIRM, so the text is the rule's own."
+      confidence: low
+
+  - id: ALR-002
+    class: P1
+    signal: did.BATTERY_VOLTAGE
+    fault_id: CHG-002
+    text: "The battery is not being charged. Stop somewhere safe and have the charging system inspected."
+    condition: below
+    threshold: 12.4
+    unit: V
+    sustain_s: 30
+    clear_hysteresis: 0.3
+    cooldown_s: 300
+    max_spoken_per_ride: 2
+    while: [engine_running]
+    status: PROVISIONAL
+    source:
+      ref: "Generic: a rested full 12 V lead-acid battery reads about 12.6 V, so a running engine below 12.4 V is not charging; ideas/cl250-technical-baseline.md section 2 gives a 14.0-15.0 V plateau (CONFIRM, not measured). 30 s sustain spans the cranking dip and a low-rpm idle. Replace by the plateau seen at V1. CHG-002 is CONFIRM, so the text is the rule's own."
+      confidence: low
+
+  - id: ALR-003
+    class: P1
+    signal: did.BATTERY_VOLTAGE
+    fault_id: CHG-003
+    text: "The charging voltage is too high and may damage the battery. Stop somewhere safe and have the charging system inspected."
+    condition: above
+    threshold: 15.2
+    unit: V
+    sustain_s: 10
+    clear_hysteresis: 0.3
+    cooldown_s: 300
+    max_spoken_per_ride: 2
+    while: [engine_running]
+    status: PROVISIONAL
+    source:
+      ref: "Generic: a shunt regulator holds 14.0-15.0 V (ideas/cl250-technical-baseline.md section 2, CONFIRM); 15.2 V is just above that band. Replace by the plateau seen at V1. CHG-003 is CONFIRM, so the text is the rule's own."
+      confidence: low
+
+  - id: ALR-004
+    class: P2
+    signal: did.ENGINE_SPEED
+    text: "Engine speed data has dropped out while the bike is moving. The dashboard and logs may be incomplete."
+    condition: absent
+    unit: rpm
+    sustain_s: 5
+    cooldown_s: 600
+    max_spoken_per_ride: 1
+    while: [moving]
+    status: PROVISIONAL
+    source:
+      ref: "Data-quality alert, not a fault claim. ENGINE_SPEED has stale_after_ms 330 in uds/vehicle_cl250.yaml, so 5 s without a valid sample is a clear dropout; the sustain time itself is a provisional choice. Tune on recorded rides."
+      confidence: low
+
+  - id: ALR-005
+    class: P2
+    signal: did.COOLANT_TEMP
+    text: "Coolant temperature is still rising. Keep an eye on it and ease off if it keeps climbing."
+    condition: rate_above
+    threshold: 2.0
+    unit: degC/min
+    rate_window_s: 60
+    sustain_s: 60
+    clear_hysteresis: 1.0
+    cooldown_s: 600
+    max_spoken_per_ride: 1
+    while: [engine_running, warm]
+    status: PROVISIONAL
+    source:
+      ref: "No source; a warm engine (above 80 degC) normally holds its temperature, so a sustained climb over 2 degC/min is flagged. The 60 s window equals derived.coolant_rate in derived/cl250_derived.yaml. Replace by the rates of the first recorded rides (D-103)."
+      confidence: low
