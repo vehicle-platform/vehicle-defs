@@ -1,0 +1,127 @@
+{
+  "label": "qwen2.5-1.5b pi5 2t",
+  "summary": {
+    "prompts": 10,
+    "errors": 0,
+    "grounded": 9,
+    "ttft_median_s": 2.7698602175000815,
+    "ttft_p95_s": 3.1896604819999084,
+    "total_median_s": 6.568273378500066,
+    "total_p95_s": 11.302815270999872,
+    "tokens_per_s_median": 6.504911857203362
+  },
+  "samples": [
+    {
+      "question": "Son sürüşümde en yüksek hızım neydi?",
+      "answer": "Son sürüşümde en yüksek hızınız 112.4 km/h idi.",
+      "ttft_s": 0.12506061299995963,
+      "total_s": 3.049071550000008,
+      "tokens": 20,
+      "tokens_per_s": 6.4979237114254635,
+      "ungrounded": [],
+      "error": null,
+      "grounded": true
+    },
+    {
+      "question": "Son sürüşüm kaç kilometreydi, ne kadar sürdü?",
+      "answer": "Son sürüşüm 42.8 km uzaklıktı ve sürdü 51 dakika sürdü.",
+      "ttft_s": 2.8551893640001254,
+      "total_s": 6.687375792000012,
+      "tokens": 26,
+      "tokens_per_s": 6.523690971122228,
+      "ungrounded": [],
+      "error": null,
+      "grounded": true
+    },
+    {
+      "question": "Motor sıcaklığı normal mi?",
+      "answer": "Motor sıcaklığı 92°C'dir.",
+      "ttft_s": 2.5033852359999855,
+      "total_s": 4.064338684999939,
+      "tokens": 11,
+      "tokens_per_s": 6.406340949120962,
+      "ungrounded": [],
+      "error": null,
+      "grounded": true
+    },
+    {
+      "question": "Motor ne kadar ısındı en fazla?",
+      "answer": "Motor ısındı en fazla 118 derece.",
+      "ttft_s": 2.895549564000021,
+      "total_s": 5.129827785000089,
+      "tokens": 16,
+      "tokens_per_s": 6.713577503022863,
+      "ungrounded": [],
+      "error": null,
+      "grounded": true
+    },
+    {
+      "question": "Akü gerilimi nasıl?",
+      "answer": "Akü gerilimi 12.6V ve yüklenme gerilimi 14.2V oluyor.",
+      "ttft_s": 2.3233665230000042,
+      "total_s": 6.605115974,
+      "tokens": 29,
+      "tokens_per_s": 6.539383100396181,
+      "ungrounded": [],
+      "error": null,
+      "grounded": true
+    },
+    {
+      "question": "Lastik basınçlarım nedir?",
+      "answer": "Sonuç: Front lastik basınçınız 225 kPa ve rear lastik basınçınız 250 kPa'dır.",
+      "ttft_s": 2.316313666000042,
+      "total_s": 7.07682902800002,
+      "tokens": 32,
+      "tokens_per_s": 6.511900002981261,
+      "ungrounded": [],
+      "error": null,
+      "grounded": true
+    },
+    {
+      "question": "Ortalama yakıt tüketimim kaç?",
+      "answer": "Ortalama yakıt tüketiminiz 3.4 litre 100 kmdir.",
+      "ttft_s": 3.1269349550000243,
+      "total_s": 6.531430783000133,
+      "tokens": 23,
+      "tokens_per_s": 6.462043460021917,
+      "ungrounded": [
+        "100"
+      ],
+      "error": null,
+      "grounded": false
+    },
+    {
+      "question": "Bu sürüşte en çok ne kadar yattım?",
+      "answer": "Sürücü, bu sürüşte en çok 38.5 derece yüksek düşme yaptınız.",
+      "ttft_s": 3.1896604819999084,
+      "total_s": 6.785698163000006,
+      "tokens": 25,
+      "tokens_per_s": 6.674012379460199,
+      "ungrounded": [],
+      "error": null,
+      "grounded": true
+    },
+    {
+      "question": "Hangi arıza kodları var?",
+      "answer": "Arıza kodu P0171, \"Fuel trim lean, bank 1\" olarak bulunuyor. Bu kod, motorun gerilim kontrolü (fuel trim) bank 1 aralığında eksik olduğu anlamına gelir.",
+      "ttft_s": 2.9917904779999844,
+      "total_s": 11.302815270999872,
+      "tokens": 55,
+      "tokens_per_s": 6.497393684288186,
+      "ungrounded": [],
+      "error": null,
+      "grounded": true
+    },
+    {
+      "question": "Toplam kaç kilometre yaptım?",
+      "answer": "Toplam 12874 kilometre yaptınız.",
+      "ttft_s": 2.6845310710000376,
+      "total_s": 4.71040020800001,
+      "tokens": 14,
+      "tokens_per_s": 6.416998888314757,
+      "ungrounded": [],
+      "error": null,
+      "grounded": true
+    }
+  ]
+}
