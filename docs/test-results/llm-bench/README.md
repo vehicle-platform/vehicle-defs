@@ -23,5 +23,6 @@ numbers from the result (invariant 7).
 | 2026-11-25 | Qwen2.5-1.5B-Instruct Q4_K_M | Mac M1, CPU only, 2 threads (proxy) | 0.46 / 1.09 | 1.32 / 4.86 | 33.8 | 9/10 | weak (3-4/10 usable) | [2026-11-25-qwen2.5-1.5b](2026-11-25-qwen2.5-1.5b/README.md) |
 | 2026-11-25 | Qwen2.5-1.5B-Instruct Q4_K_M | **Raspberry Pi 5**, vehicle-llama unit, 2 threads | **2.77 / 3.19** | **6.57 / 11.30** | **6.5** | 9/10 | weak (3-4/10 usable) | [2026-11-25-qwen2.5-1.5b](2026-11-25-qwen2.5-1.5b/README.md) |
 | 2026-11-25 | Gemma 3 1B IT Q4_K_M | **Raspberry Pi 5**, vehicle-llama unit, 2 threads | **8.46 / 9.00** | **13.14 / 14.19** | **9.9** | 9/10 | weak: unsolicited advice, unit error, prompt leak | [2026-11-25-gemma3-1b](2026-11-25-gemma3-1b/README.md) |
+| 2026-11-25 | Gemma 3 4B IT Q4_K_M | **Raspberry Pi 5**, vehicle-llama unit, 2 threads | **16.45 / 17.51** | **29.90 / 35.90** | **3.6** | 9/10 | best wording, but own arithmetic, false claim, advice | [2026-11-25-gemma3-4b](2026-11-25-gemma3-4b/README.md) |
 
-Next: Gemma 3 4B on the Pi with the same prompts.
+Summary after runs 1-3: no local model is fit for riders as is (see the run conclusions). Next: keyword-first tool choice, an output filter, a stricter prompt, newer small models, cloud providers (D-124).
