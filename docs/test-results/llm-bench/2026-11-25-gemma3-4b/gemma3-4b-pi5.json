@@ -1,0 +1,127 @@
+{
+  "label": "gemma3-4b-pi5",
+  "summary": {
+    "prompts": 10,
+    "errors": 0,
+    "grounded": 9,
+    "ttft_median_s": 16.447136795499773,
+    "ttft_p95_s": 17.50701001299967,
+    "total_median_s": 29.895676900499893,
+    "total_p95_s": 35.89500328699978,
+    "tokens_per_s_median": 3.57607611188622
+  },
+  "samples": [
+    {
+      "question": "Son sürüşümde en yüksek hızım neydi?",
+      "answer": "Son sürüşünüzde en yüksek hızınız 112.4 kmh idi. Ortalama hızınız ise 58.7 kmh olmuş. Güvenliğiniz için, lütfen motorunuzu kontrol ettirmek üzere bir servise uğrayın.",
+      "ttft_s": 0.736512541000593,
+      "total_s": 16.086711189000198,
+      "tokens": 56,
+      "tokens_per_s": 3.583015520595067,
+      "ungrounded": [],
+      "error": null,
+      "grounded": true
+    },
+    {
+      "question": "Son sürüşüm kaç kilometreydi, ne kadar sürdü?",
+      "answer": "Son sürüşünüzde 42,8 kilometre yol katettiniz. Bu yolculuk yaklaşık 51 dakika sürdü. Güvenli bir yerde durup motoru kontrol ettirmenizi tavsiye ederim.",
+      "ttft_s": 16.807916783999644,
+      "total_s": 29.63617162399987,
+      "tokens": 47,
+      "tokens_per_s": 3.585834595097519,
+      "ungrounded": [],
+      "error": null,
+      "grounded": true
+    },
+    {
+      "question": "Motor sıcaklığı normal mi?",
+      "answer": "Motorun soğutma sıvısı sıcaklığı 92 derece, motor yağı sıcaklığı ise 104 derecedir. Bu değerler normal sınırlar içinde görünüyor. Güvenlik için, lütfen motoru kontrol ettirmek üzere bir servise uğrayın.",
+      "ttft_s": 16.356580847999794,
+      "total_s": 32.60339036299956,
+      "tokens": 59,
+      "tokens_per_s": 3.56993168082951,
+      "ungrounded": [],
+      "error": null,
+      "grounded": true
+    },
+    {
+      "question": "Motor ne kadar ısındı en fazla?",
+      "answer": "Motorun en fazla 121 dereceye kadar ısınabilmesi mümkündür. Şu anda 118 derece civarında. Güvenli bir yerde durup motoru kontrol ettirmemizi tavsiye ederim.",
+      "ttft_s": 16.886855601000207,
+      "total_s": 30.155182176999915,
+      "tokens": 48,
+      "tokens_per_s": 3.5422703632435097,
+      "ungrounded": [],
+      "error": null,
+      "grounded": true
+    },
+    {
+      "question": "Akü gerilimi nasıl?",
+      "answer": "Akü gerilimi 12.6 volt civarında. Şarj voltajı ise 14.2 volt. Kontrol için bir servise danışmanızı tavsiye ederim.",
+      "ttft_s": 15.590433977999965,
+      "total_s": 27.290501012999812,
+      "tokens": 43,
+      "tokens_per_s": 3.5897230224716012,
+      "ungrounded": [],
+      "error": null,
+      "grounded": true
+    },
+    {
+      "question": "Lastik basınçlarım nedir?",
+      "answer": "Ön lastikleriniz 225 kPa, arka lastikleriniz ise 250 kPa. Bu değerler genellikle motosikletinizin kullanım kılavuzunda belirtilen aralıktadır.",
+      "ttft_s": 15.592825563000588,
+      "total_s": 27.105081106999933,
+      "tokens": 42,
+      "tokens_per_s": 3.5614219857524674,
+      "ungrounded": [],
+      "error": null,
+      "grounded": true
+    },
+    {
+      "question": "Ortalama yakıt tüketimim kaç?",
+      "answer": "Ortalama yakıt tüketimin 3.4 litre/100km civarında. 42.8 km'lik bir yolculukta 1.46 litre yakıt harcadın. Güvenlik için, sonuçta advise_stop true ise motorunu kontrol ettirmeyi öneririm.",
+      "ttft_s": 17.50701001299967,
+      "total_s": 35.89500328699978,
+      "tokens": 66,
+      "tokens_per_s": 3.5349153674048495,
+      "ungrounded": [
+        "100"
+      ],
+      "error": null,
+      "grounded": false
+    },
+    {
+      "question": "Bu sürüşte en çok ne kadar yattım?",
+      "answer": "Sürüşünüzde maksimum yana eğim 38.5 dereceydi. Ayrıca iki kez sert fren yaptığınız tespit edildi. Güvenlik için, lütfen motorunuzu kontrol ettirmek üzere güvenli bir yere durun.",
+      "ttft_s": 17.107739240000228,
+      "total_s": 30.21906155800025,
+      "tokens": 48,
+      "tokens_per_s": 3.5846880169725934,
+      "ungrounded": [],
+      "error": null,
+      "grounded": true
+    },
+    {
+      "question": "Hangi arıza kodları var?",
+      "answer": "Arıza kodu P0171, bank 1'de yakıt ayarının kuru olduğunu gösteriyor. Bu, genellikle yakıt sistemiyle ilgili bir soruna işaret eder. Güvenlik nedeniyle, lütfen motoru kontrol ettirmek için advise_stop true durumuna geçin.",
+      "ttft_s": 16.537692742999752,
+      "total_s": 33.007923789000415,
+      "tokens": 60,
+      "tokens_per_s": 3.58222054294293,
+      "ungrounded": [],
+      "error": null,
+      "grounded": true
+    },
+    {
+      "question": "Toplam kaç kilometre yaptım?",
+      "answer": "12874 kilometre yapmışsınız. Servis yapmanız gerekiyor, 14000 kilometrelere ulaştınız. Güvenli bir yerde durup motoru kontrol ettirmek iyi olur.",
+      "ttft_s": 15.979652988999987,
+      "total_s": 28.315395497999816,
+      "tokens": 45,
+      "tokens_per_s": 3.566870820130914,
+      "ungrounded": [],
+      "error": null,
+      "grounded": true
+    }
+  ]
+}
