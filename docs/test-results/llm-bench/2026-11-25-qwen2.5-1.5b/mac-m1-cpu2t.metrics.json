@@ -1,0 +1,11 @@
+{
+  "label": "qwen2.5-1.5b mac-m1 cpu 2t",
+  "prompts": 10,
+  "errors": 0,
+  "grounded": 9,
+  "ttft_median_s": 0.46,
+  "ttft_p95_s": 1.09,
+  "total_median_s": 1.32,
+  "total_p95_s": 4.86,
+  "tokens_per_s_median": 33.78
+}

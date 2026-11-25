@@ -21,15 +21,15 @@ Same prompts, tool and Pi as [the first run](../2026-11-25-qwen2.5-1.5b/README.m
 | Total latency median / p95 (s) | 13.14 / 14.19 | 6.57 / 11.30 |
 | Generation speed median (tok/s) | 9.9 | 6.5 |
 
-Raw output: `gemma3-1b-pi5.json|md`.
+The raw outputs (Turkish answers) are kept outside the public repository (D-125); the evaluated language was Turkish. Numeric summaries: see the `*.metrics.json` files in this folder.
 
 ## Human review of the Turkish (Claude, 2026-11-25)
 
 More fluent sentences than Qwen, but worse for riders:
 
-- unsolicited safety advice in most answers ("güvenli bir yere durun" ("stop somewhere safe"), "motoru kontrol ettirin" ("have the engine checked")), against the system prompt and alarming for the rider;
-- a unit error that changes the value a thousandfold ("225 ve 250 pa" ("225 and 250 pa"), the result is kPa);
-- prompt leakage: an internal field name read out ("Eğer sonuçta_stop doğruysa" ("If result_stop is true"), #8);
+- unsolicited safety advice in most answers ("stop somewhere safe", "have the engine checked"), against the system prompt and alarming for the rider;
+- a unit error that changes the value a thousandfold ("225 and 250 pa", the result is kPa);
+- prompt leakage: an internal field name read out ("If result_stop is true", #8);
 - a vague, alarming fault answer without the code (#9);
 - decimal point instead of comma; English word "lean" (#8);
 - the one "ungrounded" flag (#7, "100" in "litre/100km") is the same unit false positive as in run 1.
@@ -37,7 +37,7 @@ More fluent sentences than Qwen, but worse for riders:
 
 ## Prompts and answers (English translation)
 
-Literal translation for readers; the evaluated output is the Turkish text in the raw files.
+Literal translation for readers; the evaluated output was Turkish text (not committed, D-125).
 
 | # | Question (EN) | Answer (EN, literal) | Note |
 |---|---|---|---|

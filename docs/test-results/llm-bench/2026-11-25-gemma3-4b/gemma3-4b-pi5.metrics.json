@@ -1,0 +1,11 @@
+{
+  "label": "gemma3-4b-pi5",
+  "prompts": 10,
+  "errors": 0,
+  "grounded": 9,
+  "ttft_median_s": 16.45,
+  "ttft_p95_s": 17.51,
+  "total_median_s": 29.9,
+  "total_p95_s": 35.9,
+  "tokens_per_s_median": 3.58
+}
