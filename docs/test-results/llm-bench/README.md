@@ -22,5 +22,6 @@ numbers from the result (invariant 7).
 |---|---|---|---|---|---|---|---|---|
 | 2026-11-25 | Qwen2.5-1.5B-Instruct Q4_K_M | Mac M1, CPU only, 2 threads (proxy) | 0.46 / 1.09 | 1.32 / 4.86 | 33.8 | 9/10 | weak (3-4/10 usable) | [2026-11-25-qwen2.5-1.5b](2026-11-25-qwen2.5-1.5b/README.md) |
 | 2026-11-25 | Qwen2.5-1.5B-Instruct Q4_K_M | **Raspberry Pi 5**, vehicle-llama unit, 2 threads | **2.77 / 3.19** | **6.57 / 11.30** | **6.5** | 9/10 | weak (3-4/10 usable) | [2026-11-25-qwen2.5-1.5b](2026-11-25-qwen2.5-1.5b/README.md) |
+| 2026-11-25 | Gemma 3 1B IT Q4_K_M | **Raspberry Pi 5**, vehicle-llama unit, 2 threads | **8.46 / 9.00** | **13.14 / 14.19** | **9.9** | 9/10 | weak: unsolicited advice, unit error, prompt leak | [2026-11-25-gemma3-1b](2026-11-25-gemma3-1b/README.md) |
 
-Next: Gemma 3 1B and 4B on the Pi with the same prompts (models on the Pi, hashes verified).
+Next: Gemma 3 4B on the Pi with the same prompts.
