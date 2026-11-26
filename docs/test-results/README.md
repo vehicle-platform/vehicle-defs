@@ -8,6 +8,7 @@ decision: a run feeds a decision in `../DECISIONS.md`, which cites the run folde
 |---|---|---|
 | `llm-bench/` | Rider-assistant LLM (D-121, D-124): latency, speed, number grounding, Turkish quality | [llm-bench/README.md](llm-bench/README.md) |
 | `chat-eval/` | Rider-assistant `/chat` end to end: tool accuracy, fact coverage, forbidden patterns, latency (T41) | [chat-eval/README.md](chat-eval/README.md) |
+| `ride-llm-bakeoff/` | Ride LLM base-model bake-off (D-132 stage 0, T58): dev + held-out + `safety_red_team`, tok/s, peak RSS | [ride-llm-bakeoff/README.md](ride-llm-bakeoff/README.md) |
 
 ## Rules for every run
 
