@@ -27,7 +27,7 @@ Synthetic data **cannot** validate detection thresholds or model generalisation:
 
 | Platform claim | Acceptable evidence | Does NOT count as evidence | Minimum gate before removing `PROVISIONAL` |
 |---|---|---|---|
-| **Alert rule thresholds** (D-129, D-103 derived constants) | **L2 (`bench`)** for debounce/hysteresis/cooldown mechanics; **L3 (`real` healthy)** replay for false-alarm rate (target: 0 P1 false alarms/ride, bounded P2 FA/h); **L4** or calibrated L2 sweeps for trigger sensitivity | **L1 (`synthetic`)** threshold tuning (circular); single short idle log | Replay over the L3 first-ride set (Section 3) + documented workshop/manual confirmation where available |
+| **Alert rule thresholds** (D-129, D-103 derived constants) | **L2 (`bench`)** for debounce/hysteresis/cooldown mechanics; **L3 (`real` healthy)** replay for false-alarm rate (proposed target, to be set by the user: 0 P1 false alarms per ride, bounded P2 FA/h); **L4** or calibrated L2 sweeps for trigger sensitivity | **L1 (`synthetic`)** threshold tuning (circular); single short idle log | Replay over the L3 first-ride set (Section 3) + documented workshop/manual confirmation where available |
 | **Anomaly model** (D-083 physics-informed vs non-physics baseline) | **L1** for code correctness, seed stability, and ablation wiring only; **L2 (`bench`)** for sensor-fault attribution; **L3** for healthy residual calibration and operating-point drift; **L4** for real fault detection | **L1 (`synthetic`)** detection scores cited as real-world performance; leaking ride windows across train/val/test splits | L3 healthy residual baseline + L2 bench fault sweeps + honest non-physics comparison on the same split |
 | **Fault catalog matching** (D-084, D-127 `check_symptom`) | **L1** for deterministic keyword/symptom routing, D-084 item 5 displayable gating, and unconfirmed `data_only` isolation; **L2** for live signal-direction triggers; **L4** for confirming symptom-to-cause accuracy | Free-form LLM diagnosis text; unverified CONFIRM entries shown as rider advice | Verified service-manual / workshop sources per entry (D-084 item 5) + L1/L2 regression tests |
 | **Assistant tool accuracy & safety** (D-121, D-128, D-131, D-132, invariant 7) | **L1** (`vehicle-server chat-eval` + independent held-out eval + safety red-team set in EN/TR) for tool selection, fact grounding, zero invented numbers, zero `advise_stop` contradictions, latency; **L3** anonymized prompt replay (off-repo) for real phrasing | Cherry-picked single prompts; training-set questions reused as eval; claiming LLM accuracy proves physical fault accuracy | Held-out eval + red-team pass across target models (D-132 stage 0 bake-off) + human TR review |
@@ -43,7 +43,7 @@ Before any PROVISIONAL threshold (D-103, D-129) is promoted or any real anomaly 
    - Full telemetry + IMU session from the read-only tester (`vehicle-connectivity-node` in Phase 0, later `vehicle-rt-core`), ingested locally on the user's `vehicle-server`.
    - Lightweight ride metadata logged outside git: date, approximate ambient temperature band (`<15 °C`, `15–25 °C`, `>25 °C`), route type (urban / suburban / highway), cold vs warm start, and a post-ride rider note ("normal ride" or any observed issue).
    - **Privacy (D-033, D-076):** Raw sessions, GPS traces, and VINs stay strictly on the user's own storage and are never committed to any public repository.
-2. **Minimum initial cohort (target: 10–15 rides, >= 6 riding hours):**
+2. **Minimum initial cohort (proposed, to be set by the user: 10–15 rides, >= 6 riding hours):**
    - **Cold starts (≥ 3 rides):** engine off ≥ 6 h before key-on, capturing crank voltage dip and warm-up curve.
    - **Urban stop-and-go (≥ 3 rides):** sustained idle and low-speed traffic to observe peak normal coolant temperature and radiator fan cycling.
    - **Steady cruise / highway (≥ 3 rides):** sustained speed/RPM across upper gears to verify charging plateau and gear-ratio bands.
@@ -57,7 +57,7 @@ Before any PROVISIONAL threshold (D-103, D-129) is promoted or any real anomaly 
 
 ## 4. Safe Fault Injection Boundaries (L2 Only)
 
-Fault injection is essential to verify error detection, debounce, and fail-safe fallback, as recommended for system-level and software-level verification in **ISO 26262-4:2018** and **ISO 26262-6:2018**. On this platform, fault injection is strictly bounded:
+Fault injection is essential to verify error detection, debounce, and fail-safe fallback, as recommended for system-level and software-level verification in **ISO 26262-4:2018** and **ISO 26262-6:2018**; **ISO 26262-12:2018** adapts the series to motorcycles. These standards are cited as informative background: this prototype makes no ISO 26262 compliance claim. On this platform, fault injection is strictly bounded:
 
 - **Bench / HIL only (`vehicle-hil-bench`):** All fault injection happens on the restbus HIL bench or an isolated bench harness — never on the live motorcycle in traffic.
 - **ECU stays read-only (invariant 1, D-020, D-027, D-037):** Never inject faults by sending UDS write, clear, reset, I/O control, or reprogramming requests to the Honda CL250 ECU. All vehicle-bus fault scenarios (e.g., over-temperature, voltage sag, bus-off, dropped DIDs, corrupted E2E CRC/counter) are emulated by the STM32F4 restbus node on the bench.
@@ -89,5 +89,6 @@ Rules for applying labels:
 
 - **ISO 26262-4:2018** — *Road vehicles — Functional safety — Part 4: Product development at the system level* (system integration and verification, including fault injection methods): https://www.iso.org/standard/68386.html
 - **ISO 26262-6:2018** — *Road vehicles — Functional safety — Part 6: Product development at the software level* (software verification and fault injection testing): https://www.iso.org/standard/68388.html
+- **ISO 26262-12:2018** — *Road vehicles — Functional safety — Part 12: Adaptation of ISO 26262 for motorcycles*: https://www.iso.org/standard/68394.html
 - **ASAM OpenSCENARIO** — Scenario-based testing standard for ADAS and automated driving systems: https://www.asam.net/standards/detail/openscenario/ (XML specification: https://www.asam.net/standards/detail/openscenario-xml/, DSL specification: https://www.asam.net/standards/detail/openscenario-dsl/)
 - Internal platform references: `DECISIONS.md` (D-020, D-027, D-033, D-037, D-042, D-076, D-078, D-083, D-084, D-103, D-118, D-121, D-125, D-127–D-132), `phase0-data-collection-plan.md`, `vehicle-work-plan.md`, `test-results/README.md`.
