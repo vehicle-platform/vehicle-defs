@@ -1092,6 +1092,14 @@ Both modes share the scenario format and the evaluation/report. Before hardware 
 - Not chosen: one general chatbot as "the platform LLM" (no domain grounding, invents numbers); letting the LLM detect anomalies (no physics prior, not explainable, D-083); training a model from scratch (data and compute far beyond a thesis).
 - Why: a narrow, verifiable stack (symbolic knowledge + tools + retrieval + a small specialised model) is what makes the assistant platform-specific and trustworthy, while the anomaly model stays a separate, measurable numeric model.
 
+**D-133 — PROVISIONAL (Claude) — Ride event marks: the rider marks "something happened here" during a ride; marks are consented weak labels, linked to a ride by time only** (2026-11-27, roadmap card T68; proposed by Claude in the run-4 brief, the user raised no objection when asked; built by Gemini run 4 G4-4, reviewed and fixed by Claude: vehicle-server#108, vehicle-mobile#58)
+1. **Model.** A mark is `{id, t_utc, kind, note?}`: `id` client-supplied `^[A-Za-z0-9_-]{1,64}$` (server generates one if missing), `t_utc` integer UTC epoch ms, `kind` ∈ `misfire, noise, vibration, warning_light, rough_road, traffic, other`, `note` optional, ≤ 200 characters. **No position**, ever (D-076): extra fields are rejected (422).
+2. **Server.** `POST /marks` (201 create; 200 identical retry; 409 same id with different content; 422 invalid), `GET /rides/{ride_id}/marks` (the caller's marks inside the ride window `[start, start + duration]`, both ends inclusive), `DELETE /marks/{id}` (204; 404 unknown or another user's). Same bearer auth and per-user isolation as the ride endpoints; stored in `index.sqlite` table `ride_marks`, key `(owner, id)`, race-free idempotent insert.
+3. **Mobile.** A large Mark button on the live screen with a quick picker that closes itself; marks are queued persistently (deduplicated by id, exponential backoff 5 s → 5 min) so an offline ride loses nothing; rejected marks are dropped with a message; the Logbook ride detail lists marks with delete.
+4. **Use.** Marks feed the anomaly model only as weak, rider-consented labels (D-132 item 1a, T65); they are never a ground truth and never an input of the safety partition. Consumers (vehicle-mcp tool, label export) come with T65.
+- Not chosen: GPS-tagged marks (D-076, position stays out of new data paths); marks tied to a server ride id at tap time (the ride does not exist yet during an offline ride).
+- Why: a cheap, time-linked label stream from the first real rides makes the later anomaly evaluation less circular than synthetic data alone.
+
 ## Open questions (awaiting decision)
 
 | ID | Question | When to resolve | Note |
