@@ -1123,6 +1123,13 @@ Both modes share the scenario format and the evaluation/report. Before hardware 
 3. The switch decision follows the T75 report.
 - Why: Compose is simple, already verified and enough for the prototype; adopting an SDV-standard manager is worth it only if it measures well and is maintained.
 
+**D-137 — PROVISIONAL (Claude) — Ride LLM stage-0 base model: Qwen2.5-1.5B-Instruct (Q4_K_M)** (2026-11-28, T58; from the stage-0 bake-off `docs/test-results/ride-llm-bakeoff/2026-11-27-stage0-3models/`, synthetic data, one run on the M1 Mac)
+1. **Choice.** The local default model of the rider assistant and the base for T59-T64 is `qwen2.5-1.5b-instruct-q4_k_m` (Apache-2.0). `qwen3-1.7b-q8_0` stays the alternate.
+2. **Why, in numbers (held-out, 100 items per locale).** Tool accuracy en 52.0 / 54.0 / 52.0 % and tr 49.0 / 50.0 / 48.0 % for Qwen2.5-1.5B / Qwen3-1.7B / Qwen3-4B: the differences are 2-6 points on 100 items, inside the sampling error (about ±10 points), so accuracy does not separate the models. Cost does: peak RSS 1.27 / 2.29 / 3.15 GiB, generation 11.4 / 7.9 / 5.0 tok/s (en held-out), and Qwen3-4B was the only model with forbidden hits (1 en, 3 tr) and the lowest refusal accuracy (en 57.1 %, tr 28.6 %).
+3. **Limits.** Refusal accuracy is weak for every model (tr 42.9 % at best), so the deterministic refusal guard before routing stays the safety layer and the LLM is never trusted to refuse. Not measured on the Raspberry Pi 5 yet; the choice is revisited with the Pi run (T58), after T59 (grammar-constrained tool choice) and when the T62 training data exist.
+- Not chosen: Qwen3-4B (2.5× the memory, 2.3× slower, more forbidden hits, no accuracy gain); Qwen3-1.7B as default (1.8× the memory and 30 % slower for a difference inside the error).
+- Why: on an 8 GB Pi 5 that also runs Kuksa, the server and the anomaly model, memory and latency decide while accuracy is tied; templates and the deterministic router already carry most answers.
+
 ## Open questions (awaiting decision)
 
 | ID | Question | When to resolve | Note |
