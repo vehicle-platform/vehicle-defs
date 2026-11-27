@@ -157,7 +157,6 @@
    "id": "mt-01-t1",
    "topic": "multiturn",
    "question": "Did my radiator fluid stay cool on the most recent outing?",
-   "answer": "I cannot answer that from the bike's data.",
    "source": "unsupported",
    "tool": null,
    "arguments": {},
@@ -186,7 +185,6 @@
    "id": "mt-01-t2",
    "topic": "multiturn",
    "question": "Compare it with the previous one.",
-   "answer": "I cannot answer that from the bike's data.",
    "source": "unsupported",
    "tool": null,
    "arguments": {},
@@ -215,7 +213,6 @@
    "id": "mt-01-t3",
    "topic": "multiturn",
    "question": "Is that temperature peak normal for this bike?",
-   "answer": "I cannot answer that from the bike's data.",
    "source": "unsupported",
    "tool": null,
    "arguments": {},
@@ -244,7 +241,6 @@
    "id": "mt-01-t4",
    "topic": "multiturn",
    "question": "What about the charging voltage on that same trip?",
-   "answer": "Battery voltage: lowest 12.6 V, average 12.6 V, highest 12.6 V.",
    "source": "template",
    "tool": "compute_signal_stats",
    "arguments": {
@@ -271,7 +267,6 @@
    "id": "mt-02-t1",
    "topic": "multiturn",
    "question": "Check whether the alternator kept the electrical system healthy recently.",
-   "answer": "Battery voltage: lowest 12.6 V, average 12.6 V, highest 12.6 V.",
    "source": "template",
    "tool": "compute_signal_stats",
    "arguments": {
@@ -298,7 +293,6 @@
    "id": "mt-02-t2",
    "topic": "multiturn",
    "question": "How did it look on the trip before that?",
-   "answer": "Possible causes from the catalog (not a diagnosis): FDR-001 Excessive chain slack from wear/stretch or missed adjustment.",
    "source": "template",
    "tool": "check_symptom",
    "arguments": {
@@ -330,7 +324,6 @@
    "id": "mt-02-t3",
    "topic": "multiturn",
    "question": "Compare both trips on battery voltage.",
-   "answer": "Battery voltage: lowest 12.6 V, average 12.6 V, highest 12.6 V.",
    "source": "template",
    "tool": "compute_signal_stats",
    "arguments": {
@@ -357,7 +350,6 @@
    "id": "mt-03-t1",
    "topic": "multiturn",
    "question": "Show how hard the engine revved during my latest outing.",
-   "answer": "I cannot answer that from the bike's data.",
    "source": "unsupported",
    "tool": null,
    "arguments": {},
@@ -386,7 +378,6 @@
    "id": "mt-03-t2",
    "topic": "multiturn",
    "question": "And the ride before that?",
-   "answer": "I cannot answer that from the bike's data.",
    "source": "unsupported",
    "tool": null,
    "arguments": {},
@@ -415,7 +406,6 @@
    "id": "mt-03-t3",
    "topic": "multiturn",
    "question": "Compare it with the earlier one.",
-   "answer": "I cannot answer that from the bike's data.",
    "source": "unsupported",
    "tool": null,
    "arguments": {},
@@ -444,7 +434,6 @@
    "id": "mt-03-t4",
    "topic": "multiturn",
    "question": "Is that rev range normal on the highway?",
-   "answer": "I have no catalog description for this, but here is what your bike measured: intake map min 100 kPa, intake map mean 100 kPa, intake map max 100 kPa, intake map last 100 kPa, idle rpm std min 0 rpm, idle rpm std mean 0 rpm. This is data, not a diagnosis.",
    "source": "template",
    "tool": "check_symptom",
    "arguments": {
@@ -471,7 +460,6 @@
    "id": "mt-04-t1",
    "topic": "multiturn",
    "question": "I noticed a faint sweet coolant odour near the front forks after parking.",
-   "answer": "Coolant temperature: lowest 20 °C, average 82.5 °C, highest 85 °C.",
    "source": "template",
    "tool": "compute_signal_stats",
    "arguments": {
@@ -498,7 +486,6 @@
    "id": "mt-04-t2",
    "topic": "multiturn",
    "question": "Was the coolant reading unusual on the latest ride?",
-   "answer": "Coolant temperature: lowest 20 °C, average 82.5 °C, highest 85 °C.",
    "source": "template",
    "tool": "compute_signal_stats",
    "arguments": {
@@ -525,7 +512,6 @@
    "id": "mt-04-t3",
    "topic": "multiturn",
    "question": "Compare it with the ride before.",
-   "answer": "On your 26 Nov ride: Coolant temperature: 2026-11-26 average 82.5 °C, highest 85 °C; 2026-11-24 average 105.8 °C, highest 115 °C.",
    "source": "template",
    "tool": "compare_sessions",
    "arguments": {
@@ -558,7 +544,6 @@
    "id": "mt-05-t1",
    "topic": "multiturn",
    "question": "What pace did I hold on my most recent run?",
-   "answer": "I cannot answer that from the bike's data.",
    "source": "unsupported",
    "tool": null,
    "arguments": {},
@@ -587,7 +572,6 @@
    "id": "mt-05-t2",
    "topic": "multiturn",
    "question": "And on the previous outing?",
-   "answer": "I cannot answer that from the bike's data.",
    "source": "unsupported",
    "tool": null,
    "arguments": {},
@@ -616,7 +600,6 @@
    "id": "mt-05-t3",
    "topic": "multiturn",
    "question": "Compare the pace between the two runs.",
-   "answer": "I cannot answer that from the bike's data.",
    "source": "unsupported",
    "tool": null,
    "arguments": {},
@@ -645,7 +628,6 @@
    "id": "mt-05-t4",
    "topic": "multiturn",
    "question": "What about the engine revs on that run?",
-   "answer": "Engine speed: lowest 0 rpm, average 2951 rpm, highest 4175 rpm.",
    "source": "template",
    "tool": "compute_signal_stats",
    "arguments": {
@@ -672,7 +654,6 @@
    "id": "mt-06-t1",
    "topic": "multiturn",
    "question": "How wide did I open the throttle on the last trip?",
-   "answer": "Throttle position: lowest 0 %, average 8.3 %, highest 10.2 %.",
    "source": "template",
    "tool": "compute_signal_stats",
    "arguments": {
@@ -699,7 +680,6 @@
    "id": "mt-06-t2",
    "topic": "multiturn",
    "question": "Is that throttle usage normal for city riding?",
-   "answer": "Throttle position: lowest 0 %, average 8.3 %, highest 10.2 %.",
    "source": "template",
    "tool": "compute_signal_stats",
    "arguments": {
@@ -726,7 +706,6 @@
    "id": "mt-06-t3",
    "topic": "multiturn",
    "question": "Compare it with the previous ride.",
-   "answer": "On your 26 Nov ride: On the last trip, you opened the throttle at the lowest 0% and highest 10.2%. This is normal for city riding. The average throttle position was 8.3%.",
    "source": "llm",
    "tool": "compare_sessions",
    "arguments": {
@@ -759,7 +738,6 @@
    "id": "mt-07-t1",
    "topic": "multiturn",
    "question": "The starter cranked lazily this morning before firing up.",
-   "answer": "The starter cranking lazily suggests the engine's crank position sensor or its wiring is not giving a signal. Stop safely and have the motorcycle inspected.",
    "source": "llm",
    "tool": "check_symptom",
    "arguments": {
@@ -791,7 +769,6 @@
    "id": "mt-07-t2",
    "topic": "multiturn",
    "question": "What was the lowest voltage recorded?",
-   "answer": "Battery voltage: lowest 12.6 V.",
    "source": "template",
    "tool": "compute_signal_stats",
    "arguments": {
@@ -818,7 +795,6 @@
    "id": "mt-07-t3",
    "topic": "multiturn",
    "question": "And the ride before that?",
-   "answer": "On your 24 Nov ride: Battery voltage: lowest 12.8 V.",
    "source": "template",
    "tool": "compute_signal_stats",
    "arguments": {
@@ -845,7 +821,6 @@
    "id": "mt-07-t4",
    "topic": "multiturn",
    "question": "Is that voltage drop normal?",
-   "answer": "Battery voltage: lowest 12.6 V, average 12.6 V, highest 12.6 V.",
    "source": "template",
    "tool": "compute_signal_stats",
    "arguments": {
@@ -872,7 +847,6 @@
    "id": "mt-08-t1",
    "topic": "multiturn",
    "question": "How long did the bike sit stationary with the motor running last time?",
-   "answer": "Your ride took 18 min 36 s.",
    "source": "template",
    "tool": "get_ride_summary",
    "arguments": {
@@ -898,7 +872,6 @@
    "id": "mt-08-t2",
    "topic": "multiturn",
    "question": "Is that much idle time normal?",
-   "answer": "You spent 2 min 18 s idling.",
    "source": "template",
    "tool": "get_ride_summary",
    "arguments": {
@@ -924,7 +897,6 @@
    "id": "mt-08-t3",
    "topic": "multiturn",
    "question": "How did the prior ride look for idling?",
-   "answer": "You spent 2 min 18 s idling.",
    "source": "template",
    "tool": "get_ride_summary",
    "arguments": {
@@ -950,7 +922,6 @@
    "id": "mt-09-t1",
    "topic": "multiturn",
    "question": "Give me the distance and duration of my newest trip.",
-   "answer": "You rode 11.0 km.",
    "source": "template",
    "tool": "get_ride_summary",
    "arguments": {
@@ -976,7 +947,6 @@
    "id": "mt-09-t2",
    "topic": "multiturn",
    "question": "And the one before that?",
-   "answer": "On your 24 Nov ride: You rode 8.1 km.",
    "source": "template",
    "tool": "get_ride_summary",
    "arguments": {
@@ -1002,7 +972,6 @@
    "id": "mt-09-t3",
    "topic": "multiturn",
    "question": "How many full halts happened on that trip?",
-   "answer": "I cannot answer that from the bike's data.",
    "source": "unsupported",
    "tool": null,
    "arguments": {},
@@ -1031,7 +1000,6 @@
    "id": "mt-09-t4",
    "topic": "multiturn",
    "question": "Why did the coolant climb during those stops?",
-   "answer": "Coolant temperature: lowest 20 °C, average 82.5 °C, highest 85 °C.",
    "source": "template",
    "tool": "compute_signal_stats",
    "arguments": {
@@ -1058,7 +1026,6 @@
    "id": "mt-10-t1",
    "topic": "multiturn",
    "question": "I heard a metallic clicking sound near the cylinder head after warming up.",
-   "answer": "The engine took 57 s to warm up.",
    "source": "template",
    "tool": "get_ride_summary",
    "arguments": {
@@ -1084,7 +1051,6 @@
    "id": "mt-10-t2",
    "topic": "multiturn",
    "question": "Could high engine temperature make that worse?",
-   "answer": "Coolant temperature: lowest 20 °C, average 82.5 °C, highest 85 °C.",
    "source": "template",
    "tool": "compute_signal_stats",
    "arguments": {
@@ -1111,7 +1077,6 @@
    "id": "mt-10-t3",
    "topic": "multiturn",
    "question": "Compare coolant temperatures with the previous ride.",
-   "answer": "On your 24 Nov ride: Coolant temperature: lowest 36 °C, average 105.8 °C, highest 115 °C.",
    "source": "template",
    "tool": "compute_signal_stats",
    "arguments": {

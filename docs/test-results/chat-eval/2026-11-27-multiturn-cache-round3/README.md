@@ -85,7 +85,11 @@ locale). Cache shares and `prompt_ms` percentiles below are computed strictly ov
 | `tr` | B (`-np 2 -c 8192`) | 2 | 55 | 24 | 4790 / 20110 | 23.8% | 1387.2 ms | 1706.1 ms | 75.2 s |
 | `tr` | B (`-np 2 -c 8192`) | 3 | 55 | 24 | 4790 / 20110 | 23.8% | 1396.5 ms | 1675.0 ms | 76.1 s |
 
-### Per-turn pooled across 3 independent cold runs (per arm and locale)
+### Per-turn pooled across 3 cold runs (per arm and locale)
+
+The three runs replay the same deterministic conversations and produced identical token counts, so
+they are repeats of one configuration, not independent samples: token figures have n = 1 per arm
+and locale and no variance estimate; only the timings vary between runs.
 
 Because `llama-server` was restarted before every run and every locale, all 3 runs in each pool
 are identically cold starts (exact same token totals and cached token counts on Runs 1, 2, and 3).
@@ -118,7 +122,7 @@ are identically cold starts (exact same token totals and cached token counts on 
 1. **Cross-run cache confounder eliminated (shown):**
    Restarting `llama-server` before every run and locale produced identical token totals and cached
    token counts across Runs 1, 2, and 3 in every arm and locale (`6856/19882` and `7199/19882` in
-   `en`; `4531/20110` and `4790/20110` in `tr`), confirming zero cross-run or cross-locale
+   `en`; `4531/20110` and `4790/20110` in `tr`), consistent with no cross-run or cross-locale
    prompt-cache leakage.
 2. **Small two-slot prefix retention in alternating tool-choice / phrasing traffic (shown, +1.7 pp
    `en` / +1.3 pp `tr`):**
@@ -127,13 +131,15 @@ are identically cold starts (exact same token totals and cached token counts on 
    phrasing call immediately followed a tool-choice call (evicting the phrasing system prompt in
    Arm A's single slot): `mt-04-t3` (`+129`), `mt-06-t3` (`+129`), and `mt-11-t2` (`+89`, offset by
    `-4` on `mt-02-t2`) in `en`; `mt-03-t3` (`+131`) and `mt-07-t1` (`+131`, offset by `-3` on
-   `mt-01-t2`) in `tr`.
+   `mt-01-t2`) in `tr`. These per-item deltas are a single-configuration difference with no variance
+   estimate; the `en` ones can be recomputed from the `timings` fields of the raw JSON files, the `tr`
+   ones come from the local runs (raw files not committed, D-125).
 3. **Turn-4 caching gain from `-np 2`: not shown (`0` extra cached tokens on Turn 4).**
    With `mt-11`..`mt-15` providing 15 pooled LLM-timed Turn-4 turns per arm and locale, Arm A and
    Arm B produced identical Turn-4 cached shares (`15.5%`, `2046/13230` in `en`; `18.5%`,
    `2661/14346` in `tr`). In `mt-11`..`mt-15`, deterministic routing avoids tool-choice LLM calls
    so consecutive phrasing calls already retain the phrasing system prompt (~133–139 tokens in
-   `en`, ~174–180 tokens in `tr`) in Arm A's single slot, while the remaining ~550–800 tokens per
+   `en`, ~174–180 tokens in `tr`, read from the local llama-server log, not committed) in Arm A's single slot, while the remaining ~550–800 tokens per
    turn (conversation state, recent turns, and flattened tool result) sit inside the single `user`
    message and change on every turn.
 4. **Consistent TTFT (`prompt_ms`) or wall-time improvement from Arm B (`-np 2 -c 8192`): not
@@ -145,7 +151,7 @@ are identically cold starts (exact same token totals and cached token counts on 
    - In `tr`, Arm B was slightly faster on pooled `prompt_ms` p50 (`1393.5 ms` vs. `1421.8 ms`),
      pooled p95 (`1706.1 ms` vs. `1774.4 ms`), and wall time (`75.2–77.6 s` vs. `78.7–84.1 s`),
      though Run 1 p50 favored Arm A (`1327.1 ms` vs. `1390.2 ms`).
-   - **Next hypothesis:** Doubling the KV-cache allocation (`-np 2 -c 8192`) does not yield a
+   - **Next hypothesis:** A second slot (`-np 2 -c 8192`) may not give a
      consistent TTFT gain because only ~1.3–1.7% of prompt tokens benefit from a second slot while
      81–85% of Turn-4 prompt tokens remain uncached inside the changing `user` message. Keeping
      `-np 1` and testing whether formatting multi-turn history as append-only `user`/`assistant`
@@ -154,7 +160,8 @@ are identically cold starts (exact same token totals and cached token counts on 
 
 ## Artifacts in this directory
 
-- English summary Markdown files (aggregate scores and failing ids only, no raw answers):
+- English summary Markdown files (aggregate scores and failing ids only, no raw answers; the
+  `answer` fields were removed from the raw JSON files below in review, per the public results rule):
   - Arm A: `arm-a-en-run1.md`, `arm-a-en-run2.md`, `arm-a-en-run3.md`, `arm-a-tr-run1.md`,
     `arm-a-tr-run2.md`, `arm-a-tr-run3.md`
   - Arm B: `arm-b-en-run1.md`, `arm-b-en-run2.md`, `arm-b-en-run3.md`, `arm-b-tr-run1.md`,
