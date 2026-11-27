@@ -1,6 +1,6 @@
-Status: idea note, not a decision
-
 # Parked (Key-Off) Current Budget and Power-Down Options (T73)
+
+Status: idea note, not a decision
 
 Idea note (Gemini, 2026-11-27), **not a decision**. Nothing in this document takes effect without a recorded `D-xxx` decision in `DECISIONS.md`.
 
