@@ -24,7 +24,7 @@ Reviewed `vss/overlay.vspec` (currently built on pinned COVESA VSS `v6.0`, `tool
 
 ## 2. Check Against Current COVESA VSS Release (`v6.1`)
 
-Checked directly against the latest official COVESA release **`v6.1`** (published `2026-09-17`, `https://github.com/COVESA/vehicle_signal_specification/releases/tag/v6.1`, `vss.yaml` containing 1,737 entries and `units.yaml`), as well as our pinned base **`v6.0`** (`tools/codegen/.cache/vss-6.0/vss.yaml`).
+Checked directly against the latest official COVESA release **`v6.1`** (published `2026-09-17`, `https://github.com/COVESA/vehicle_signal_specification/releases/tag/v6.1`, `vss.yaml` containing 1,737 entries and `units.yaml`), as well as our pinned base **`v6.0`** (`tools/codegen/.cache/vss-6.0/vss.yaml`). The release tag and date and the missing issue templates were re-checked through the GitHub API on 2026-11-28; re-check the `v6.1` entries (`Vehicle.Orientation.Roll`, entry count) against the then-current release before posting. Moving our base from `v6.0` to `v6.1` is a separate codegen change (D-024), not part of this draft.
 
 | Concept (`vss/overlay.vspec` / T74) | Equivalent in COVESA VSS `v6.1` | Gap / Notes vs. Two-Wheeler Need |
 |---|---|---|
