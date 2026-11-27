@@ -22,3 +22,4 @@ server's development `chat-eval` suite (57 questions/locale) and the independent
 | Date | Provenance | Models completed | Run |
 |---|---|---|---|
 | 2026-11-26 | `synthetic` (L1) | `qwen2.5-1.5b-instruct-q4_k_m` (baseline; Qwen3-1.7B and Qwen3-4B download-blocked) | [2026-11-26-stage0](2026-11-26-stage0/README.md) |
+| 2026-11-27 | `synthetic` (L1) | `qwen2.5-1.5b-instruct-q4_k_m`, `qwen3-1.7b-q8_0`, `qwen3-4b-q4_k_m` (all 3 models) | [2026-11-27-stage0-3models](2026-11-27-stage0-3models/README.md) |
