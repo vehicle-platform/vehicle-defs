@@ -1,6 +1,6 @@
-Status: idea note, not a decision (facts inventory for T69 SIL design)
-
 # Software-in-the-Loop (SIL) Host Inventory (G4-6, T69 Input)
+
+Status: idea note, not a decision (facts inventory for T69 SIL design)
 
 Facts-only inventory (Gemini, 2026-11-27) of what builds and runs on host today across the platform repositories, which `dbc/platform.dbc` frames each host build transmits or receives, and the concrete gaps for running `vehicle-rt-core` + `vehicle-safety-node` + `vehicle-server` on one virtual bus. Claude writes the multi-node SIL design from this inventory; any options noted at the end are marked **proposed**.
 
