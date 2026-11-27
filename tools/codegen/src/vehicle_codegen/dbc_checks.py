@@ -55,6 +55,24 @@ def node_id(db: Database, node_name: str) -> int | None:
     return None
 
 
+def platform_bitrate(db: Database) -> int:
+    """Platform-bus bit rate from the DBC `Baudrate` attribute (a BA_ line, not the default).
+
+    Raises ValueError when the attribute is missing or not a positive integer, so codegen
+    never emits a guessed bit rate (platform invariant 2).
+    """
+    attrs = db.dbc.attributes if db.dbc is not None else {}
+    attr = attrs.get("Baudrate") if attrs else None
+    if attr is None:
+        raise ValueError('platform.dbc has no BA_ "Baudrate" attribute (platform bit rate)')
+    value = attr.value
+    if isinstance(value, bool) or not isinstance(value, int | float) or value != int(value):
+        raise ValueError(f"platform.dbc Baudrate must be an integer, got {value!r}")
+    if value <= 0:
+        raise ValueError(f"platform.dbc Baudrate must be positive, got {int(value)}")
+    return int(value)
+
+
 # Widest signal the generated single-precision encode converts exactly (float mantissa).
 USE_FLOAT_MAX_BITS = 24
 
@@ -66,6 +84,10 @@ def check_platform_dbc(db: Database) -> list[str]:
             errors.append(f"attribute definition {name} missing (BA_DEF_)")
     if errors:
         return errors
+    try:
+        platform_bitrate(db)
+    except ValueError as exc:
+        errors.append(str(exc))
 
     node_names = [n.name for n in db.nodes]
     if set(node_names) != set(config.NODE_IDS):

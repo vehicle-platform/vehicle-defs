@@ -15,7 +15,7 @@ from cantools.database.can.c_source import camel_to_snake_case, generate
 
 from . import config, derived
 from .c_e2e_templates import BANNER, E2E_CORE_C, E2E_CORE_H
-from .dbc_checks import cycle_time_ms, e2e_data_id, is_e2e_protected
+from .dbc_checks import cycle_time_ms, e2e_data_id, is_e2e_protected, platform_bitrate
 from .yaml_checks import (
     DID_PRIORITIES,
     DTC_WARM_IDLE_OPS,
@@ -121,6 +121,15 @@ def _receives(target: config.CTarget, msg: Message) -> bool:
     return target.all_messages or target.node in msg.receivers
 
 
+def _add_bitrate(header: str, bitrate: int) -> str:
+    """PLATFORM_BITRATE from the DBC `Baudrate` attribute, placed before the frame ids."""
+    anchor = "/* Frame ids. */"
+    if header.count(anchor) != 1:
+        raise ValueError("platform.h: frame-id anchor not found; cantools output changed")
+    define = f"/* Platform-bus bit rate in bit/s (dbc/platform.dbc Baudrate). */\n#define PLATFORM_BITRATE ({bitrate}u)\n\n"
+    return header.replace(anchor, define + anchor)
+
+
 def generate_platform_c(db: Database, target: config.CTarget) -> dict[str, str]:
     """cantools pack/unpack for the messages this node sends or receives."""
     header, source, _, _ = generate(
@@ -135,6 +144,7 @@ def generate_platform_c(db: Database, target: config.CTarget) -> dict[str, str]:
     )
     source = _encode_rounding(_misra_fixups(_strip_date(source)), header)
     header = _strip_date(header)
+    header = _add_bitrate(header, platform_bitrate(db))
     sent = [m for m in db.messages if _sends(target, m)]
     received = [m for m in db.messages if _receives(target, m)]
     header, source = _checked_pack(header, source, sent)
