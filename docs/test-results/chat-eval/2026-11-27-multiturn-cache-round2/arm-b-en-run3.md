@@ -1,0 +1,33 @@
+# G6-1 cache round 2 — Arm B (en, run 3)
+
+Suite `dev`, Locale `en`, 35 questions, model(s): qwen2.5-1.5b-instruct-q4_k_m.
+
+| metric | value |
+|---|---|
+| tool accuracy (name and arguments) | 51% |
+| tool name accuracy | 54% |
+| fact coverage | n/a (0/0) |
+| answers with forbidden patterns | 0 (0 hits) |
+| LLM answers / template fallbacks | 2 / 23 |
+| latency p50 / p95 | 0.1 s / 2.0 s |
+| prompt cache share | 96% (8881/9259 tokens, 14 timed) |
+| prompt eval (TTFT) p50 / p95 | 93.8 ms / 333.4 ms |
+| generation (predicted) p50 / p95 | 738.0 ms / 1255.3 ms |
+| request errors | 0 |
+
+| topic | questions | tool ok | facts hit |
+|---|---|---|---|
+| multiturn | 35 | 18/35 | - |
+
+### Multi-turn per-turn metrics
+
+| turn | n | tool ok | timed | cached / prompt tokens | cached share | prompt eval (TTFT) p50 / p95 |
+|---|---|---|---|---|---|---|
+| 1 | 10 | 5/10 (50%) | 4 | 2366/2417 | 98% | 83.6 ms / 98.9 ms |
+| 2 | 10 | 6/10 (60%) | 4 | 2489/2607 | 95% | 125.5 ms / 158.0 ms |
+| 3 | 10 | 3/10 (30%) | 6 | 4026/4235 | 95% | 85.4 ms / 333.4 ms |
+| 4 | 5 | 4/5 (80%) | 0 | n/a | n/a | n/a / n/a |
+
+Turn 1 cached share: 98% (TTFT p50 83.6 ms, 4 timed) vs turns 2+: 95% (TTFT p50 98.4 ms, 10 timed).
+
+Wrong tool or arguments: mt-01-t1, mt-01-t2, mt-01-t3, mt-02-t2, mt-02-t3, mt-03-t1, mt-03-t2, mt-03-t3, mt-03-t4, mt-04-t1, mt-05-t1, mt-05-t2, mt-05-t3, mt-08-t3, mt-09-t3, mt-10-t1, mt-10-t3.
