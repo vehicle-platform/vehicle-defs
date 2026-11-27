@@ -1100,6 +1100,13 @@ Both modes share the scenario format and the evaluation/report. Before hardware 
 - Not chosen: GPS-tagged marks (D-076, position stays out of new data paths); marks tied to a server ride id at tap time (the ride does not exist yet during an offline ride).
 - Why: a cheap, time-linked label stream from the first real rides makes the later anomaly evaluation less circular than synthetic data alone.
 
+**D-134 — PROVISIONAL (Claude, approved by the user) — MCU clock trees for the first CubeMX images** (2026-11-27, T6/T13; user: "let's go with your recommendations, we optimise later")
+1. **rt-core, STM32H743 (NUCLEO-H743ZI2):** HSE 8 MHz in bypass mode (MCO of the on-board ST-LINK) → PLL1 → **SYSCLK 400 MHz** at voltage scale VOS1 from the LDO; AXI/AHB 200 MHz, APBs 100 MHz. **FDCAN kernel clock 80 MHz** so 500 kbit/s divides exactly; SDMMC and ADC kernel clocks from PLL outputs within their limits.
+2. **safety-node, STM32G474 (NUCLEO-G474RE):** HSE from the on-board crystal → PLL → **SYSCLK 170 MHz**; the FDCAN kernel clock is chosen so 500 kbit/s divides exactly.
+3. The exact dividers live in each repo's `cubemx/*.ioc` and `cubemx/README.md`; the images are **unverified on hardware** until the boards are on the desk (T26 measures timing and the real bit timing).
+- Not chosen: 480 MHz on the H743 (needs VOS0 and leaves less temperature margin in a hot engine bay; the load does not need it); HSI as the clock source (about 1 % tolerance is a poor base for CAN bit timing and for timestamps).
+- Why: a crystal-based clock gives accurate CAN timing on both buses, and 400 MHz keeps margin for temperature while leaving far more CPU than the planned load needs.
+
 ## Open questions (awaiting decision)
 
 | ID | Question | When to resolve | Note |
