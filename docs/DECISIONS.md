@@ -1107,6 +1107,20 @@ Both modes share the scenario format and the evaluation/report. Before hardware 
 - Not chosen: 480 MHz on the H743 (needs VOS0 and leaves less temperature margin in a hot engine bay; the load does not need it); HSI as the clock source (about 1 % tolerance is a poor base for CAN bit timing and for timestamps).
 - Why: a crystal-based clock gives accurate CAN timing on both buses, and 400 MHz keeps margin for temperature while leaving far more CPU than the planned load needs.
 
+**D-135 — Repository visibility: the generic platform stays public, sensitive parts move to private repositories** (2026-11-27, user: "the general part can stay public, no problem; the sensitive parts should already be private now"; refines D-033)
+1. **Public:** the generic platform — firmware architecture and generic modules, server, mobile app, analyzer, vehicle-mcp, the generic signal catalog, docs and the thesis material. D-033's rules for public repos stay in force.
+2. **Private:** vehicle-specific and commercially sensitive content — reverse-engineered vehicle CAN IDs and DIDs (today `vehicle-defs/dbc/cl250.dbc`, `uds/vehicle_cl250.yaml`), the legacy CL250 telemetry code, trained models, customer- or product-specific parts of the later commercial product (D-078).
+3. **How:** T76 inventories the content and designs the split (a private per-vehicle pack consumed by the public codegen, a synthetic example vehicle in the public repo); the move happens with the user's approval. Content that was already public stays in existing clones and forks; history is rewritten only on the user's explicit decision.
+4. Private repositories on the GitHub Free plan have limited Actions minutes and no rulesets, so their CI is kept small.
+- Not chosen: making everything private now (CI minutes, rulesets and secret scanning would be lost or paid, and the open thesis platform loses its value).
+- Why: keeps the thesis platform open and reproducible while protecting what is vehicle-specific or commercial.
+
+**D-136 — PROVISIONAL (Claude, approved by the user) — Edge deployment stays on Docker Compose until a measured comparison** (2026-11-27, user: "record the Kanto decision, we try it later"; T75)
+1. Development, CI and the first Raspberry Pi deployment use Docker Compose (`vehicle-linux-node/docker-compose.yml`, verified on macOS with colima in replay mode, vehicle-linux-node#35).
+2. Eclipse Kanto (the Eclipse SDV edge container manager), Podman with systemd Quadlets and k3s are compared on the Pi 5 in T75: resource use, update flow (desired state, rollback, fit with the signed OTA packages) and maintenance status. Kanto's last release is v1.0.0 (2024-06), so its maintenance status is part of the decision.
+3. The switch decision follows the T75 report.
+- Why: Compose is simple, already verified and enough for the prototype; adopting an SDV-standard manager is worth it only if it measures well and is maintained.
+
 ## Open questions (awaiting decision)
 
 | ID | Question | When to resolve | Note |
