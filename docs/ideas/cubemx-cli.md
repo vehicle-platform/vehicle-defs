@@ -2,7 +2,7 @@
 
 Status: reference note, not a decision (facts observed from workspace `local/cubemx/` scripts and logs on macOS, STM32CubeMX 6.18.0)
 
-This note documents how the platform's two initial `.ioc` files (`rt-core` / `NUCLEO-H743ZI2` and `safety-node` / `NUCLEO-G474RE`) were built headlessly with STM32CubeMX's `-q` script mode, which commands worked or failed, how `check_pins.py` verifies pin assignments, and why firmware package installation stays in the GUI. All paths under `<workspace>/local/cubemx/` are git-ignored local tooling.
+This note documents how the platform's two initial `.ioc` files (`rt-core` / `NUCLEO-H743ZI2` and `safety-node` / `NUCLEO-G474RE`) were built headlessly with STM32CubeMX's `-q` script mode, which commands worked or failed, how `check_pins.py` verifies pin assignments, and how firmware packages are installed headless. All paths under `<workspace>/local/cubemx/` are git-ignored local tooling.
 
 ---
 
@@ -74,13 +74,18 @@ To summarize command outcomes from verbose CubeMX logs (`run*.out`, `load.out`, 
    - **Stage 2:** Generate `IP:DMA`, `Dma.Request<n>`, `Dma.<REQ>.<n>.*`, and `Dma.RequestsNb` lines with `local/cubemx/dma_args.py <board>` (for `rt-core`, also `ADC1`/`ADC3` `ConversionDataManagement=ADC_CONVERSIONDATA_DMA_CIRCULAR`), patch `stage1.ioc` into `stage2.ioc` with `local/cubemx/patch_ioc.py` (which updates `Mcu.IP0..N` and `Mcu.IPNb`), then reload `stage2.ioc` via `config load` and re-export via `config saveas` + `csv pinout`.
    - During `config load` of the patched `.ioc`, CubeMX logs `OptionalMessage_ERROR` lines such as `IP (DMA) : Parameter (Instance) has Id (ADC1) currently not set` (and `TIM3_CH1` on G474), plus `Unable to find key (Mcu.IP<n>)` / `Unknown IP (dummy)`, yet retains the DMA entries in the saved `.ioc`.
 
-2. **Board VCP UART `set mode` returns `KO`:**
-   - On `NUCLEO-H743ZI2` (`rt-core/run4.out`): `set pin PD8 USART3_TX` and `set pin PD9 USART3_RX` both return `OK`, while `set mode USART3 Asynchronous` returns `KO`.
-   - On `NUCLEO-G474RE` (`safety-node/run1.out`): `set mode LPUART1 Asynchronous` returns `KO`.
-   - The pins remain recorded in the `.ioc` (`PD8`/`PD9` for `USART3`, `PA2`/`PA3` for `LPUART1`); enabling the VCP UART peripheral mode (along with the H743 clock tree) is completed in the CubeMX GUI.
+2. **Board VCP UART `set mode` returns `KO` (resolved 2026-11-27):**
+   - Observed on `NUCLEO-H743ZI2` (`set mode USART3 Asynchronous`) and `NUCLEO-G474RE` (`set mode LPUART1 Asynchronous`), while the matching `set pin` calls returned `OK`.
+   - Cause: the Nucleo BSP `COMMON` component reserves the VCP UARTs. Dropping the BSP made `set mode` succeed. The generated code then no longer includes the Nucleo BSP files.
+   - The earlier statement that enabling the VCP UART mode needs the CubeMX GUI is superseded (2026-11-27).
 
 3. **Empty CSV cells for board-locked pins:**
    `csv pinout` can leave the `Signal` column blank for board-locked pins even though `<PIN>.Signal=...` is present in the `.ioc`. Any automated check must fall back to the `.ioc` file when a CSV cell is empty.
+
+4. **Remaining benign load messages:**
+   - `Pin<N> (VP_RIF_VS_RIF1) cannot be retrieved for this MCU`.
+   - `IP (DMA) : Parameter (...) currently not set`, also printed when CubeMX reloads a file it saved itself. The DMA configuration still reaches the generated code.
+   - The committed `.ioc` files are post-processed by `local/cubemx/pp_ioc.py`.
 
 ---
 
@@ -135,10 +140,12 @@ Running `project generate` in script mode requires the matching STM32Cube firmwa
 
 When a package is not installed, `project generate` triggers a popup (`The Firmware Package (...) or one of its dependencies required by the Project is not available in your STM32CubeMX Repository`) and `AnalyticsPlugin` logs an empty `Accepted Firmware Licenses:` list. Under `popupwrapper set`, CubeMX returns the default answer and cannot complete full project generation.
 
-Installing a firmware package requires an interactive license acceptance in the STM32CubeMX GUI:
+### Firmware package installation (updated 2026-11-27)
 
-1. Open STM32CubeMX GUI.
-2. Go to **Help > Manage embedded software packages**.
-3. Install `STM32Cube FW_H7 V1.13.0` (can be loaded from a locally downloaded archive if present) and `STM32Cube FW_G4 V1.6.3`, accepting ST's license dialog manually.
+The earlier statement that installing a firmware package is GUI only is superseded (2026-11-27). Packages can be installed headless:
 
-**Rule:** A headless script must **never** accept or bypass firmware license dialogs on the user's behalf.
+- **FW_H7:** `swmgr install <zip> <mode>` accepts only `deny|ask`. FW_H7 V1.13.0 was installed with `(yes y | local/cubemx/run.sh <abs script> <abs log> <guard>) </dev/null`, which answers the license prompt on stdin. It lands in `~/STM32Cube/Repository/STM32Cube_FW_H7_V1.13.0`.
+- **FW_G4:** `swmgr` hung. The package was installed by unzipping the base `stm32cube_fw_g4_v160.zip` and then the v1.6.3 patch zip (`unzip -o`) into `~/STM32Cube/Repository/STM32Cube_FW_G4_V1.6.0`. CubeMX then reports FW_G4 V1.6.3. A patch-only install shows a "missing dependency" GUI dialog.
+- **Toolchain:** `arm-none-eabi-gcc` 15.3.1 in `~/.local/bin`. `cmake --preset Debug && cmake --build --preset Debug` builds both generated projects with 0 errors and 0 warnings. ProjectManager uses `LibraryCopy=1`.
+
+**Rule:** A script must never accept a license without the user's explicit consent. The stdin answer above was used only after the user explicitly authorised accepting ST's license for FW_H7 and FW_G4.
