@@ -1,6 +1,6 @@
 # System Context
 
-**Caption:** Top-level hardware and software topology of `vehicle-platform`, showing physical isolation between the OEM vehicle CAN bus (single read-only tester) and the dedicated platform CAN bus, the separate Cortex-M4F safety MCU, the Raspberry Pi 5 HPC, edge/remote servers, the companion app, and the listen-only analyzer.
+**Caption:** Top-level hardware and software topology of `vehicle-platform`, showing physical isolation between the OEM vehicle CAN bus (single read-only tester: rt-core, or the bike ESP32 until rt-core runs, D-023; never both) and the dedicated platform CAN bus, the separate Cortex-M4F safety MCU, the Raspberry Pi 5 HPC, edge/remote servers, the companion app, and the listen-only analyzer.
 
 ```mermaid
 flowchart LR
@@ -28,7 +28,8 @@ flowchart LR
 
   RTCORE <-->|"FDCAN2 (0x020/0x021/0x022/0x081/0x110/0x120)"| PBUS
   SAFETY <-->|"FDCAN (0x020/0x022/0x081/0x120 in; 0x023/0x082 out)"| PBUS
-  CONN <-->|"TWAI (platform bus; temporary sole tester until rt-core)"| PBUS
+  CONN -.->|"TWAI: temporary sole tester until rt-core (D-023)"| VBUS
+  CONN <-->|"TWAI (after rt-core: platform bus to BLE bridge)"| PBUS
   PI <-->|"can1 SocketCAN"| PBUS
   PBUS -.->|"USB-CAN (listen-only)"| ANALYZER
 

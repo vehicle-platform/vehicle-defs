@@ -33,12 +33,14 @@ sequenceDiagram
   end
 
   Note over SSE,Mobile: No SSE replay on disconnect:<br/>reconnect triggers backoff (1..30 s) + GET /notifications pull
+  Note over Svc,DB: After upload, alerts/replay.py runs the same engine over the stored ride<br/>(anomaly notifications with session_id set; an alert already raised live is not stored twice)
 ```
 
 ## Sources
 - `vehicle-defs/docs/DECISIONS.md`: D-129 (in-ride alert classes P0/P1/P2, debounce/hysteresis/cooldown, SSE stream, per-type mutes), D-130 item 4 (banner max display time)
 - `vehicle-defs/docs/ARCHITECTURE.md` §7 (Rider accounts and notifications)
 - `vehicle-server/src/vehicle_server/alerts/service.py` (`AlertService`, `on_batch`, `tick`, `TICK_PERIOD_S = 1.0`)
+- `vehicle-server/src/vehicle_server/alerts/replay.py` (post-ride replay, D-129 item 3)
 - `vehicle-server/src/vehicle_server/alerts_api.py` (`GET /alerts/stream`, `sse_frame`, `HEARTBEAT_PERIOD_S = 15.0`)
 - `vehicle-mobile/lib/services/alerts/alert_controller.dart` (`AlertController`, `p1BannerMaxDisplay = 30s`, `p2BannerMaxDisplay = 12s`, `alertBackoff`)
 - `vehicle-mobile/lib/services/alerts/alert_prefs.dart` (`AlertPrefs`: P1 voice-only mute, P2 banner+voice mute)
