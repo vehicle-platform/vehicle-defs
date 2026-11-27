@@ -4,6 +4,15 @@ All notable changes to vehicle-defs. Semver (see CLAUDE.md): new message/signal 
 
 ## [Unreleased]
 
+## [0.34.0] — 2026-11-28
+
+**MINOR (additive generated constant; T77 follow-up).** The platform-bus bit rate is now a generated constant read only from the `Baudrate` attribute of `dbc/platform.dbc`, so rt-core and safety-node stop using a local 500000 literal or the vehicle-bus constant for the platform bus. No CAN frame, signal, DID, VSS path, BLE layout or `tester_policy` change. Do not tag without the user (release-tags-by-user).
+
+- **C:** `PLATFORM_BITRATE` (`(500000u)`, bit/s) in `platform.h` of every node target (`rt_core`, `safety`, `conn`, `hil_sim`). The vehicle-bus `VEHICLE_CL250_BITRATE` is unchanged and must not be used for the platform bus.
+- **Python:** `vehicle_defs.platform.BITRATE`.
+- **Codegen:** new `platform_bitrate()` fails loudly (and `make check` reports it) if `BA_ "Baudrate"` is missing or not a positive integer; the `BA_DEF_DEF_` default is not accepted as a value. Dart has no vehicle bit-rate constant, so none is added there.
+- Consumers: rt-core and safety-node replace their local literal with `PLATFORM_BITRATE` after a deliberate pin to the new tag.
+
 ## [0.33.0] — 2026-11-26
 
 **MINOR (additive; D-129 item 2, PROVISIONAL; T48).** In-ride alert rules as data. No CAN frame, signal, DID, VSS path, BLE layout or `tester_policy` change; `gen/c` and `gen/vss` are untouched. Do not tag without the user (release-tags-by-user).

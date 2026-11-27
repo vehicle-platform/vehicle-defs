@@ -33,6 +33,7 @@ NODE_IDS = {
     "TESTER": 0xF,
 }
 
+BITRATE = 500000  # bit/s, the DBC Baudrate attribute
 E2E_TIMEOUT_CYCLES = 3
 E2E_MAX_DELTA_COUNTER = 1
 
