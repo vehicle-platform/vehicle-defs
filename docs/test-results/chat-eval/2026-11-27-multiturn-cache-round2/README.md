@@ -66,7 +66,8 @@ never called during `/chat`):
 - **Note on `cache_prompt`**: the default local server client in `chat/wiring.py:21` passes
   `cache_prompt=True`. By contrast, `chat/providers/factory.py:33` constructs `OpenAiCompatLlm`
   without `cache_prompt=True` (defaults to `False`) when a user explicitly configures the `local`
-  preset through per-user provider settings.
+  preset through per-user provider settings (fixed in vehicle-server by a Claude follow-up PR; the
+  local preset now passes `cache_prompt=True`).
 - **Which call's `timings` `/chat` reports**: `OpenAiCompatLlm.complete` (`llm.py:138-142`) parses
   `data["timings"]` (`prompt_n`, `cache_n`, `prompt_ms`, `predicted_ms`) on every call and appends
   it to the per-request `REPORTED_TIMINGS` `ContextVar` list. `ChatService.answer`
@@ -81,6 +82,8 @@ per arm and locale). Cache shares and `prompt_ms` percentiles below are computed
 LLM-timed turns (`timings != null`), with both total `n` and `timed n` shown.
 
 ### Per-run summary (showing cold run 1 vs. warm runs 2–3)
+
+Caption: Run 1 is cold only for the first locale of each arm. The `tr` Run 1 is not fully cold: it ran after the `en` runs on the same `llama-server`, so the shared planner prefix was already cached (finding 3).
 
 | Locale | Arm | Run | n | LLM-timed n | Cached / total prompt tokens | Cached share | `prompt_ms` p50 | `prompt_ms` p95 | Wall time |
 |---|---|---|---|---|---|---|---|---|---|
@@ -98,6 +101,8 @@ LLM-timed turns (`timings != null`), with both total `n` and `timed n` shown.
 | `tr` | B (`-np 2 -c 8192`) | 3 | 35 | 11 | 8087 / 8507 | 95.1% | 52.7 ms | 441.5 ms | 29.4 s |
 
 ### Per-turn pooled across 3 runs (per arm and locale)
+
+The pooled rows mix the cold Run 1 with the replay-dominated Runs 2-3 (finding 3), so they do not measure within-conversation reuse; use the Run 1 rows for that.
 
 | Locale | Arm | Turn | n | LLM-timed n | Cached / total prompt tokens | Cached share | `prompt_ms` p50 | `prompt_ms` p95 |
 |---|---|---|---|---|---|---|---|---|
@@ -137,7 +142,7 @@ LLM-timed turns (`timings != null`), with both total `n` and `timed n` shown.
      `1265.3 ms` vs. `1198.3 ms`, p95 `1820.0 ms` vs. `1669.7 ms`.
    - Warm Runs 2–3: Arm B was slower than Arm A on every warm run (`en` p50 `93.2–93.8 ms` vs.
      `75.2–75.3 ms`, `tr` p50 `52.7–59.3 ms` vs. `34.8–40.2 ms`), and total run wall time was higher
-     in Arm B on all 12 runs (`21.8–24.8 s` vs. `12.7–22.4 s` in `en`; `26.6–36.9 s` vs.
+     in Arm B on all 6 paired runs (same locale and run number) (`21.8–24.8 s` vs. `12.7–22.4 s` in `en`; `26.6–36.9 s` vs.
      `22.2–32.5 s` in `tr`).
    - **Next hypothesis**: the two-slot allocation (`-np 2 -c 8192`) adds per-request slot/cache
      overhead on this Mac CPU/Metal build that outweighs saving ~133 phrasing system-prompt tokens.
@@ -160,6 +165,10 @@ LLM-timed turns (`timings != null`), with both total `n` and `timed n` shown.
    - **Next hypothesis**: add multi-turn conversations whose turns 2–4 intentionally exercise LLM
      phrasing (for example `compare_sessions` or multi-match `check_symptom` follow-ups) if turn-4
      LLM prompt-cache behavior needs to be measured.
+
+**Outcome for T72:** keep `-np 1`; no TTFT gain from `-np 2` was shown. A round 3 needs a
+`llama-server` restart (or `--cache-ram 0`) between every run and locale, plus conversations whose
+later turns use LLM phrasing.
 
 ## Artifacts in this directory
 
