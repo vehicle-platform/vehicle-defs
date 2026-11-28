@@ -29,3 +29,4 @@ fixed question set, so every assistant change has a before/after number (TASKS T
 | 2026-11-26 | Baseline before T42 (main of server 844c000 + harness) | [2026-11-26-baseline](2026-11-26-baseline/README.md) |
 | 2026-11-27 | Multi-turn prompt-cache round 2 (T72, `-np 1 -c 4096` vs `-np 2 -c 8192`) | [2026-11-27-multiturn-cache-round2](2026-11-27-multiturn-cache-round2/README.md) |
 | 2026-11-27 | Multi-turn prompt-cache round 3 (T72, cold restart per run & locale, `mt-01`..`mt-15`) | [2026-11-27-multiturn-cache-round3](2026-11-27-multiturn-cache-round3/README.md) |
+| 2026-11-29 | T59 tool-choice GBNF grammar (`off` vs `on`, `en`/`tr`, dev + held-out, 3 cold runs) | [2026-11-29-tool-grammar](2026-11-29-tool-grammar/README.md) |
