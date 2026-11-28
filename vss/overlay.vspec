@@ -455,3 +455,51 @@ Vehicle.Motorcycle.Validity.ThrottlePosition:
           to: false
         - from: VALID
           to: true
+
+Vehicle.Motorcycle.Power:
+  type: branch
+  description: Key-off power-down handshake of the platform (D-138, provisional). rt-core requests; the Raspberry Pi 5 shutdown listener acts and acknowledges directly on the platform bus (the acknowledgement is not mapped here).
+
+Vehicle.Motorcycle.Power.ShutdownRequested:
+  type: sensor
+  datatype: boolean
+  description: True while rt-core asks the Raspberry Pi 5 for a clean shutdown (DBC SHUTDOWN_REQUEST = SHUTDOWN). Reserved raw values read as false. Not E2E-checked by kuksa-can-provider and must never feed a safety decision (D-138, provisional).
+  dbc2vss:
+    signal: SHUTDOWN_REQUEST
+    interval_ms: 100
+    transform:
+      mapping:
+        - from: NONE
+          to: false
+        - from: SHUTDOWN
+          to: true
+
+Vehicle.Motorcycle.Power.ShutdownReason:
+  type: sensor
+  datatype: string
+  allowed: ['NONE', 'KEY_OFF', 'LOW_VOLTAGE', 'SERVICE']
+  description: Reason of the current shutdown request (DBC SHUTDOWN_REASON). Informational; not E2E-checked by kuksa-can-provider (D-138, provisional).
+  dbc2vss:
+    signal: SHUTDOWN_REASON
+    interval_ms: 100
+    transform:
+      mapping:
+        - from: NONE
+          to: NONE
+        - from: KEY_OFF
+          to: KEY_OFF
+        - from: LOW_VOLTAGE
+          to: LOW_VOLTAGE
+        - from: SERVICE
+          to: SERVICE
+
+Vehicle.Motorcycle.Power.ShutdownDeadline:
+  type: sensor
+  datatype: uint8
+  unit: s
+  min: 0
+  max: 255
+  description: Seconds the Pi has before rt-core cuts the supply (DBC SHUTDOWN_DEADLINE; 0 = no deadline given). Not E2E-checked by kuksa-can-provider (D-138, provisional).
+  dbc2vss:
+    signal: SHUTDOWN_DEADLINE
+    interval_ms: 100

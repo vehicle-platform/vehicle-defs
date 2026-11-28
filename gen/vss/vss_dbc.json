@@ -8739,6 +8739,80 @@
             "description": "Health of the platform-bus nodes, from their heartbeats 0x081-0x085 (D-108, provisional).",
             "type": "branch"
           },
+          "Power": {
+            "children": {
+              "ShutdownDeadline": {
+                "datatype": "uint8",
+                "dbc2vss": {
+                  "interval_ms": 100,
+                  "signal": "SHUTDOWN_DEADLINE"
+                },
+                "description": "Seconds the Pi has before rt-core cuts the supply (DBC SHUTDOWN_DEADLINE; 0 = no deadline given). Not E2E-checked by kuksa-can-provider (D-138, provisional).",
+                "max": 255,
+                "min": 0,
+                "type": "sensor",
+                "unit": "s"
+              },
+              "ShutdownReason": {
+                "allowed": [
+                  "NONE",
+                  "KEY_OFF",
+                  "LOW_VOLTAGE",
+                  "SERVICE"
+                ],
+                "datatype": "string",
+                "dbc2vss": {
+                  "interval_ms": 100,
+                  "signal": "SHUTDOWN_REASON",
+                  "transform": {
+                    "mapping": [
+                      {
+                        "from": "NONE",
+                        "to": "NONE"
+                      },
+                      {
+                        "from": "KEY_OFF",
+                        "to": "KEY_OFF"
+                      },
+                      {
+                        "from": "LOW_VOLTAGE",
+                        "to": "LOW_VOLTAGE"
+                      },
+                      {
+                        "from": "SERVICE",
+                        "to": "SERVICE"
+                      }
+                    ]
+                  }
+                },
+                "description": "Reason of the current shutdown request (DBC SHUTDOWN_REASON). Informational; not E2E-checked by kuksa-can-provider (D-138, provisional).",
+                "type": "sensor"
+              },
+              "ShutdownRequested": {
+                "datatype": "boolean",
+                "dbc2vss": {
+                  "interval_ms": 100,
+                  "signal": "SHUTDOWN_REQUEST",
+                  "transform": {
+                    "mapping": [
+                      {
+                        "from": "NONE",
+                        "to": false
+                      },
+                      {
+                        "from": "SHUTDOWN",
+                        "to": true
+                      }
+                    ]
+                  }
+                },
+                "description": "True while rt-core asks the Raspberry Pi 5 for a clean shutdown (DBC SHUTDOWN_REQUEST = SHUTDOWN). Reserved raw values read as false. Not E2E-checked by kuksa-can-provider and must never feed a safety decision (D-138, provisional).",
+                "type": "sensor"
+              }
+            },
+            "description": "Key-off power-down handshake of the platform (D-138, provisional). rt-core requests; the Raspberry Pi 5 shutdown listener acts and acknowledges directly on the platform bus (the acknowledgement is not mapped here).",
+            "type": "branch"
+          },
           "ThrottlePosition": {
             "datatype": "float",
             "dbc2vss": {

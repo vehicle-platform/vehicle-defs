@@ -441,7 +441,7 @@ def check_unpack_checked(cm: CMessage, rng: random.Random) -> None:
     length = cm.msg.length
     frame = next(  # a frame whose signals are all in range (a receiver has no plain pack)
         d
-        for d in (bytes(rng.randrange(256) for _ in range(length)) for _ in range(5000))
+        for d in (bytes(rng.randrange(256) for _ in range(length)) for _ in range(200_000))
         if all(cm.in_range[m](v) for m, v in _c_unpack(cm, d).items())
     )
     good = cm.struct()

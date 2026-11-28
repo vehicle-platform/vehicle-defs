@@ -58,6 +58,8 @@ extern "C" {
 #define PLATFORM_HEARTBEAT_LINUX_FRAME_ID (0x85u)
 #define PLATFORM_VEHICLE_ENGINE_FRAME_ID (0x110u)
 #define PLATFORM_SAFETY_REQUEST_FRAME_ID (0x120u)
+#define PLATFORM_SHUTDOWN_REQUEST_FRAME_ID (0x121u)
+#define PLATFORM_SHUTDOWN_ACK_FRAME_ID (0x122u)
 
 /* Frame lengths in bytes. */
 #define PLATFORM_EKF_LEAN_LENGTH (8u)
@@ -70,6 +72,8 @@ extern "C" {
 #define PLATFORM_HEARTBEAT_LINUX_LENGTH (8u)
 #define PLATFORM_VEHICLE_ENGINE_LENGTH (8u)
 #define PLATFORM_SAFETY_REQUEST_LENGTH (8u)
+#define PLATFORM_SHUTDOWN_REQUEST_LENGTH (8u)
+#define PLATFORM_SHUTDOWN_ACK_LENGTH (8u)
 
 /* Extended or standard frame types. */
 #define PLATFORM_EKF_LEAN_IS_EXTENDED (0)
@@ -82,6 +86,8 @@ extern "C" {
 #define PLATFORM_HEARTBEAT_LINUX_IS_EXTENDED (0)
 #define PLATFORM_VEHICLE_ENGINE_IS_EXTENDED (0)
 #define PLATFORM_SAFETY_REQUEST_IS_EXTENDED (0)
+#define PLATFORM_SHUTDOWN_REQUEST_IS_EXTENDED (0)
+#define PLATFORM_SHUTDOWN_ACK_IS_EXTENDED (0)
 
 /* Frame cycle times in milliseconds. */
 #define PLATFORM_EKF_LEAN_CYCLE_TIME_MS (20u)
@@ -94,6 +100,8 @@ extern "C" {
 #define PLATFORM_HEARTBEAT_LINUX_CYCLE_TIME_MS (100u)
 #define PLATFORM_VEHICLE_ENGINE_CYCLE_TIME_MS (50u)
 #define PLATFORM_SAFETY_REQUEST_CYCLE_TIME_MS (100u)
+#define PLATFORM_SHUTDOWN_REQUEST_CYCLE_TIME_MS (100u)
+#define PLATFORM_SHUTDOWN_ACK_CYCLE_TIME_MS (100u)
 
 /* Signal choices. */
 #define PLATFORM_EKF_LEAN_LEAN_ANGLE_STATE_ESTIMATED_CHOICE (0u)
@@ -198,6 +206,21 @@ extern "C" {
 #define PLATFORM_SAFETY_REQUEST_IMMOBILIZER_LOCK_REQUEST_RESERVED_2_CHOICE (2u)
 #define PLATFORM_SAFETY_REQUEST_IMMOBILIZER_LOCK_REQUEST_LOCK_CHOICE (3u)
 
+#define PLATFORM_SHUTDOWN_REQUEST_SHUTDOWN_REQUEST_NONE_CHOICE (0u)
+#define PLATFORM_SHUTDOWN_REQUEST_SHUTDOWN_REQUEST_SHUTDOWN_CHOICE (1u)
+#define PLATFORM_SHUTDOWN_REQUEST_SHUTDOWN_REQUEST_RESERVED_2_CHOICE (2u)
+#define PLATFORM_SHUTDOWN_REQUEST_SHUTDOWN_REQUEST_RESERVED_3_CHOICE (3u)
+
+#define PLATFORM_SHUTDOWN_REQUEST_SHUTDOWN_REASON_NONE_CHOICE (0u)
+#define PLATFORM_SHUTDOWN_REQUEST_SHUTDOWN_REASON_KEY_OFF_CHOICE (1u)
+#define PLATFORM_SHUTDOWN_REQUEST_SHUTDOWN_REASON_LOW_VOLTAGE_CHOICE (2u)
+#define PLATFORM_SHUTDOWN_REQUEST_SHUTDOWN_REASON_SERVICE_CHOICE (3u)
+
+#define PLATFORM_SHUTDOWN_ACK_SHUTDOWN_ACK_STATE_NONE_CHOICE (0u)
+#define PLATFORM_SHUTDOWN_ACK_SHUTDOWN_ACK_STATE_HALTING_CHOICE (1u)
+#define PLATFORM_SHUTDOWN_ACK_SHUTDOWN_ACK_STATE_READY_TO_CUT_CHOICE (2u)
+#define PLATFORM_SHUTDOWN_ACK_SHUTDOWN_ACK_STATE_RESERVED_CHOICE (3u)
+
 /* Frame Names. */
 #define PLATFORM_EKF_LEAN_NAME "EkfLean"
 #define PLATFORM_VEHICLE_SPEED_NAME "VehicleSpeed"
@@ -209,6 +232,8 @@ extern "C" {
 #define PLATFORM_HEARTBEAT_LINUX_NAME "HeartbeatLinux"
 #define PLATFORM_VEHICLE_ENGINE_NAME "VehicleEngine"
 #define PLATFORM_SAFETY_REQUEST_NAME "SafetyRequest"
+#define PLATFORM_SHUTDOWN_REQUEST_NAME "ShutdownRequest"
+#define PLATFORM_SHUTDOWN_ACK_NAME "ShutdownAck"
 
 /* Signal Names. */
 #define PLATFORM_EKF_LEAN_E2_E_CRC_NAME "E2E_CRC"
@@ -270,6 +295,12 @@ extern "C" {
 #define PLATFORM_SAFETY_REQUEST_IGNITION_STATE_NAME "IGNITION_STATE"
 #define PLATFORM_SAFETY_REQUEST_PARK_MODE_NAME "PARK_MODE"
 #define PLATFORM_SAFETY_REQUEST_IMMOBILIZER_LOCK_REQUEST_NAME "IMMOBILIZER_LOCK_REQUEST"
+#define PLATFORM_SHUTDOWN_REQUEST_SHUTDOWN_REQUEST_NAME "SHUTDOWN_REQUEST"
+#define PLATFORM_SHUTDOWN_REQUEST_SHUTDOWN_REASON_NAME "SHUTDOWN_REASON"
+#define PLATFORM_SHUTDOWN_REQUEST_SHUTDOWN_REQUEST_ID_NAME "SHUTDOWN_REQUEST_ID"
+#define PLATFORM_SHUTDOWN_REQUEST_SHUTDOWN_DEADLINE_NAME "SHUTDOWN_DEADLINE"
+#define PLATFORM_SHUTDOWN_ACK_SHUTDOWN_ACK_STATE_NAME "SHUTDOWN_ACK_STATE"
+#define PLATFORM_SHUTDOWN_ACK_SHUTDOWN_ACK_ID_NAME "SHUTDOWN_ACK_ID"
 
 /**
  * Signals in message EkfLean.
@@ -834,6 +865,78 @@ struct platform_safety_request_t {
      * Offset: 0
      */
     uint8_t immobilizer_lock_request;
+};
+
+/**
+ * Signals in message ShutdownRequest.
+ *
+ * Key-off power-down request from rt-core to the Raspberry Pi 5 (D-138 item 2), a QM frame without E2E: a lost or spurious frame can only cause or delay a clean shutdown, never a safety function. rt-core sends it every 100 ms; SHUTDOWN_REQUEST=NONE means no request. The safety MCU does not depend on it (invariant 3).
+ *
+ * All signal values are as on the CAN bus.
+ */
+struct platform_shutdown_request_t {
+    /**
+     * SHUTDOWN = the receiver must close its files and halt within SHUTDOWN_DEADLINE; NONE = no request (raw 0, also the value of a never-written field). 2 and 3 are reserved and are read as NONE, so a corrupted value never halts the Pi.
+     *
+     * Range: 0..3 (0..3 -)
+     * Scale: 1
+     * Offset: 0
+     */
+    uint8_t shutdown_request;
+
+    /**
+     * Why rt-core asks for the shutdown: KEY_OFF (KL15 dropped), LOW_VOLTAGE (battery below the cut-off while parked or riding), SERVICE (a commanded shutdown). Unknown values are read as NONE.
+     *
+     * Range: 0..15 (0..15 -)
+     * Scale: 1
+     * Offset: 0
+     */
+    uint8_t shutdown_reason;
+
+    /**
+     * Counter that rt-core increments once for every new shutdown sequence (not per frame, wraps at 15); ShutdownAck echoes it so an acknowledgement of an earlier sequence is never taken for the current one.
+     *
+     * Range: 0..15 (0..15 -)
+     * Scale: 1
+     * Offset: 0
+     */
+    uint8_t shutdown_request_id;
+
+    /**
+     * Seconds the receiver has before rt-core releases HOLD and the supply is cut (the bounded timeout of D-138 item 2, provisional 20-30 s until measured); 0 = no deadline given.
+     *
+     * Range: 0..255 (0..255 s)
+     * Scale: 1
+     * Offset: 0
+     */
+    uint8_t shutdown_deadline;
+};
+
+/**
+ * Signals in message ShutdownAck.
+ *
+ * Raspberry Pi 5 answer to ShutdownRequest (D-138 item 2), a QM frame without E2E sent every 100 ms by the LINUX shutdown listener. A missing acknowledgement is not an error: rt-core waits at most the deadline and then cuts the supply anyway, so a hung Pi never holds the supply.
+ *
+ * All signal values are as on the CAN bus.
+ */
+struct platform_shutdown_ack_t {
+    /**
+     * NONE = nothing to report (raw 0); HALTING = the request was accepted and the Pi is shutting down; READY_TO_CUT = filesystems are synced and the supply may be cut now (sent last). 3 is reserved and is read as NONE.
+     *
+     * Range: 0..3 (0..3 -)
+     * Scale: 1
+     * Offset: 0
+     */
+    uint8_t shutdown_ack_state;
+
+    /**
+     * The SHUTDOWN_REQUEST_ID this state answers; rt-core ignores a state whose id differs from the current sequence.
+     *
+     * Range: 0..15 (0..15 -)
+     * Scale: 1
+     * Offset: 0
+     */
+    uint8_t shutdown_ack_id;
 };
 
 /**
@@ -3567,6 +3670,320 @@ bool platform_safety_request_immobilizer_lock_request_is_in_range(uint8_t value)
 bool platform_safety_request_immobilizer_lock_request_is_in_phys_range(float value);
 
 /**
+ * Pack message ShutdownRequest.
+ *
+ * @param[out] dst_p Buffer to pack the message into.
+ * @param[in] src_p Data to pack.
+ * @param[in] size Size of dst_p.
+ *
+ * @return Size of packed data, or negative error code.
+ */
+int platform_shutdown_request_pack(
+    uint8_t *dst_p,
+    const struct platform_shutdown_request_t *src_p,
+    size_t size);
+
+/**
+ * Unpack message ShutdownRequest.
+ *
+ * @param[out] dst_p Object to unpack the message into.
+ * @param[in] src_p Message to unpack.
+ * @param[in] size Size of src_p.
+ *
+ * @return zero(0) or negative error code.
+ */
+int platform_shutdown_request_unpack(
+    struct platform_shutdown_request_t *dst_p,
+    const uint8_t *src_p,
+    size_t size);
+
+/**
+ * Init message fields to default values from ShutdownRequest.
+ *
+ * @param[in] msg_p Message to init.
+ *
+ * @return zero(0) on success or (-1) in case of nullptr argument.
+ */
+int platform_shutdown_request_init(struct platform_shutdown_request_t *msg_p);
+
+/**
+ * Encode given signal by applying scaling and offset.
+ *
+ * @param[in] value Signal to encode.
+ *
+ * @return Encoded signal.
+ */
+uint8_t platform_shutdown_request_shutdown_request_encode(float value);
+
+/**
+ * Decode given signal by applying scaling and offset.
+ *
+ * @param[in] value Signal to decode.
+ *
+ * @return Decoded signal.
+ */
+float platform_shutdown_request_shutdown_request_decode(uint8_t value);
+
+/**
+ * Check that given signal is in allowed range.
+ *
+ * @param[in] value Signal to check.
+ *
+ * @return true if in range, false otherwise.
+ */
+bool platform_shutdown_request_shutdown_request_is_in_range(uint8_t value);
+
+/**
+ * Check that given physical value is in allowed range before encoding.
+ *
+ * Use this BEFORE calling _encode() to avoid silent integer overflow:
+ *   encode(-1.0) on a [0,100] signal wraps to 255 and passes is_in_range().
+ *   is_in_phys_range(-1.0) correctly returns false.
+ *
+ * @param[in] value Physical signal value to check.
+ *
+ * @return true if in range, false otherwise.
+ */
+bool platform_shutdown_request_shutdown_request_is_in_phys_range(float value);
+
+/**
+ * Encode given signal by applying scaling and offset.
+ *
+ * @param[in] value Signal to encode.
+ *
+ * @return Encoded signal.
+ */
+uint8_t platform_shutdown_request_shutdown_reason_encode(float value);
+
+/**
+ * Decode given signal by applying scaling and offset.
+ *
+ * @param[in] value Signal to decode.
+ *
+ * @return Decoded signal.
+ */
+float platform_shutdown_request_shutdown_reason_decode(uint8_t value);
+
+/**
+ * Check that given signal is in allowed range.
+ *
+ * @param[in] value Signal to check.
+ *
+ * @return true if in range, false otherwise.
+ */
+bool platform_shutdown_request_shutdown_reason_is_in_range(uint8_t value);
+
+/**
+ * Check that given physical value is in allowed range before encoding.
+ *
+ * Use this BEFORE calling _encode() to avoid silent integer overflow:
+ *   encode(-1.0) on a [0,100] signal wraps to 255 and passes is_in_range().
+ *   is_in_phys_range(-1.0) correctly returns false.
+ *
+ * @param[in] value Physical signal value to check.
+ *
+ * @return true if in range, false otherwise.
+ */
+bool platform_shutdown_request_shutdown_reason_is_in_phys_range(float value);
+
+/**
+ * Encode given signal by applying scaling and offset.
+ *
+ * @param[in] value Signal to encode.
+ *
+ * @return Encoded signal.
+ */
+uint8_t platform_shutdown_request_shutdown_request_id_encode(float value);
+
+/**
+ * Decode given signal by applying scaling and offset.
+ *
+ * @param[in] value Signal to decode.
+ *
+ * @return Decoded signal.
+ */
+float platform_shutdown_request_shutdown_request_id_decode(uint8_t value);
+
+/**
+ * Check that given signal is in allowed range.
+ *
+ * @param[in] value Signal to check.
+ *
+ * @return true if in range, false otherwise.
+ */
+bool platform_shutdown_request_shutdown_request_id_is_in_range(uint8_t value);
+
+/**
+ * Check that given physical value is in allowed range before encoding.
+ *
+ * Use this BEFORE calling _encode() to avoid silent integer overflow:
+ *   encode(-1.0) on a [0,100] signal wraps to 255 and passes is_in_range().
+ *   is_in_phys_range(-1.0) correctly returns false.
+ *
+ * @param[in] value Physical signal value to check.
+ *
+ * @return true if in range, false otherwise.
+ */
+bool platform_shutdown_request_shutdown_request_id_is_in_phys_range(float value);
+
+/**
+ * Encode given signal by applying scaling and offset.
+ *
+ * @param[in] value Signal to encode.
+ *
+ * @return Encoded signal.
+ */
+uint8_t platform_shutdown_request_shutdown_deadline_encode(float value);
+
+/**
+ * Decode given signal by applying scaling and offset.
+ *
+ * @param[in] value Signal to decode.
+ *
+ * @return Decoded signal.
+ */
+float platform_shutdown_request_shutdown_deadline_decode(uint8_t value);
+
+/**
+ * Check that given signal is in allowed range.
+ *
+ * @param[in] value Signal to check.
+ *
+ * @return true if in range, false otherwise.
+ */
+bool platform_shutdown_request_shutdown_deadline_is_in_range(uint8_t value);
+
+/**
+ * Check that given physical value is in allowed range before encoding.
+ *
+ * Use this BEFORE calling _encode() to avoid silent integer overflow:
+ *   encode(-1.0) on a [0,100] signal wraps to 255 and passes is_in_range().
+ *   is_in_phys_range(-1.0) correctly returns false.
+ *
+ * @param[in] value Physical signal value to check.
+ *
+ * @return true if in range, false otherwise.
+ */
+bool platform_shutdown_request_shutdown_deadline_is_in_phys_range(float value);
+
+/**
+ * Pack message ShutdownAck.
+ *
+ * @param[out] dst_p Buffer to pack the message into.
+ * @param[in] src_p Data to pack.
+ * @param[in] size Size of dst_p.
+ *
+ * @return Size of packed data, or negative error code.
+ */
+int platform_shutdown_ack_pack(
+    uint8_t *dst_p,
+    const struct platform_shutdown_ack_t *src_p,
+    size_t size);
+
+/**
+ * Unpack message ShutdownAck.
+ *
+ * @param[out] dst_p Object to unpack the message into.
+ * @param[in] src_p Message to unpack.
+ * @param[in] size Size of src_p.
+ *
+ * @return zero(0) or negative error code.
+ */
+int platform_shutdown_ack_unpack(
+    struct platform_shutdown_ack_t *dst_p,
+    const uint8_t *src_p,
+    size_t size);
+
+/**
+ * Init message fields to default values from ShutdownAck.
+ *
+ * @param[in] msg_p Message to init.
+ *
+ * @return zero(0) on success or (-1) in case of nullptr argument.
+ */
+int platform_shutdown_ack_init(struct platform_shutdown_ack_t *msg_p);
+
+/**
+ * Encode given signal by applying scaling and offset.
+ *
+ * @param[in] value Signal to encode.
+ *
+ * @return Encoded signal.
+ */
+uint8_t platform_shutdown_ack_shutdown_ack_state_encode(float value);
+
+/**
+ * Decode given signal by applying scaling and offset.
+ *
+ * @param[in] value Signal to decode.
+ *
+ * @return Decoded signal.
+ */
+float platform_shutdown_ack_shutdown_ack_state_decode(uint8_t value);
+
+/**
+ * Check that given signal is in allowed range.
+ *
+ * @param[in] value Signal to check.
+ *
+ * @return true if in range, false otherwise.
+ */
+bool platform_shutdown_ack_shutdown_ack_state_is_in_range(uint8_t value);
+
+/**
+ * Check that given physical value is in allowed range before encoding.
+ *
+ * Use this BEFORE calling _encode() to avoid silent integer overflow:
+ *   encode(-1.0) on a [0,100] signal wraps to 255 and passes is_in_range().
+ *   is_in_phys_range(-1.0) correctly returns false.
+ *
+ * @param[in] value Physical signal value to check.
+ *
+ * @return true if in range, false otherwise.
+ */
+bool platform_shutdown_ack_shutdown_ack_state_is_in_phys_range(float value);
+
+/**
+ * Encode given signal by applying scaling and offset.
+ *
+ * @param[in] value Signal to encode.
+ *
+ * @return Encoded signal.
+ */
+uint8_t platform_shutdown_ack_shutdown_ack_id_encode(float value);
+
+/**
+ * Decode given signal by applying scaling and offset.
+ *
+ * @param[in] value Signal to decode.
+ *
+ * @return Decoded signal.
+ */
+float platform_shutdown_ack_shutdown_ack_id_decode(uint8_t value);
+
+/**
+ * Check that given signal is in allowed range.
+ *
+ * @param[in] value Signal to check.
+ *
+ * @return true if in range, false otherwise.
+ */
+bool platform_shutdown_ack_shutdown_ack_id_is_in_range(uint8_t value);
+
+/**
+ * Check that given physical value is in allowed range before encoding.
+ *
+ * Use this BEFORE calling _encode() to avoid silent integer overflow:
+ *   encode(-1.0) on a [0,100] signal wraps to 255 and passes is_in_range().
+ *   is_in_phys_range(-1.0) correctly returns false.
+ *
+ * @param[in] value Physical signal value to check.
+ *
+ * @return true if in range, false otherwise.
+ */
+bool platform_shutdown_ack_shutdown_ack_id_is_in_phys_range(float value);
+
+/**
  * Check that given EkfLean.LEAN_ANGLE_STATE raw value is a defined enum value
  * (a value-table name other than RESERVED).
  *
@@ -4044,6 +4461,90 @@ bool platform_safety_request_immobilizer_lock_request_is_defined(uint8_t value);
 int platform_safety_request_pack_checked(
     uint8_t *dst_p,
     const struct platform_safety_request_t *src_p,
+    size_t size);
+
+/**
+ * Check that given ShutdownRequest.SHUTDOWN_REQUEST raw value is a defined enum value
+ * (a value-table name other than RESERVED).
+ *
+ * @param[in] value Raw signal value to check.
+ *
+ * @return true if defined, false otherwise.
+ */
+bool platform_shutdown_request_shutdown_request_is_defined(uint8_t value);
+
+/**
+ * Check that given ShutdownRequest.SHUTDOWN_REASON raw value is a defined enum value
+ * (a value-table name other than RESERVED).
+ *
+ * @param[in] value Raw signal value to check.
+ *
+ * @return true if defined, false otherwise.
+ */
+bool platform_shutdown_request_shutdown_reason_is_defined(uint8_t value);
+
+/**
+ * Pack message ShutdownRequest after checking every signal.
+ *
+ * Like the plain pack, but nothing is written to dst_p unless every signal passes
+ * its is_in_range() check and every enum signal holds a defined value (the plain
+ * pack masks a value into its bit field). E2E CRC and counter are checked for
+ * range only; they are the E2E wrapper's job.
+ *
+ * Every signal is checked on its own. Rules across fields (e.g. 0x023
+ * CORNERING_LEVEL GREEN with CORNERING_SOURCE NONE) are not checked here.
+ *
+ * On a negative return dst_p is unchanged and must not be E2E-protected or
+ * transmitted; send the message's defined fallback (e.g. 0x020 LEAN_ANGLE_STATE =
+ * INVALID, 0x023 all raw 0) or nothing.
+ *
+ * @param[out] dst_p Buffer to pack the message into.
+ * @param[in] src_p Data to pack.
+ * @param[in] size Size of dst_p.
+ *
+ * @return Size of packed data, or negative error code (-EINVAL: bad argument,
+ *         value out of range, undefined enum value or buffer too small).
+ */
+int platform_shutdown_request_pack_checked(
+    uint8_t *dst_p,
+    const struct platform_shutdown_request_t *src_p,
+    size_t size);
+
+/**
+ * Check that given ShutdownAck.SHUTDOWN_ACK_STATE raw value is a defined enum value
+ * (a value-table name other than RESERVED).
+ *
+ * @param[in] value Raw signal value to check.
+ *
+ * @return true if defined, false otherwise.
+ */
+bool platform_shutdown_ack_shutdown_ack_state_is_defined(uint8_t value);
+
+/**
+ * Pack message ShutdownAck after checking every signal.
+ *
+ * Like the plain pack, but nothing is written to dst_p unless every signal passes
+ * its is_in_range() check and every enum signal holds a defined value (the plain
+ * pack masks a value into its bit field). E2E CRC and counter are checked for
+ * range only; they are the E2E wrapper's job.
+ *
+ * Every signal is checked on its own. Rules across fields (e.g. 0x023
+ * CORNERING_LEVEL GREEN with CORNERING_SOURCE NONE) are not checked here.
+ *
+ * On a negative return dst_p is unchanged and must not be E2E-protected or
+ * transmitted; send the message's defined fallback (e.g. 0x020 LEAN_ANGLE_STATE =
+ * INVALID, 0x023 all raw 0) or nothing.
+ *
+ * @param[out] dst_p Buffer to pack the message into.
+ * @param[in] src_p Data to pack.
+ * @param[in] size Size of dst_p.
+ *
+ * @return Size of packed data, or negative error code (-EINVAL: bad argument,
+ *         value out of range, undefined enum value or buffer too small).
+ */
+int platform_shutdown_ack_pack_checked(
+    uint8_t *dst_p,
+    const struct platform_shutdown_ack_t *src_p,
     size_t size);
 /**
  * Encode EkfLean.LEAN_ANGLE_STATE after checking the value.
@@ -4577,6 +5078,84 @@ int platform_safety_request_park_mode_encode_checked(float value, uint8_t *raw_p
  * @return 0 on success, -EINVAL otherwise.
  */
 int platform_safety_request_immobilizer_lock_request_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode ShutdownRequest.SHUTDOWN_REQUEST after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_shutdown_request_shutdown_request_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode ShutdownRequest.SHUTDOWN_REASON after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_shutdown_request_shutdown_reason_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode ShutdownRequest.SHUTDOWN_REQUEST_ID after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_shutdown_request_shutdown_request_id_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode ShutdownRequest.SHUTDOWN_DEADLINE after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_shutdown_request_shutdown_deadline_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode ShutdownAck.SHUTDOWN_ACK_STATE after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_shutdown_ack_shutdown_ack_state_encode_checked(float value, uint8_t *raw_p);
+
+/**
+ * Encode ShutdownAck.SHUTDOWN_ACK_ID after checking the value.
+ *
+ * Rejects NaN, +-Inf and any value outside the DBC physical range; on a
+ * negative return *raw_p is unchanged (the plain encode turns NaN into 0).
+ *
+ * @param[in] value Physical value to encode.
+ * @param[out] raw_p Raw value on success.
+ *
+ * @return 0 on success, -EINVAL otherwise.
+ */
+int platform_shutdown_ack_shutdown_ack_id_encode_checked(float value, uint8_t *raw_p);
 /**
  * Unpack message EkfLean after checking its length and every signal.
  *
@@ -4774,6 +5353,46 @@ int platform_vehicle_engine_unpack_checked(
  */
 int platform_safety_request_unpack_checked(
     struct platform_safety_request_t *dst_p,
+    const uint8_t *src_p,
+    size_t size);
+
+/**
+ * Unpack message ShutdownRequest after checking its length and every signal.
+ *
+ * size must be exactly PLATFORM_SHUTDOWN_REQUEST_LENGTH (the DBC DLC) and every signal must
+ * pass its is_in_range() check. dst_p is written only on success. Undefined enum
+ * values are not rejected (the receiver applies the documented fallback). Run the
+ * E2E wrapper check first.
+ *
+ * @param[out] dst_p Object to unpack into.
+ * @param[in] src_p Frame data.
+ * @param[in] size Size of src_p.
+ *
+ * @return 0 on success, -EINVAL on a bad argument, wrong length or a value out of
+ *         range.
+ */
+int platform_shutdown_request_unpack_checked(
+    struct platform_shutdown_request_t *dst_p,
+    const uint8_t *src_p,
+    size_t size);
+
+/**
+ * Unpack message ShutdownAck after checking its length and every signal.
+ *
+ * size must be exactly PLATFORM_SHUTDOWN_ACK_LENGTH (the DBC DLC) and every signal must
+ * pass its is_in_range() check. dst_p is written only on success. Undefined enum
+ * values are not rejected (the receiver applies the documented fallback). Run the
+ * E2E wrapper check first.
+ *
+ * @param[out] dst_p Object to unpack into.
+ * @param[in] src_p Frame data.
+ * @param[in] size Size of src_p.
+ *
+ * @return 0 on success, -EINVAL on a bad argument, wrong length or a value out of
+ *         range.
+ */
+int platform_shutdown_ack_unpack_checked(
+    struct platform_shutdown_ack_t *dst_p,
     const uint8_t *src_p,
     size_t size);
 

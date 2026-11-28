@@ -42,6 +42,11 @@ APPROVED_EXTENSIONS: frozenset[str] = frozenset(
         "Vehicle.Motorcycle.ThrottlePosition",
         "Vehicle.Motorcycle.IsEcuPresent",
         # D-108 provisional (Claude), user revises
+        # D-138 provisional (Claude), user revises
+        "Vehicle.Motorcycle.Power",
+        "Vehicle.Motorcycle.Power.ShutdownRequested",
+        "Vehicle.Motorcycle.Power.ShutdownReason",
+        "Vehicle.Motorcycle.Power.ShutdownDeadline",
         "Vehicle.Motorcycle.Nodes",
         "Vehicle.Motorcycle.Nodes.RtCore",
         "Vehicle.Motorcycle.Nodes.RtCore.Mode",

@@ -97,6 +97,16 @@ BO_ 288 SafetyRequest: 8 RT_CORE
  SG_ PARK_MODE : 14|2@1+ (1,0) [0|3] "" SAFETY
  SG_ IMMOBILIZER_LOCK_REQUEST : 16|2@1+ (1,0) [0|3] "" SAFETY
 
+BO_ 289 ShutdownRequest: 8 RT_CORE
+ SG_ SHUTDOWN_REQUEST : 0|2@1+ (1,0) [0|3] "" LINUX,CONN
+ SG_ SHUTDOWN_REASON : 2|4@1+ (1,0) [0|15] "" LINUX,CONN
+ SG_ SHUTDOWN_REQUEST_ID : 8|4@1+ (1,0) [0|15] "" LINUX,CONN
+ SG_ SHUTDOWN_DEADLINE : 16|8@1+ (1,0) [0|255] "s" LINUX,CONN
+
+BO_ 290 ShutdownAck: 8 LINUX
+ SG_ SHUTDOWN_ACK_STATE : 0|2@1+ (1,0) [0|3] "" RT_CORE
+ SG_ SHUTDOWN_ACK_ID : 8|4@1+ (1,0) [0|15] "" RT_CORE
+
 
 CM_ "vehicle-platform platform CAN bus (classic CAN 500 kbps, 11-bit IDs, D-009). ID plan and E2E scheme: docs/ARCHITECTURE.md section 4 and docs/e2e-profile.md. Only our own nodes are on this bus.";
 CM_ BU_ RT_CORE "STM32H743ZI Cortex-M7 domain controller (D-072, D-118); sole vehicle-bus tester, republishes vehicle signals (D-021). It sends 0x020, 0x022, 0x081 and 0x120 on this bus as ordinary E2E-protected frames and monitors the SAFETY heartbeat 0x082 (diagnostic only, never an input of a safety decision).";
@@ -146,6 +156,14 @@ CM_ BO_ 288 "QM requests from rt-core to the safety MCU (D-072 item 7, D-118), s
 CM_ SG_ 288 IGNITION_STATE "Ignition (key) state seen by rt-core power management; UNKNOWN until measured. 3 is reserved and is read as UNKNOWN. Only OFF lets the safety MCU accept a lock; it can never cause a lock or an unlock by itself.";
 CM_ SG_ 288 PARK_MODE "rt-core park mode (wake-on-motion watch, D-072 item 2); UNKNOWN until known. 3 is reserved and is read as UNKNOWN. Informational for the immobilizer; never a mode input to the safety functions.";
 CM_ SG_ 288 IMMOBILIZER_LOCK_REQUEST "LOCK = the phone or park mode asks the safety MCU to lock the starter relay; it is only a request. LOCK is 3 and 1 and 2 are reserved and read as NONE, so any single-bit error from NONE or LOCK lands on a reserved value. The safety MCU counts a lock only on a NONE -> LOCK transition with E2E OK, after it has seen NONE with E2E OK since its own boot, with IGNITION_STATE = OFF and its own IMU stationary (D-072 item 7). There is no unlock request: unlocking is the safety MCU's own decision (NFC, PIN, hidden bypass).";
+CM_ BO_ 289 "Key-off power-down request from rt-core to the Raspberry Pi 5 (D-138 item 2), a QM frame without E2E: a lost or spurious frame can only cause or delay a clean shutdown, never a safety function. rt-core sends it every 100 ms; SHUTDOWN_REQUEST=NONE means no request. The safety MCU does not depend on it (invariant 3).";
+CM_ SG_ 289 SHUTDOWN_REQUEST "SHUTDOWN = the receiver must close its files and halt within SHUTDOWN_DEADLINE; NONE = no request (raw 0, also the value of a never-written field). 2 and 3 are reserved and are read as NONE, so a corrupted value never halts the Pi.";
+CM_ SG_ 289 SHUTDOWN_REASON "Why rt-core asks for the shutdown: KEY_OFF (KL15 dropped), LOW_VOLTAGE (battery below the cut-off while parked or riding), SERVICE (a commanded shutdown). Unknown values are read as NONE.";
+CM_ SG_ 289 SHUTDOWN_REQUEST_ID "Counter that rt-core increments once for every new shutdown sequence (not per frame, wraps at 15); ShutdownAck echoes it so an acknowledgement of an earlier sequence is never taken for the current one.";
+CM_ SG_ 289 SHUTDOWN_DEADLINE "Seconds the receiver has before rt-core releases HOLD and the supply is cut (the bounded timeout of D-138 item 2, provisional 20-30 s until measured); 0 = no deadline given.";
+CM_ BO_ 290 "Raspberry Pi 5 answer to ShutdownRequest (D-138 item 2), a QM frame without E2E sent every 100 ms by the LINUX shutdown listener. A missing acknowledgement is not an error: rt-core waits at most the deadline and then cuts the supply anyway, so a hung Pi never holds the supply.";
+CM_ SG_ 290 SHUTDOWN_ACK_STATE "NONE = nothing to report (raw 0); HALTING = the request was accepted and the Pi is shutting down; READY_TO_CUT = filesystems are synced and the supply may be cut now (sent last). 3 is reserved and is read as NONE.";
+CM_ SG_ 290 SHUTDOWN_ACK_ID "The SHUTDOWN_REQUEST_ID this state answers; rt-core ignores a state whose id differs from the current sequence.";
 BA_DEF_  "Baudrate" INT 0 1000000;
 BA_DEF_ BU_ "NodeId" INT 0 15;
 BA_DEF_ BO_ "GenMsgCycleTime" INT 0 10000;
@@ -189,6 +207,8 @@ BA_ "E2E_Protected" BO_ 133 1;
 BA_ "E2E_DataID" BO_ 133 4229;
 BA_ "GenMsgCycleTime" BO_ 272 50;
 BA_ "GenMsgCycleTime" BO_ 288 100;
+BA_ "GenMsgCycleTime" BO_ 289 100;
+BA_ "GenMsgCycleTime" BO_ 290 100;
 BA_ "E2E_Protected" BO_ 288 1;
 BA_ "E2E_DataID" BO_ 288 4384;
 VAL_ 32 LEAN_ANGLE_STATE 0 "ESTIMATED" 1 "CLAMPED" 2 "RESERVED" 3 "INVALID" ;
@@ -212,3 +232,6 @@ VAL_ 272 ECU_PRESENT 0 "ABSENT" 1 "PRESENT" ;
 VAL_ 288 IGNITION_STATE 0 "UNKNOWN" 1 "OFF" 2 "ON" 3 "RESERVED" ;
 VAL_ 288 PARK_MODE 0 "UNKNOWN" 1 "INACTIVE" 2 "ACTIVE" 3 "RESERVED" ;
 VAL_ 288 IMMOBILIZER_LOCK_REQUEST 0 "NONE" 1 "RESERVED" 2 "RESERVED" 3 "LOCK" ;
+VAL_ 289 SHUTDOWN_REQUEST 0 "NONE" 1 "SHUTDOWN" 2 "RESERVED" 3 "RESERVED" ;
+VAL_ 289 SHUTDOWN_REASON 0 "NONE" 1 "KEY_OFF" 2 "LOW_VOLTAGE" 3 "SERVICE" ;
+VAL_ 290 SHUTDOWN_ACK_STATE 0 "NONE" 1 "HALTING" 2 "READY_TO_CUT" 3 "RESERVED" ;
