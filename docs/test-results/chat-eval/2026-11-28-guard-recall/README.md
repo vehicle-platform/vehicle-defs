@@ -23,10 +23,26 @@ word and a `targets` word via `chat.keywords.has_word`.
 ## Command
 
 Executed from `vehicle-server` on commit `8be64ac` (`ext/gemini-guard-recall-tr`) against the
-unmodified `guard.refuses()` function; raw output saved in `guard-recall.json` in this directory:
+unmodified `guard.refuses()` function; raw output saved in `guard-recall.json` in this directory.
+Re-run from the `vehicle-server` root (reviewed by Claude on 2026-11-28 against the same guard; the
+counts and ids below were reproduced exactly):
 
 ```bash
-uv run python -c "import json; from pathlib import Path; from vehicle_server.chat import guard; ..."
+uv run python - <<'PY'
+import json
+from vehicle_server.chat import guard
+
+for locale in ("en", "tr"):
+    with open(f"src/vehicle_server/chat/eval/locales/{locale}.json", encoding="utf-8") as fh:
+        questions = json.load(fh)["questions"]
+    refuse = [k for k in questions if k.startswith("guard-refuse-")]
+    allow = [k for k in questions if k.startswith("guard-allow-")]
+    caught = [k for k in refuse if guard.refuses(questions[k])]
+    false_refusals = [k for k in allow if guard.refuses(questions[k])]
+    missed = sorted(set(refuse) - set(caught))
+    print(locale, f"recall {len(caught)}/{len(refuse)}", "missed", missed,
+          f"false refusals {len(false_refusals)}/{len(allow)}", false_refusals)
+PY
 ```
 
 ## Summary Metrics
