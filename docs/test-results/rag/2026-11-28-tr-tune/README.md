@@ -3,7 +3,7 @@
 - **Date:** 2026-11-28
 - **Provenance:** synthetic (authored fault-catalog and `docs/ideas/*.md` queries from `vehicle-mcp/tests/retrieval_eval/`, no real ride data or personal data, D-033)
 - **Baseline reference:** `vehicle-mcp/tests/retrieval_eval/README.md` ("Measured results (`test` split, current retrieval, measure only)", 2026-11-27: EN R@1 0.583 / R@5 0.917 / MRR 0.734; TR R@1 0.194 / R@5 0.417 / MRR 0.279 on n = 36 per locale)
-- **Code & model:** `vehicle-mcp` branch `ext/gemini-rag-tr-tune` (PR vehicle-mcp#43, exposing `RetrievalSettings` without changing defaults), embedding model `intfloat/multilingual-e5-small@614241f622f5` (ONNX Runtime CPU; `model.onnx` SHA-256 `ca456c06b3a9505ddfd9131408916dd79290368331e7d76bb621f1cba6bc8665`, `tokenizer.json` SHA-256 `0b44a9d7b51c3c62626640cda0e2c2f70fdacdc25bbbd68038369d14ebdf4c39`), corpus = fault catalog served by `vehicle-server` (defs v0.33.0, 319 catalog chunks with `--exclude-holdout`) + `vehicle-defs/docs/ideas/` (325 Markdown chunks; 644 chunks total).
+- **Code & model:** `vehicle-mcp` commit `ac65438` (branch `ext/gemini-rag-tr-tune`, PR vehicle-mcp#43, exposing `RetrievalSettings` without changing defaults), embedding model `intfloat/multilingual-e5-small@614241f622f5` (ONNX Runtime CPU; `model.onnx` SHA-256 `ca456c06b3a9505ddfd9131408916dd79290368331e7d76bb621f1cba6bc8665`, `tokenizer.json` SHA-256 `0b44a9d7b51c3c62626640cda0e2c2f70fdacdc25bbbd68038369d14ebdf4c39`), corpus = fault catalog served by `vehicle-server` (defs v0.33.0, 319 catalog chunks with `--exclude-holdout`) + `vehicle-defs/docs/ideas/` (325 Markdown chunks; 644 chunks total).
 - **Committed source files:** [dev-grid.json](dev-grid.json), [test-once.json](test-once.json), [unconfirmed-rank1-tr-tune.json](unconfirmed-rank1-tr-tune.json). Every figure below comes from these committed files (n = 1 deterministic evaluation per setting).
 
 ## What the embedder sends today
@@ -41,13 +41,13 @@ All parameter comparisons were run strictly on the `tune` split (`dev-grid.json`
 ### Observations on `tune`
 
 1. **RRF `k` ∈ {10, 30, 60} produces identical rankings** across every prefix and `lexical_top_n` setting (`0.000` delta on EN and TR): with `lexical_top_n` capped at 2 (or 5), hits appearing in both arms always beat single-arm hits regardless of `k ∈ {10, 30, 60}`.
-2. **Disabling e5 prefixes hurts English R@1 (`0.855 -> 0.829`; vector-only `0.803 -> 0.737`) and doubles Turkish weak-query noise (`1.30 -> 2.60`; vector-only `0.90 -> 2.20`)** because unprefixed e5 embeddings compress cosine distances upward past the `0.83` floor.
+2. **Disabling e5 prefixes hurts English R@1 (`0.855 -> 0.829`; vector-only `0.803 -> 0.737`) and doubles Turkish weak-query noise (`1.30 -> 2.60`; vector-only `0.90 -> 2.20`)**, while Turkish R@5 and MRR rise slightly (`0.671 -> 0.711`, `0.499 -> 0.516`). Hypothesis, not measured here: unprefixed e5 embeddings sit closer together, so more chunks pass the `0.83` cosine floor.
 3. **Vector-only underperforms hybrid on both locales** (TR R@5 `0.487` vs. `0.671`, EN R@5 `0.947` vs. `0.987`), while FTS-only (`lex_top_n=5`) improves TR MRR (`0.550` vs. `0.499`) at the cost of EN R@1 (`0.763` vs. `0.855`) and EN weak noise (`2.60` vs. `1.80`).
 4. **Dev selection:** `pref_on_hybrid_k60_fts2x_lex2` (`use_prefixes=True, rrf_k=60, fts_weight=2.0, vector_weight=1.0, lexical_top_n=2`) achieved the highest Turkish MRR (`0.555`, +0.056 over baseline) and Turkish R@1 (`0.474`, +0.079) among all settings that kept weak-query noise at the baseline level (`1.80` EN / `1.30` TR), trading -0.039 EN R@1 (`0.855 -> 0.816`) with EN R@5 unchanged (`0.987`).
 
 ## 2. Single `test` split evaluation (n = 36 answerable + 4 weak per locale)
 
-The selected dev setting was evaluated **once** on the frozen `test` split alongside the baseline default (`test-once.json`). Note: baseline EN R@1 is `0.639` vs. `0.583` on 2026-11-27 because `vehicle-defs/docs/ideas/` grew by 4 Markdown files in runs 6–7 (325 doc chunks vs. earlier index); baseline TR metrics match `tests/retrieval_eval/README.md` identically (`0.194 / 0.417 / 0.279`).
+The selected dev setting was evaluated **once** on the frozen `test` split alongside the baseline default (`test-once.json`). Note: baseline EN R@1 is `0.639` vs. `0.583` on 2026-11-27 most likely because `vehicle-defs/docs/ideas/` grew by 4 Markdown files in runs 6–7 (325 doc chunks vs. the earlier index; the earlier chunk count was not recorded, so this is not verified); baseline TR metrics match `tests/retrieval_eval/README.md` identically (`0.194 / 0.417 / 0.279`).
 
 | Setting | EN R@1 | EN R@5 | EN MRR | EN weak | TR R@1 | TR R@5 | TR MRR | TR weak |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
