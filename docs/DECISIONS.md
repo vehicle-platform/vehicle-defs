@@ -1131,6 +1131,15 @@ Both modes share the scenario format and the evaluation/report. Before hardware 
 - Not chosen: Qwen3-4B (2.5× the memory, 2.3× slower, more forbidden hits, no accuracy gain); Qwen3-1.7B as default (1.8× the memory and 30 % slower for a difference inside the error).
 - Why: on an 8 GB Pi 5 that also runs Kuksa, the server and the anomaly model, memory and latency decide while accuracy is tied; templates and the deterministic router already carry most answers.
 
+**D-138 — Key-off power-down: KL15 wake + timed KL30 self-hold for a clean Pi 5 shutdown (option B of T73)** (2026-11-28, user: "option B is good, record it for now and adjust the development to it"; settles open decision 1 of `docs/ideas/parked-current.md` §5; invariants 3 and 6, D-118)
+1. **Key-on.** The KL15 (ignition) rising edge turns on a high-side KL30 load switch through a hardware diode-OR with an rt-core (H743) `HOLD` output; rt-core asserts `HOLD` during boot. The Pi 5, the H743 and the connectivity node are powered behind that switch, the Pi 5 on its own 12 V → 5 V (5 A) buck, isolated from the MCU rail (`hardware-architecture.md` §5b.8).
+2. **Key-off.** KL15 drops → rt-core detects it, closes its logs, asks the Pi 5 for a clean shutdown (GPIO or the platform bus; the interface is a follow-up), waits up to a bounded timeout (proposed 20-30 s, provisional until measured) → the Pi 5 halts with `POWER_OFF_ON_HALT=1` → rt-core releases `HOLD` and KL30 is cut to all bucks. A hung Pi never holds the supply past the timeout.
+3. **Safety node stays independent (invariant 3).** The G474 does not depend on `HOLD`: it runs from its own fused KL15 branch and goes down with the ignition. The immobilizer's bistable relay draws nothing parked (invariant 6).
+4. **Safeguards (from T73 §3.2):** Pi 5 EEPROM `POWER_OFF_ON_HALT=1`, `WAKE_ON_GPIO=0`; the battery-voltage divider downstream of KL15 or the switch; a low-voltage cut-off below 12.2 V resting (`hardware-architecture.md` §5b.3). Key-off target: tens of µA behind the switch, to be measured (T73 stage 1-3).
+5. **Follow-ups:** Board A gets the high-side switch + HOLD latch (hardware, user); the rt-core key-off state machine and the Pi shutdown request (a new platform-bus signal goes through `/signal-change`, never hand-written; invariant 8 if it touches reset/power init); a linux-node shutdown listener; the charging-balance check of the CL250 (alternator output is not in the owner's manual or factbook; an AI tool reported about 330-340 W at 5,000 rpm on 2026-11-28, **UNVERIFIED**, confirm from the service manual before use; the platform's worst-case load is about 25 W (~2 A), typical 7-12 W, and the risk is at idle, so measure the idle battery voltage and current with the full load).
+- Not chosen: option A (pure KL15: the Pi 5 loses power mid-write, SSD/filesystem and black-box risk), option C (always-on park monitor: battery drain and complexity; no park alarm for now).
+- Why: the Pi 5 runs a real filesystem on an SSD and must shut down cleanly, while the parked draw stays as low as option A.
+
 ## Open questions (awaiting decision)
 
 | ID | Question | When to resolve | Note |
