@@ -44,6 +44,9 @@ extern "C" {
 #    define EINVAL 22
 #endif
 
+/* Platform-bus bit rate in bit/s (dbc/platform.dbc Baudrate). */
+#define PLATFORM_BITRATE (500000u)
+
 /* Frame ids. */
 #define PLATFORM_EKF_LEAN_FRAME_ID (0x20u)
 #define PLATFORM_EKF_FRICTION_MASS_FRAME_ID (0x22u)

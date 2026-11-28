@@ -168,3 +168,44 @@ def test_signal_wider_than_the_float_encode_is_rejected(platform_text):
     db.get_message_by_name("VehicleSpeed").get_signal_by_name("VEHICLE_SPEED").length = 25
     errs = check_platform_dbc(db)
     assert any("VEHICLE_SPEED is 25 bits" in e for e in errs)
+
+
+def test_platform_bitrate_is_read_from_the_baudrate_attribute(platform_text):
+    from vehicle_codegen.dbc_checks import platform_bitrate
+
+    assert platform_bitrate(parse_dbc(platform_text)) == 500000
+    text = platform_text.replace('BA_ "Baudrate" 500000;', 'BA_ "Baudrate" 250000;')
+    assert platform_bitrate(parse_dbc(text)) == 250000
+
+
+def test_missing_baudrate_attribute_is_an_error(platform_text):
+    import pytest
+
+    from vehicle_codegen.dbc_checks import platform_bitrate
+
+    text = platform_text.replace('BA_ "Baudrate" 500000;\n', "")
+    assert 'BA_ "Baudrate"' not in text
+    with pytest.raises(ValueError, match="Baudrate"):
+        platform_bitrate(parse_dbc(text))
+    assert any("Baudrate" in e for e in errors_for(text))
+
+
+def test_zero_baudrate_is_an_error(platform_text):
+    import pytest
+
+    from vehicle_codegen.dbc_checks import platform_bitrate
+
+    text = platform_text.replace('BA_ "Baudrate" 500000;', 'BA_ "Baudrate" 0;')
+    with pytest.raises(ValueError, match="positive"):
+        platform_bitrate(parse_dbc(text))
+
+
+def test_generated_platform_constants_carry_the_dbc_bitrate(platform_db):
+    from vehicle_codegen import config as cfg
+    from vehicle_codegen.gen_c import generate_platform_c
+    from vehicle_codegen.gen_python import generate_platform_py
+
+    for target in cfg.C_TARGETS:
+        header = generate_platform_c(platform_db, target)["platform.h"]
+        assert "#define PLATFORM_BITRATE (500000u)" in header
+    assert "\nBITRATE = 500000" in generate_platform_py(platform_db)
