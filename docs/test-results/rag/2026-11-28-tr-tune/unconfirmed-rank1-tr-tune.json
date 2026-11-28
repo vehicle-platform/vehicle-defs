@@ -1,0 +1,354 @@
+[
+  {
+    "query_id": "tr-05",
+    "expected": [
+      "BRK-006"
+    ],
+    "target_stratum": "catalog",
+    "winning_chunk_id": 75,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": 1,
+    "vector_rank": 2,
+    "similarity": 0.8881,
+    "score": 0.03252
+  },
+  {
+    "query_id": "tr-07",
+    "expected": [
+      "CLU-002"
+    ],
+    "target_stratum": "catalog",
+    "winning_chunk_id": 178,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": 2,
+    "vector_rank": 2,
+    "similarity": 0.8797,
+    "score": 0.03226
+  },
+  {
+    "query_id": "tr-18",
+    "expected": [
+      "IGN-005"
+    ],
+    "target_stratum": "catalog",
+    "winning_chunk_id": 279,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": 1,
+    "vector_rank": 1,
+    "similarity": 0.8945,
+    "score": 0.03279
+  },
+  {
+    "query_id": "tr-23",
+    "expected": [
+      "LUB-002"
+    ],
+    "target_stratum": "catalog",
+    "winning_chunk_id": 82,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": 1,
+    "vector_rank": 1,
+    "similarity": 0.8873,
+    "score": 0.03279
+  },
+  {
+    "query_id": "tr-31",
+    "expected": [
+      "WIR-001"
+    ],
+    "target_stratum": "catalog",
+    "winning_chunk_id": 5,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": 2,
+    "vector_rank": 1,
+    "similarity": 0.8718,
+    "score": 0.03252
+  },
+  {
+    "query_id": "tr-33",
+    "expected": [
+      "ideas/ride-llm.md#2. Fine-tuning on a budget > Apple Silicon (MLX-LM)"
+    ],
+    "target_stratum": "docs",
+    "winning_chunk_id": 50,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": null,
+    "vector_rank": 1,
+    "similarity": 0.8472,
+    "score": 0.01639
+  },
+  {
+    "query_id": "tr-35",
+    "expected": [
+      "ideas/ride-llm.md#4. RAG for technical manuals > Copyrighted manuals in a public repo (legal framing, NOT legal advice) [P]"
+    ],
+    "target_stratum": "docs",
+    "winning_chunk_id": 144,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": null,
+    "vector_rank": 1,
+    "similarity": 0.851,
+    "score": 0.01639
+  },
+  {
+    "query_id": "tr-36",
+    "expected": [
+      "ideas/ride-llm.md#4. RAG for technical manuals > Embedding models (multilingual, small)"
+    ],
+    "target_stratum": "docs",
+    "winning_chunk_id": 204,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": null,
+    "vector_rank": 1,
+    "similarity": 0.8362,
+    "score": 0.01639
+  },
+  {
+    "query_id": "tr-37",
+    "expected": [
+      "ideas/ride-llm.md#7. Edge serving (Pi 5 8 GB)"
+    ],
+    "target_stratum": "docs",
+    "winning_chunk_id": 114,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": null,
+    "vector_rank": 1,
+    "similarity": 0.8721,
+    "score": 0.01639
+  },
+  {
+    "query_id": "tr-39",
+    "expected": [
+      "ideas/assistant-memory-and-alerts.md#D. Real-time in-ride alerts > D3. Transport without a paid push provider"
+    ],
+    "target_stratum": "docs",
+    "winning_chunk_id": 74,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": 2,
+    "vector_rank": 1,
+    "similarity": 0.8629,
+    "score": 0.03252
+  },
+  {
+    "query_id": "tr-40",
+    "expected": [
+      "ideas/cl250-technical-baseline.md#2. Electrical, Charging & Starting System Baseline > 2.1 Battery Specification"
+    ],
+    "target_stratum": "docs",
+    "winning_chunk_id": 10,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": 1,
+    "vector_rank": 1,
+    "similarity": 0.8516,
+    "score": 0.03279
+  },
+  {
+    "query_id": "tr-g4-01",
+    "expected": [
+      "BRK-001"
+    ],
+    "target_stratum": "catalog",
+    "winning_chunk_id": 215,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": 2,
+    "vector_rank": 2,
+    "similarity": 0.8917,
+    "score": 0.03226
+  },
+  {
+    "query_id": "tr-g4-04",
+    "expected": [
+      "BRK-006"
+    ],
+    "target_stratum": "catalog",
+    "winning_chunk_id": 6,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": 1,
+    "vector_rank": 1,
+    "similarity": 0.8913,
+    "score": 0.03279
+  },
+  {
+    "query_id": "tr-g4-05",
+    "expected": [
+      "BRK-006"
+    ],
+    "target_stratum": "catalog",
+    "winning_chunk_id": 204,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": 1,
+    "vector_rank": 1,
+    "similarity": 0.8844,
+    "score": 0.03279
+  },
+  {
+    "query_id": "tr-g4-18",
+    "expected": [
+      "IGN-001"
+    ],
+    "target_stratum": "catalog",
+    "winning_chunk_id": 45,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": 1,
+    "vector_rank": 2,
+    "similarity": 0.8967,
+    "score": 0.03252
+  },
+  {
+    "query_id": "tr-g4-21",
+    "expected": [
+      "IGN-005"
+    ],
+    "target_stratum": "catalog",
+    "winning_chunk_id": 97,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": 1,
+    "vector_rank": 1,
+    "similarity": 0.8784,
+    "score": 0.03279
+  },
+  {
+    "query_id": "tr-g4-22",
+    "expected": [
+      "LIT-001"
+    ],
+    "target_stratum": "catalog",
+    "winning_chunk_id": 17,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": 1,
+    "vector_rank": 1,
+    "similarity": 0.8813,
+    "score": 0.03279
+  },
+  {
+    "query_id": "tr-g4-29",
+    "expected": [
+      "SUS-002"
+    ],
+    "target_stratum": "catalog",
+    "winning_chunk_id": 45,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": 1,
+    "vector_rank": 2,
+    "similarity": 0.883,
+    "score": 0.03252
+  },
+  {
+    "query_id": "tr-g4-36",
+    "expected": [
+      "ideas/assistant-memory-and-alerts.md#Research brief: assistant memory, efficiency, no-dead-end answers, in-ride alerts > B. Efficiency > B1. llama.cpp server",
+      "ideas/assistant-memory-and-alerts.md#Research brief: assistant memory, efficiency, no-dead-end answers, in-ride alerts > B. Efficiency > B2. Cloud caching (as per vendor docs fetched today)"
+    ],
+    "target_stratum": "docs",
+    "winning_chunk_id": 145,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": null,
+    "vector_rank": 1,
+    "similarity": 0.865,
+    "score": 0.01639
+  },
+  {
+    "query_id": "tr-g4-37",
+    "expected": [
+      "ideas/assistant-memory-and-alerts.md#Research brief: assistant memory, efficiency, no-dead-end answers, in-ride alerts > D. Real-time in-ride alerts > D1. HMI / distraction guidance"
+    ],
+    "target_stratum": "docs",
+    "winning_chunk_id": 74,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": 2,
+    "vector_rank": 1,
+    "similarity": 0.8553,
+    "score": 0.03252
+  },
+  {
+    "query_id": "tr-g4-38",
+    "expected": [
+      "ideas/assistant-memory-and-alerts.md#Research brief: assistant memory, efficiency, no-dead-end answers, in-ride alerts > D. Real-time in-ride alerts > D2. Priority, interruption, fatigue [P unless cited]"
+    ],
+    "target_stratum": "docs",
+    "winning_chunk_id": 74,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": null,
+    "vector_rank": 1,
+    "similarity": 0.851,
+    "score": 0.01639
+  },
+  {
+    "query_id": "tr-g4-47",
+    "expected": [
+      "ideas/can-data-expansion.md#Field Data Expansion Plan and Technical Necessity Analysis > 4. Active Safety, Vision & Cockpit Telemetry Engineering Tasks > 4.9. Task V-09: Kamm Friction Circle Curve-Braking Safety Envelope & Haptic Warning"
+    ],
+    "target_stratum": "docs",
+    "winning_chunk_id": 222,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": null,
+    "vector_rank": 1,
+    "similarity": 0.8782,
+    "score": 0.01639
+  },
+  {
+    "query_id": "tr-g4-48",
+    "expected": [
+      "ideas/can-data-expansion.md#Field Data Expansion Plan and Technical Necessity Analysis > 4. Active Safety, Vision & Cockpit Telemetry Engineering Tasks > 4.10. Task V-10: Tank-Slapper (Speed Wobble) 6-9 Hz Harmonic Resonance Detector & Mitigator"
+    ],
+    "target_stratum": "docs",
+    "winning_chunk_id": 222,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": null,
+    "vector_rank": 1,
+    "similarity": 0.868,
+    "score": 0.01639
+  },
+  {
+    "query_id": "tr-g4-53",
+    "expected": [
+      "ideas/cl250-technical-baseline.md#Honda CL250 (8BK-MC57) \u2014 Technical Baseline & Service Specifications > 3. Sensor Selection Cross-Reference for Anomaly Models"
+    ],
+    "target_stratum": "docs",
+    "winning_chunk_id": 222,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": null,
+    "vector_rank": 1,
+    "similarity": 0.8483,
+    "score": 0.01639
+  },
+  {
+    "query_id": "tr-g4-59",
+    "expected": [
+      "ideas/physics-informed-anomaly.md#Physics-informed anomaly model and fault catalog (idea note) > 2. Fault catalog schema draft (D-084)"
+    ],
+    "target_stratum": "docs",
+    "winning_chunk_id": 278,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": 2,
+    "vector_rank": 1,
+    "similarity": 0.8312,
+    "score": 0.03252
+  },
+  {
+    "query_id": "tr-g4-61",
+    "expected": [
+      "ideas/ride-llm.md#Ride LLM research brief (2026-11-26) > 4. RAG for technical manuals > Vector stores on a Pi"
+    ],
+    "target_stratum": "docs",
+    "winning_chunk_id": 177,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": null,
+    "vector_rank": 1,
+    "similarity": 0.8522,
+    "score": 0.01639
+  },
+  {
+    "query_id": "tr-g4-66",
+    "expected": [
+      "ideas/ride-summary-did-layout.md#Ride-summary DID layout (C3 part 2b) \u2014 proposal, awaiting the user > Compatibility review (DeepSeek, 2026-11-02)"
+    ],
+    "target_stratum": "docs",
+    "winning_chunk_id": 228,
+    "winning_chunk_locale": "tr",
+    "bm25_rank": 2,
+    "vector_rank": 1,
+    "similarity": 0.8802,
+    "score": 0.03252
+  }
+]

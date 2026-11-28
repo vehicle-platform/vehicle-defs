@@ -1,0 +1,821 @@
+[
+  {
+    "setting": "pref_on_hybrid_k60_default",
+    "params": {
+      "rrf_k": 60,
+      "fts_weight": 1.0,
+      "vector_weight": 1.0,
+      "fts_pool": 50,
+      "vector_pool_min": 30,
+      "lexical_top_n": 2,
+      "min_similarity": null,
+      "use_prefixes": true
+    },
+    "reports": [
+      {
+        "locale": "en",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.8552631578947368,
+        "recall_at_3": 0.9736842105263158,
+        "recall_at_5": 0.9868421052631579,
+        "mrr": 0.9067982456140351,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.8,
+        "weak_empty_rate": 0.2
+      },
+      {
+        "locale": "tr",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.39473684210526316,
+        "recall_at_3": 0.5921052631578947,
+        "recall_at_5": 0.6710526315789473,
+        "mrr": 0.4993421052631579,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.3,
+        "weak_empty_rate": 0.4
+      }
+    ]
+  },
+  {
+    "setting": "pref_on_hybrid_k30",
+    "params": {
+      "rrf_k": 30,
+      "fts_weight": 1.0,
+      "vector_weight": 1.0,
+      "fts_pool": 50,
+      "vector_pool_min": 30,
+      "lexical_top_n": 2,
+      "min_similarity": null,
+      "use_prefixes": true
+    },
+    "reports": [
+      {
+        "locale": "en",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.8552631578947368,
+        "recall_at_3": 0.9736842105263158,
+        "recall_at_5": 0.9868421052631579,
+        "mrr": 0.9067982456140351,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.8,
+        "weak_empty_rate": 0.2
+      },
+      {
+        "locale": "tr",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.39473684210526316,
+        "recall_at_3": 0.5921052631578947,
+        "recall_at_5": 0.6710526315789473,
+        "mrr": 0.4993421052631579,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.3,
+        "weak_empty_rate": 0.4
+      }
+    ]
+  },
+  {
+    "setting": "pref_on_hybrid_k10",
+    "params": {
+      "rrf_k": 10,
+      "fts_weight": 1.0,
+      "vector_weight": 1.0,
+      "fts_pool": 50,
+      "vector_pool_min": 30,
+      "lexical_top_n": 2,
+      "min_similarity": null,
+      "use_prefixes": true
+    },
+    "reports": [
+      {
+        "locale": "en",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.8552631578947368,
+        "recall_at_3": 0.9736842105263158,
+        "recall_at_5": 0.9868421052631579,
+        "mrr": 0.9067982456140351,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.8,
+        "weak_empty_rate": 0.2
+      },
+      {
+        "locale": "tr",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.39473684210526316,
+        "recall_at_3": 0.5921052631578947,
+        "recall_at_5": 0.6710526315789473,
+        "mrr": 0.4993421052631579,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.3,
+        "weak_empty_rate": 0.4
+      }
+    ]
+  },
+  {
+    "setting": "pref_on_vector_only",
+    "params": {
+      "rrf_k": 60,
+      "fts_weight": 0.0,
+      "vector_weight": 1.0,
+      "fts_pool": 50,
+      "vector_pool_min": 30,
+      "lexical_top_n": 0,
+      "min_similarity": null,
+      "use_prefixes": true
+    },
+    "reports": [
+      {
+        "locale": "en",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.8026315789473685,
+        "recall_at_3": 0.9342105263157895,
+        "recall_at_5": 0.9473684210526315,
+        "mrr": 0.8585526315789473,
+        "weak_queries": 10,
+        "weak_avg_hits": 0.5,
+        "weak_empty_rate": 0.9
+      },
+      {
+        "locale": "tr",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.3684210526315789,
+        "recall_at_3": 0.4473684210526316,
+        "recall_at_5": 0.4868421052631579,
+        "mrr": 0.4164473684210526,
+        "weak_queries": 10,
+        "weak_avg_hits": 0.9,
+        "weak_empty_rate": 0.6
+      }
+    ]
+  },
+  {
+    "setting": "pref_on_fts_only_top2",
+    "params": {
+      "rrf_k": 60,
+      "fts_weight": 1.0,
+      "vector_weight": 0.0,
+      "fts_pool": 50,
+      "vector_pool_min": 30,
+      "lexical_top_n": 2,
+      "min_similarity": null,
+      "use_prefixes": true
+    },
+    "reports": [
+      {
+        "locale": "en",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.7631578947368421,
+        "recall_at_3": 0.8947368421052632,
+        "recall_at_5": 0.8947368421052632,
+        "mrr": 0.8289473684210527,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.3,
+        "weak_empty_rate": 0.3
+      },
+      {
+        "locale": "tr",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.4473684210526316,
+        "recall_at_3": 0.5789473684210527,
+        "recall_at_5": 0.5789473684210527,
+        "mrr": 0.5131578947368421,
+        "weak_queries": 10,
+        "weak_avg_hits": 0.4,
+        "weak_empty_rate": 0.8
+      }
+    ]
+  },
+  {
+    "setting": "pref_on_fts_only_top5",
+    "params": {
+      "rrf_k": 60,
+      "fts_weight": 1.0,
+      "vector_weight": 0.0,
+      "fts_pool": 50,
+      "vector_pool_min": 30,
+      "lexical_top_n": 5,
+      "min_similarity": null,
+      "use_prefixes": true
+    },
+    "reports": [
+      {
+        "locale": "en",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.7631578947368421,
+        "recall_at_3": 0.9605263157894737,
+        "recall_at_5": 0.9736842105263158,
+        "mrr": 0.8541666666666667,
+        "weak_queries": 10,
+        "weak_avg_hits": 2.6,
+        "weak_empty_rate": 0.3
+      },
+      {
+        "locale": "tr",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.4473684210526316,
+        "recall_at_3": 0.631578947368421,
+        "recall_at_5": 0.7105263157894737,
+        "mrr": 0.5497807017543861,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.0,
+        "weak_empty_rate": 0.8
+      }
+    ]
+  },
+  {
+    "setting": "pref_on_hybrid_k60_vec2x",
+    "params": {
+      "rrf_k": 60,
+      "fts_weight": 0.5,
+      "vector_weight": 1.0,
+      "fts_pool": 50,
+      "vector_pool_min": 30,
+      "lexical_top_n": 2,
+      "min_similarity": null,
+      "use_prefixes": true
+    },
+    "reports": [
+      {
+        "locale": "en",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.8289473684210527,
+        "recall_at_3": 0.9736842105263158,
+        "recall_at_5": 0.9736842105263158,
+        "mrr": 0.8881578947368421,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.8,
+        "weak_empty_rate": 0.2
+      },
+      {
+        "locale": "tr",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.3815789473684211,
+        "recall_at_3": 0.5657894736842105,
+        "recall_at_5": 0.6447368421052632,
+        "mrr": 0.4833333333333332,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.3,
+        "weak_empty_rate": 0.4
+      }
+    ]
+  },
+  {
+    "setting": "pref_on_hybrid_k10_vec2x",
+    "params": {
+      "rrf_k": 10,
+      "fts_weight": 0.5,
+      "vector_weight": 1.0,
+      "fts_pool": 50,
+      "vector_pool_min": 30,
+      "lexical_top_n": 2,
+      "min_similarity": null,
+      "use_prefixes": true
+    },
+    "reports": [
+      {
+        "locale": "en",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.8289473684210527,
+        "recall_at_3": 0.9736842105263158,
+        "recall_at_5": 0.9736842105263158,
+        "mrr": 0.8881578947368421,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.8,
+        "weak_empty_rate": 0.2
+      },
+      {
+        "locale": "tr",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.3815789473684211,
+        "recall_at_3": 0.5657894736842105,
+        "recall_at_5": 0.6447368421052632,
+        "mrr": 0.4833333333333332,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.3,
+        "weak_empty_rate": 0.4
+      }
+    ]
+  },
+  {
+    "setting": "pref_on_vector_only_sim80",
+    "params": {
+      "rrf_k": 60,
+      "fts_weight": 0.0,
+      "vector_weight": 1.0,
+      "fts_pool": 50,
+      "vector_pool_min": 30,
+      "lexical_top_n": 0,
+      "min_similarity": 0.8,
+      "use_prefixes": true
+    },
+    "reports": [
+      {
+        "locale": "en",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.8026315789473685,
+        "recall_at_3": 0.9342105263157895,
+        "recall_at_5": 0.9473684210526315,
+        "mrr": 0.8585526315789473,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.8,
+        "weak_empty_rate": 0.5
+      },
+      {
+        "locale": "tr",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.3815789473684211,
+        "recall_at_3": 0.47368421052631576,
+        "recall_at_5": 0.5131578947368421,
+        "mrr": 0.4339912280701754,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.6,
+        "weak_empty_rate": 0.1
+      }
+    ]
+  },
+  {
+    "setting": "pref_on_hybrid_k60_sim80",
+    "params": {
+      "rrf_k": 60,
+      "fts_weight": 1.0,
+      "vector_weight": 1.0,
+      "fts_pool": 50,
+      "vector_pool_min": 30,
+      "lexical_top_n": 2,
+      "min_similarity": 0.8,
+      "use_prefixes": true
+    },
+    "reports": [
+      {
+        "locale": "en",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.8421052631578947,
+        "recall_at_3": 0.9736842105263158,
+        "recall_at_5": 0.9868421052631579,
+        "mrr": 0.9002192982456141,
+        "weak_queries": 10,
+        "weak_avg_hits": 3.0,
+        "weak_empty_rate": 0.1
+      },
+      {
+        "locale": "tr",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.42105263157894735,
+        "recall_at_3": 0.618421052631579,
+        "recall_at_5": 0.6842105263157895,
+        "mrr": 0.5223684210526316,
+        "weak_queries": 10,
+        "weak_avg_hits": 2.0,
+        "weak_empty_rate": 0.1
+      }
+    ]
+  },
+  {
+    "setting": "pref_off_hybrid_k60",
+    "params": {
+      "rrf_k": 60,
+      "fts_weight": 1.0,
+      "vector_weight": 1.0,
+      "fts_pool": 50,
+      "vector_pool_min": 30,
+      "lexical_top_n": 2,
+      "min_similarity": null,
+      "use_prefixes": false
+    },
+    "reports": [
+      {
+        "locale": "en",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.8289473684210527,
+        "recall_at_3": 0.9868421052631579,
+        "recall_at_5": 1.0,
+        "mrr": 0.8958333333333335,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.8,
+        "weak_empty_rate": 0.2
+      },
+      {
+        "locale": "tr",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.40789473684210525,
+        "recall_at_3": 0.5921052631578947,
+        "recall_at_5": 0.7105263157894737,
+        "mrr": 0.5157894736842107,
+        "weak_queries": 10,
+        "weak_avg_hits": 2.6,
+        "weak_empty_rate": 0.2
+      }
+    ]
+  },
+  {
+    "setting": "pref_off_hybrid_k30",
+    "params": {
+      "rrf_k": 30,
+      "fts_weight": 1.0,
+      "vector_weight": 1.0,
+      "fts_pool": 50,
+      "vector_pool_min": 30,
+      "lexical_top_n": 2,
+      "min_similarity": null,
+      "use_prefixes": false
+    },
+    "reports": [
+      {
+        "locale": "en",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.8289473684210527,
+        "recall_at_3": 0.9868421052631579,
+        "recall_at_5": 1.0,
+        "mrr": 0.8958333333333335,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.8,
+        "weak_empty_rate": 0.2
+      },
+      {
+        "locale": "tr",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.40789473684210525,
+        "recall_at_3": 0.5921052631578947,
+        "recall_at_5": 0.7105263157894737,
+        "mrr": 0.5157894736842107,
+        "weak_queries": 10,
+        "weak_avg_hits": 2.6,
+        "weak_empty_rate": 0.2
+      }
+    ]
+  },
+  {
+    "setting": "pref_off_hybrid_k10",
+    "params": {
+      "rrf_k": 10,
+      "fts_weight": 1.0,
+      "vector_weight": 1.0,
+      "fts_pool": 50,
+      "vector_pool_min": 30,
+      "lexical_top_n": 2,
+      "min_similarity": null,
+      "use_prefixes": false
+    },
+    "reports": [
+      {
+        "locale": "en",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.8289473684210527,
+        "recall_at_3": 0.9868421052631579,
+        "recall_at_5": 1.0,
+        "mrr": 0.8958333333333335,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.8,
+        "weak_empty_rate": 0.2
+      },
+      {
+        "locale": "tr",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.40789473684210525,
+        "recall_at_3": 0.5921052631578947,
+        "recall_at_5": 0.7105263157894737,
+        "mrr": 0.5157894736842107,
+        "weak_queries": 10,
+        "weak_avg_hits": 2.6,
+        "weak_empty_rate": 0.2
+      }
+    ]
+  },
+  {
+    "setting": "pref_off_vector_only",
+    "params": {
+      "rrf_k": 60,
+      "fts_weight": 0.0,
+      "vector_weight": 1.0,
+      "fts_pool": 50,
+      "vector_pool_min": 30,
+      "lexical_top_n": 0,
+      "min_similarity": null,
+      "use_prefixes": false
+    },
+    "reports": [
+      {
+        "locale": "en",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.7368421052631579,
+        "recall_at_3": 0.9210526315789473,
+        "recall_at_5": 0.9473684210526315,
+        "mrr": 0.8201754385964913,
+        "weak_queries": 10,
+        "weak_avg_hits": 0.5,
+        "weak_empty_rate": 0.9
+      },
+      {
+        "locale": "tr",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.3815789473684211,
+        "recall_at_3": 0.4868421052631579,
+        "recall_at_5": 0.5263157894736842,
+        "mrr": 0.4375,
+        "weak_queries": 10,
+        "weak_avg_hits": 2.2,
+        "weak_empty_rate": 0.4
+      }
+    ]
+  },
+  {
+    "setting": "pref_off_fts_only_top5",
+    "params": {
+      "rrf_k": 60,
+      "fts_weight": 1.0,
+      "vector_weight": 0.0,
+      "fts_pool": 50,
+      "vector_pool_min": 30,
+      "lexical_top_n": 5,
+      "min_similarity": null,
+      "use_prefixes": false
+    },
+    "reports": [
+      {
+        "locale": "en",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.7631578947368421,
+        "recall_at_3": 0.9605263157894737,
+        "recall_at_5": 0.9736842105263158,
+        "mrr": 0.8541666666666667,
+        "weak_queries": 10,
+        "weak_avg_hits": 2.6,
+        "weak_empty_rate": 0.3
+      },
+      {
+        "locale": "tr",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.4473684210526316,
+        "recall_at_3": 0.631578947368421,
+        "recall_at_5": 0.7105263157894737,
+        "mrr": 0.5497807017543861,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.0,
+        "weak_empty_rate": 0.8
+      }
+    ]
+  },
+  {
+    "setting": "pref_on_hybrid_k60_lex5",
+    "params": {
+      "rrf_k": 60,
+      "fts_weight": 1.0,
+      "vector_weight": 1.0,
+      "fts_pool": 50,
+      "vector_pool_min": 30,
+      "lexical_top_n": 5,
+      "min_similarity": null,
+      "use_prefixes": true
+    },
+    "reports": [
+      {
+        "locale": "en",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.868421052631579,
+        "recall_at_3": 0.9736842105263158,
+        "recall_at_5": 1.0,
+        "mrr": 0.9203947368421053,
+        "weak_queries": 10,
+        "weak_avg_hits": 3.1,
+        "weak_empty_rate": 0.2
+      },
+      {
+        "locale": "tr",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.3815789473684211,
+        "recall_at_3": 0.5921052631578947,
+        "recall_at_5": 0.7105263157894737,
+        "mrr": 0.5013157894736843,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.9,
+        "weak_empty_rate": 0.4
+      }
+    ]
+  },
+  {
+    "setting": "pref_on_hybrid_k30_lex5",
+    "params": {
+      "rrf_k": 30,
+      "fts_weight": 1.0,
+      "vector_weight": 1.0,
+      "fts_pool": 50,
+      "vector_pool_min": 30,
+      "lexical_top_n": 5,
+      "min_similarity": null,
+      "use_prefixes": true
+    },
+    "reports": [
+      {
+        "locale": "en",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.868421052631579,
+        "recall_at_3": 0.9736842105263158,
+        "recall_at_5": 1.0,
+        "mrr": 0.9203947368421053,
+        "weak_queries": 10,
+        "weak_avg_hits": 3.1,
+        "weak_empty_rate": 0.2
+      },
+      {
+        "locale": "tr",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.3815789473684211,
+        "recall_at_3": 0.5921052631578947,
+        "recall_at_5": 0.7105263157894737,
+        "mrr": 0.5013157894736843,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.9,
+        "weak_empty_rate": 0.4
+      }
+    ]
+  },
+  {
+    "setting": "pref_on_hybrid_k10_lex5",
+    "params": {
+      "rrf_k": 10,
+      "fts_weight": 1.0,
+      "vector_weight": 1.0,
+      "fts_pool": 50,
+      "vector_pool_min": 30,
+      "lexical_top_n": 5,
+      "min_similarity": null,
+      "use_prefixes": true
+    },
+    "reports": [
+      {
+        "locale": "en",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.868421052631579,
+        "recall_at_3": 0.9736842105263158,
+        "recall_at_5": 1.0,
+        "mrr": 0.9203947368421053,
+        "weak_queries": 10,
+        "weak_avg_hits": 3.1,
+        "weak_empty_rate": 0.2
+      },
+      {
+        "locale": "tr",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.3815789473684211,
+        "recall_at_3": 0.5921052631578947,
+        "recall_at_5": 0.7105263157894737,
+        "mrr": 0.5013157894736843,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.9,
+        "weak_empty_rate": 0.4
+      }
+    ]
+  },
+  {
+    "setting": "pref_on_hybrid_k60_fts2x_lex5",
+    "params": {
+      "rrf_k": 60,
+      "fts_weight": 2.0,
+      "vector_weight": 1.0,
+      "fts_pool": 50,
+      "vector_pool_min": 30,
+      "lexical_top_n": 5,
+      "min_similarity": null,
+      "use_prefixes": true
+    },
+    "reports": [
+      {
+        "locale": "en",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.8026315789473685,
+        "recall_at_3": 0.9605263157894737,
+        "recall_at_5": 0.9868421052631579,
+        "mrr": 0.8771929824561404,
+        "weak_queries": 10,
+        "weak_avg_hits": 3.1,
+        "weak_empty_rate": 0.2
+      },
+      {
+        "locale": "tr",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.4342105263157895,
+        "recall_at_3": 0.6447368421052632,
+        "recall_at_5": 0.7236842105263158,
+        "mrr": 0.5469298245614036,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.9,
+        "weak_empty_rate": 0.4
+      }
+    ]
+  },
+  {
+    "setting": "pref_on_hybrid_k10_fts2x_lex5",
+    "params": {
+      "rrf_k": 10,
+      "fts_weight": 2.0,
+      "vector_weight": 1.0,
+      "fts_pool": 50,
+      "vector_pool_min": 30,
+      "lexical_top_n": 5,
+      "min_similarity": null,
+      "use_prefixes": true
+    },
+    "reports": [
+      {
+        "locale": "en",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.8026315789473685,
+        "recall_at_3": 0.9605263157894737,
+        "recall_at_5": 0.9868421052631579,
+        "mrr": 0.8771929824561404,
+        "weak_queries": 10,
+        "weak_avg_hits": 3.1,
+        "weak_empty_rate": 0.2
+      },
+      {
+        "locale": "tr",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.4342105263157895,
+        "recall_at_3": 0.6447368421052632,
+        "recall_at_5": 0.7236842105263158,
+        "mrr": 0.5469298245614036,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.9,
+        "weak_empty_rate": 0.4
+      }
+    ]
+  },
+  {
+    "setting": "pref_on_hybrid_k60_fts2x_lex2",
+    "params": {
+      "rrf_k": 60,
+      "fts_weight": 2.0,
+      "vector_weight": 1.0,
+      "fts_pool": 50,
+      "vector_pool_min": 30,
+      "lexical_top_n": 2,
+      "min_similarity": null,
+      "use_prefixes": true
+    },
+    "reports": [
+      {
+        "locale": "en",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.8157894736842105,
+        "recall_at_3": 0.9736842105263158,
+        "recall_at_5": 0.9868421052631579,
+        "mrr": 0.8848684210526315,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.8,
+        "weak_empty_rate": 0.2
+      },
+      {
+        "locale": "tr",
+        "split": "tune",
+        "queries": 76,
+        "recall_at_1": 0.47368421052631576,
+        "recall_at_3": 0.631578947368421,
+        "recall_at_5": 0.6710526315789473,
+        "mrr": 0.5552631578947369,
+        "weak_queries": 10,
+        "weak_avg_hits": 1.3,
+        "weak_empty_rate": 0.4
+      }
+    ]
+  }
+]
