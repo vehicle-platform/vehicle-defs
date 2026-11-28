@@ -64,7 +64,7 @@ pooled over 3 cold runs per arm and locale). Cache shares and `prompt_ms` percen
 strictly over LLM-timed turns (`timings != null`), with both total `n` and `LLM-timed n` reported.
 Source of every English figure below: committed `arm-{a,c}-en-run{1,2,3}.json` and `.md` files in
 this directory; source of Turkish figures: committed `arm-{a,c}-tr-run{1,2,3}.md` summaries and
-local aggregation of Turkish runs (Turkish raw JSONs kept in a temporary directory outside the
+(marked below) local aggregation of Turkish runs, not committed (Turkish raw JSONs kept in a temporary directory outside the
 repository and deleted after aggregation per D-125).
 
 ### Quality and answer-source comparison per arm (identical across all 3 runs per arm and locale)
@@ -103,6 +103,11 @@ The three runs replay the same deterministic conversations and produced identica
 Runs 1, 2, and 3, so they are repeats of one configuration rather than independent samples: token
 figures have `n = 1` per arm and locale with no variance estimate; only the latency timings vary
 between runs.
+
+Sources: the `en` rows come from the committed `arm-{a,c}-en-run*.json`. The `tr` token counts are
+3 × the per-turn rows of the committed `arm-{a,c}-tr-run*.md`; the pooled `tr` `prompt_ms` p50/p95
+(per turn and **All**) are **from a local log, not committed** (the Turkish raw JSONs were deleted),
+and so are the `tr` per-item token deltas in finding 3 and the `tr` item ids in finding 4.
 
 | Locale | Arm | Turn | n | LLM-timed n | Cached / total prompt tokens | Cached share | `prompt_ms` p50 | `prompt_ms` p95 |
 |---|---|---|---:|---:|---|---:|---:|---:|
