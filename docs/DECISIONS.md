@@ -1114,6 +1114,7 @@ Both modes share the scenario format and the evaluation/report. Before hardware 
 2. **Private:** vehicle-specific and commercially sensitive content — reverse-engineered vehicle CAN IDs and DIDs (today `vehicle-defs/dbc/cl250.dbc`, `uds/vehicle_cl250.yaml`), the legacy CL250 telemetry code, trained models, customer- or product-specific parts of the later commercial product (D-078).
 3. **How:** T76 inventories the content and designs the split (a private per-vehicle pack consumed by the public codegen, a synthetic example vehicle in the public repo); the move happens with the user's approval. Content that was already public stays in existing clones and forks; history is rewritten only on the user's explicit decision.
 4. Private repositories on the GitHub Free plan have limited Actions minutes and no rulesets, so their CI is kept small.
+- Amendment 2026-11-28 (user: "who will come and look anyway"): `vehicle-server` and `vehicle-ml` were made public after a gitleaks full-history scan (0 findings; the GPS fixture is synthetic, speed/heading only), because private repositories hit the Actions billing block. D-033 rules for public repos apply to them; the private items of item 2 are unchanged.
 - Not chosen: making everything private now (CI minutes, rulesets and secret scanning would be lost or paid, and the open thesis platform loses its value).
 - Why: keeps the thesis platform open and reproducible while protecting what is vehicle-specific or commercial.
 
