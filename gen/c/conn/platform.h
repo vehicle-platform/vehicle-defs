@@ -53,6 +53,7 @@ extern "C" {
 #define PLATFORM_HEARTBEAT_RT_CORE_FRAME_ID (0x81u)
 #define PLATFORM_HEARTBEAT_CONN_FRAME_ID (0x84u)
 #define PLATFORM_VEHICLE_ENGINE_FRAME_ID (0x110u)
+#define PLATFORM_SHUTDOWN_REQUEST_FRAME_ID (0x121u)
 
 /* Frame lengths in bytes. */
 #define PLATFORM_VEHICLE_SPEED_LENGTH (8u)
@@ -60,6 +61,7 @@ extern "C" {
 #define PLATFORM_HEARTBEAT_RT_CORE_LENGTH (8u)
 #define PLATFORM_HEARTBEAT_CONN_LENGTH (8u)
 #define PLATFORM_VEHICLE_ENGINE_LENGTH (8u)
+#define PLATFORM_SHUTDOWN_REQUEST_LENGTH (8u)
 
 /* Extended or standard frame types. */
 #define PLATFORM_VEHICLE_SPEED_IS_EXTENDED (0)
@@ -67,6 +69,7 @@ extern "C" {
 #define PLATFORM_HEARTBEAT_RT_CORE_IS_EXTENDED (0)
 #define PLATFORM_HEARTBEAT_CONN_IS_EXTENDED (0)
 #define PLATFORM_VEHICLE_ENGINE_IS_EXTENDED (0)
+#define PLATFORM_SHUTDOWN_REQUEST_IS_EXTENDED (0)
 
 /* Frame cycle times in milliseconds. */
 #define PLATFORM_VEHICLE_SPEED_CYCLE_TIME_MS (50u)
@@ -74,6 +77,7 @@ extern "C" {
 #define PLATFORM_HEARTBEAT_RT_CORE_CYCLE_TIME_MS (100u)
 #define PLATFORM_HEARTBEAT_CONN_CYCLE_TIME_MS (100u)
 #define PLATFORM_VEHICLE_ENGINE_CYCLE_TIME_MS (50u)
+#define PLATFORM_SHUTDOWN_REQUEST_CYCLE_TIME_MS (100u)
 
 /* Signal choices. */
 #define PLATFORM_VEHICLE_SPEED_VEHICLE_SPEED_VALID_INVALID_CHOICE (0u)
@@ -134,12 +138,23 @@ extern "C" {
 #define PLATFORM_VEHICLE_ENGINE_ECU_PRESENT_ABSENT_CHOICE (0u)
 #define PLATFORM_VEHICLE_ENGINE_ECU_PRESENT_PRESENT_CHOICE (1u)
 
+#define PLATFORM_SHUTDOWN_REQUEST_SHUTDOWN_REQUEST_NONE_CHOICE (0u)
+#define PLATFORM_SHUTDOWN_REQUEST_SHUTDOWN_REQUEST_SHUTDOWN_CHOICE (1u)
+#define PLATFORM_SHUTDOWN_REQUEST_SHUTDOWN_REQUEST_RESERVED_2_CHOICE (2u)
+#define PLATFORM_SHUTDOWN_REQUEST_SHUTDOWN_REQUEST_RESERVED_3_CHOICE (3u)
+
+#define PLATFORM_SHUTDOWN_REQUEST_SHUTDOWN_REASON_NONE_CHOICE (0u)
+#define PLATFORM_SHUTDOWN_REQUEST_SHUTDOWN_REASON_KEY_OFF_CHOICE (1u)
+#define PLATFORM_SHUTDOWN_REQUEST_SHUTDOWN_REASON_LOW_VOLTAGE_CHOICE (2u)
+#define PLATFORM_SHUTDOWN_REQUEST_SHUTDOWN_REASON_SERVICE_CHOICE (3u)
+
 /* Frame Names. */
 #define PLATFORM_VEHICLE_SPEED_NAME "VehicleSpeed"
 #define PLATFORM_SAFETY_WARNING_STATUS_NAME "SafetyWarningStatus"
 #define PLATFORM_HEARTBEAT_RT_CORE_NAME "HeartbeatRtCore"
 #define PLATFORM_HEARTBEAT_CONN_NAME "HeartbeatConn"
 #define PLATFORM_VEHICLE_ENGINE_NAME "VehicleEngine"
+#define PLATFORM_SHUTDOWN_REQUEST_NAME "ShutdownRequest"
 
 /* Signal Names. */
 #define PLATFORM_VEHICLE_SPEED_E2_E_CRC_NAME "E2E_CRC"
@@ -173,6 +188,10 @@ extern "C" {
 #define PLATFORM_VEHICLE_ENGINE_COOLANT_TEMP_VALID_NAME "COOLANT_TEMP_VALID"
 #define PLATFORM_VEHICLE_ENGINE_THROTTLE_POS_VALID_NAME "THROTTLE_POS_VALID"
 #define PLATFORM_VEHICLE_ENGINE_ECU_PRESENT_NAME "ECU_PRESENT"
+#define PLATFORM_SHUTDOWN_REQUEST_SHUTDOWN_REQUEST_NAME "SHUTDOWN_REQUEST"
+#define PLATFORM_SHUTDOWN_REQUEST_SHUTDOWN_REASON_NAME "SHUTDOWN_REASON"
+#define PLATFORM_SHUTDOWN_REQUEST_SHUTDOWN_REQUEST_ID_NAME "SHUTDOWN_REQUEST_ID"
+#define PLATFORM_SHUTDOWN_REQUEST_SHUTDOWN_DEADLINE_NAME "SHUTDOWN_DEADLINE"
 
 /**
  * Signals in message VehicleSpeed.
@@ -468,6 +487,51 @@ struct platform_vehicle_engine_t {
      * Offset: 0
      */
     uint8_t ecu_present;
+};
+
+/**
+ * Signals in message ShutdownRequest.
+ *
+ * Key-off power-down request from rt-core to the Raspberry Pi 5 (D-138 item 2), a QM frame without E2E: a lost or spurious frame can only cause or delay a clean shutdown, never a safety function. rt-core sends it every 100 ms; SHUTDOWN_REQUEST=NONE means no request. The safety MCU does not depend on it (invariant 3).
+ *
+ * All signal values are as on the CAN bus.
+ */
+struct platform_shutdown_request_t {
+    /**
+     * SHUTDOWN = the receiver must close its files and halt within SHUTDOWN_DEADLINE; NONE = no request (raw 0, also the value of a never-written field). 2 and 3 are reserved and are read as NONE, so a corrupted value never halts the Pi.
+     *
+     * Range: 0..3 (0..3 -)
+     * Scale: 1
+     * Offset: 0
+     */
+    uint8_t shutdown_request;
+
+    /**
+     * Why rt-core asks for the shutdown: KEY_OFF (KL15 dropped), LOW_VOLTAGE (battery below the cut-off while parked or riding), SERVICE (a commanded shutdown). Unknown values are read as NONE.
+     *
+     * Range: 0..15 (0..15 -)
+     * Scale: 1
+     * Offset: 0
+     */
+    uint8_t shutdown_reason;
+
+    /**
+     * Counter that rt-core increments once for every new shutdown sequence (not per frame, wraps at 15); ShutdownAck echoes it so an acknowledgement of an earlier sequence is never taken for the current one.
+     *
+     * Range: 0..15 (0..15 -)
+     * Scale: 1
+     * Offset: 0
+     */
+    uint8_t shutdown_request_id;
+
+    /**
+     * Seconds the receiver has before rt-core releases HOLD and the supply is cut (the bounded timeout of D-138 item 2, provisional 20-30 s until measured); 0 = no deadline given.
+     *
+     * Range: 0..255 (0..255 s)
+     * Scale: 1
+     * Offset: 0
+     */
+    uint8_t shutdown_deadline;
 };
 
 /**
@@ -1547,6 +1611,153 @@ bool platform_vehicle_engine_ecu_present_is_in_range(uint8_t value);
 bool platform_vehicle_engine_ecu_present_is_in_phys_range(float value);
 
 /**
+ * Unpack message ShutdownRequest.
+ *
+ * @param[out] dst_p Object to unpack the message into.
+ * @param[in] src_p Message to unpack.
+ * @param[in] size Size of src_p.
+ *
+ * @return zero(0) or negative error code.
+ */
+int platform_shutdown_request_unpack(
+    struct platform_shutdown_request_t *dst_p,
+    const uint8_t *src_p,
+    size_t size);
+
+/**
+ * Init message fields to default values from ShutdownRequest.
+ *
+ * @param[in] msg_p Message to init.
+ *
+ * @return zero(0) on success or (-1) in case of nullptr argument.
+ */
+int platform_shutdown_request_init(struct platform_shutdown_request_t *msg_p);
+
+/**
+ * Decode given signal by applying scaling and offset.
+ *
+ * @param[in] value Signal to decode.
+ *
+ * @return Decoded signal.
+ */
+float platform_shutdown_request_shutdown_request_decode(uint8_t value);
+
+/**
+ * Check that given signal is in allowed range.
+ *
+ * @param[in] value Signal to check.
+ *
+ * @return true if in range, false otherwise.
+ */
+bool platform_shutdown_request_shutdown_request_is_in_range(uint8_t value);
+
+/**
+ * Check that given physical value is in allowed range before encoding.
+ *
+ * Use this BEFORE calling _encode() to avoid silent integer overflow:
+ *   encode(-1.0) on a [0,100] signal wraps to 255 and passes is_in_range().
+ *   is_in_phys_range(-1.0) correctly returns false.
+ *
+ * @param[in] value Physical signal value to check.
+ *
+ * @return true if in range, false otherwise.
+ */
+bool platform_shutdown_request_shutdown_request_is_in_phys_range(float value);
+
+/**
+ * Decode given signal by applying scaling and offset.
+ *
+ * @param[in] value Signal to decode.
+ *
+ * @return Decoded signal.
+ */
+float platform_shutdown_request_shutdown_reason_decode(uint8_t value);
+
+/**
+ * Check that given signal is in allowed range.
+ *
+ * @param[in] value Signal to check.
+ *
+ * @return true if in range, false otherwise.
+ */
+bool platform_shutdown_request_shutdown_reason_is_in_range(uint8_t value);
+
+/**
+ * Check that given physical value is in allowed range before encoding.
+ *
+ * Use this BEFORE calling _encode() to avoid silent integer overflow:
+ *   encode(-1.0) on a [0,100] signal wraps to 255 and passes is_in_range().
+ *   is_in_phys_range(-1.0) correctly returns false.
+ *
+ * @param[in] value Physical signal value to check.
+ *
+ * @return true if in range, false otherwise.
+ */
+bool platform_shutdown_request_shutdown_reason_is_in_phys_range(float value);
+
+/**
+ * Decode given signal by applying scaling and offset.
+ *
+ * @param[in] value Signal to decode.
+ *
+ * @return Decoded signal.
+ */
+float platform_shutdown_request_shutdown_request_id_decode(uint8_t value);
+
+/**
+ * Check that given signal is in allowed range.
+ *
+ * @param[in] value Signal to check.
+ *
+ * @return true if in range, false otherwise.
+ */
+bool platform_shutdown_request_shutdown_request_id_is_in_range(uint8_t value);
+
+/**
+ * Check that given physical value is in allowed range before encoding.
+ *
+ * Use this BEFORE calling _encode() to avoid silent integer overflow:
+ *   encode(-1.0) on a [0,100] signal wraps to 255 and passes is_in_range().
+ *   is_in_phys_range(-1.0) correctly returns false.
+ *
+ * @param[in] value Physical signal value to check.
+ *
+ * @return true if in range, false otherwise.
+ */
+bool platform_shutdown_request_shutdown_request_id_is_in_phys_range(float value);
+
+/**
+ * Decode given signal by applying scaling and offset.
+ *
+ * @param[in] value Signal to decode.
+ *
+ * @return Decoded signal.
+ */
+float platform_shutdown_request_shutdown_deadline_decode(uint8_t value);
+
+/**
+ * Check that given signal is in allowed range.
+ *
+ * @param[in] value Signal to check.
+ *
+ * @return true if in range, false otherwise.
+ */
+bool platform_shutdown_request_shutdown_deadline_is_in_range(uint8_t value);
+
+/**
+ * Check that given physical value is in allowed range before encoding.
+ *
+ * Use this BEFORE calling _encode() to avoid silent integer overflow:
+ *   encode(-1.0) on a [0,100] signal wraps to 255 and passes is_in_range().
+ *   is_in_phys_range(-1.0) correctly returns false.
+ *
+ * @param[in] value Physical signal value to check.
+ *
+ * @return true if in range, false otherwise.
+ */
+bool platform_shutdown_request_shutdown_deadline_is_in_phys_range(float value);
+
+/**
  * Check that given HeartbeatConn.CONN_NODE_MODE raw value is a defined enum value
  * (a value-table name other than RESERVED).
  *
@@ -1697,6 +1908,26 @@ int platform_heartbeat_rt_core_unpack_checked(
  */
 int platform_vehicle_engine_unpack_checked(
     struct platform_vehicle_engine_t *dst_p,
+    const uint8_t *src_p,
+    size_t size);
+
+/**
+ * Unpack message ShutdownRequest after checking its length and every signal.
+ *
+ * size must be exactly PLATFORM_SHUTDOWN_REQUEST_LENGTH (the DBC DLC) and every signal must
+ * pass its is_in_range() check. dst_p is written only on success. Undefined enum
+ * values are not rejected (the receiver applies the documented fallback). Run the
+ * E2E wrapper check first.
+ *
+ * @param[out] dst_p Object to unpack into.
+ * @param[in] src_p Frame data.
+ * @param[in] size Size of src_p.
+ *
+ * @return 0 on success, -EINVAL on a bad argument, wrong length or a value out of
+ *         range.
+ */
+int platform_shutdown_request_unpack_checked(
+    struct platform_shutdown_request_t *dst_p,
     const uint8_t *src_p,
     size_t size);
 

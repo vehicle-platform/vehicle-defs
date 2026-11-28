@@ -4,6 +4,14 @@ All notable changes to vehicle-defs. Semver (see CLAUDE.md): new message/signal 
 
 ## [Unreleased]
 
+## [0.35.0] — 2026-11-28
+
+**MINOR (additive; D-138 item 5, PROVISIONAL).** Platform-bus key-off power-down handshake between rt-core and the Raspberry Pi 5. No existing frame, signal, DID, BLE layout or `tester_policy` change.
+
+- **DBC `platform.dbc`:** `ShutdownRequest` 0x121 (RT_CORE, 100 ms, QM, no E2E: `SHUTDOWN_REQUEST` NONE/SHUTDOWN, `SHUTDOWN_REASON` NONE/KEY_OFF/LOW_VOLTAGE/SERVICE, `SHUTDOWN_REQUEST_ID`, `SHUTDOWN_DEADLINE` s) and `ShutdownAck` 0x122 (LINUX, 100 ms: `SHUTDOWN_ACK_STATE` NONE/HALTING/READY_TO_CUT, `SHUTDOWN_ACK_ID` echo). Raw 0 is the no-information value and reserved values read as NONE, so a corrupted frame never halts the Pi; a missing acknowledgement never blocks rt-core (bounded timeout).
+- **VSS overlay:** `Vehicle.Motorcycle.Power.ShutdownRequested`, `.ShutdownReason`, `.ShutdownDeadline` (request side only; new approved-extension entries, PROVISIONAL, user revises). The acknowledgement is not mapped: the Pi sends it directly on the platform bus.
+- Generated `gen/` code and the codegen package version are regenerated; consumers (rt-core, linux-node) pin the new tag deliberately.
+
 ## [0.34.0] — 2026-11-28
 
 **MINOR (additive generated constant; T77 follow-up).** The platform-bus bit rate is now a generated constant read only from the `Baudrate` attribute of `dbc/platform.dbc`, so rt-core and safety-node stop using a local 500000 literal or the vehicle-bus constant for the platform bus. No CAN frame, signal, DID, VSS path, BLE layout or `tester_policy` change. Do not tag without the user (release-tags-by-user).

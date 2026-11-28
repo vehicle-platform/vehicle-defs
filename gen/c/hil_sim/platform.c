@@ -2255,6 +2255,260 @@ bool platform_safety_request_immobilizer_lock_request_is_in_phys_range(float val
     return ((value >= 0.0f) && (value <= 3.0f));
 }
 
+int platform_shutdown_request_pack(
+    uint8_t *dst_p,
+    const struct platform_shutdown_request_t *src_p,
+    size_t size)
+{
+    if (size < 8u) {
+        return (-EINVAL);
+    }
+
+    (void)memset(&dst_p[0], 0, 8);
+
+    dst_p[0] |= pack_left_shift_u8(src_p->shutdown_request, 0u, 0x03u);
+    dst_p[0] |= pack_left_shift_u8(src_p->shutdown_reason, 2u, 0x3cu);
+    dst_p[1] |= pack_left_shift_u8(src_p->shutdown_request_id, 0u, 0x0fu);
+    dst_p[2] |= pack_left_shift_u8(src_p->shutdown_deadline, 0u, 0xffu);
+
+    return (8);
+}
+
+int platform_shutdown_request_unpack(
+    struct platform_shutdown_request_t *dst_p,
+    const uint8_t *src_p,
+    size_t size)
+{
+    if (size < 8u) {
+        return (-EINVAL);
+    }
+
+    dst_p->shutdown_request = unpack_right_shift_u8(src_p[0], 0u, 0x03u);
+    dst_p->shutdown_reason = unpack_right_shift_u8(src_p[0], 2u, 0x3cu);
+    dst_p->shutdown_request_id = unpack_right_shift_u8(src_p[1], 0u, 0x0fu);
+    dst_p->shutdown_deadline = unpack_right_shift_u8(src_p[2], 0u, 0xffu);
+
+    return (0);
+}
+
+int platform_shutdown_request_init(struct platform_shutdown_request_t *msg_p)
+{
+    if (msg_p == NULL) {
+        return -1;
+    }
+
+    (void)memset(msg_p, 0, sizeof(struct platform_shutdown_request_t));
+
+    return 0;
+}
+
+uint8_t platform_shutdown_request_shutdown_request_encode(float value)
+{
+    const float raw = value;
+    float rounded = 0.0f;
+
+    if (raw > 0.0f) { /* raw <= 0 or NaN: 0 */
+        rounded = (raw >= 255.0f) ? 255.0f : (raw + 0.5f);
+    }
+
+    return (uint8_t)rounded;
+}
+
+float platform_shutdown_request_shutdown_request_decode(uint8_t value)
+{
+    return ((float)value);
+}
+
+bool platform_shutdown_request_shutdown_request_is_in_range(uint8_t value)
+{
+    return (value <= 3u);
+}
+
+bool platform_shutdown_request_shutdown_request_is_in_phys_range(float value)
+{
+    return ((value >= 0.0f) && (value <= 3.0f));
+}
+
+uint8_t platform_shutdown_request_shutdown_reason_encode(float value)
+{
+    const float raw = value;
+    float rounded = 0.0f;
+
+    if (raw > 0.0f) { /* raw <= 0 or NaN: 0 */
+        rounded = (raw >= 255.0f) ? 255.0f : (raw + 0.5f);
+    }
+
+    return (uint8_t)rounded;
+}
+
+float platform_shutdown_request_shutdown_reason_decode(uint8_t value)
+{
+    return ((float)value);
+}
+
+bool platform_shutdown_request_shutdown_reason_is_in_range(uint8_t value)
+{
+    return (value <= 15u);
+}
+
+bool platform_shutdown_request_shutdown_reason_is_in_phys_range(float value)
+{
+    return ((value >= 0.0f) && (value <= 15.0f));
+}
+
+uint8_t platform_shutdown_request_shutdown_request_id_encode(float value)
+{
+    const float raw = value;
+    float rounded = 0.0f;
+
+    if (raw > 0.0f) { /* raw <= 0 or NaN: 0 */
+        rounded = (raw >= 255.0f) ? 255.0f : (raw + 0.5f);
+    }
+
+    return (uint8_t)rounded;
+}
+
+float platform_shutdown_request_shutdown_request_id_decode(uint8_t value)
+{
+    return ((float)value);
+}
+
+bool platform_shutdown_request_shutdown_request_id_is_in_range(uint8_t value)
+{
+    return (value <= 15u);
+}
+
+bool platform_shutdown_request_shutdown_request_id_is_in_phys_range(float value)
+{
+    return ((value >= 0.0f) && (value <= 15.0f));
+}
+
+uint8_t platform_shutdown_request_shutdown_deadline_encode(float value)
+{
+    const float raw = value;
+    float rounded = 0.0f;
+
+    if (raw > 0.0f) { /* raw <= 0 or NaN: 0 */
+        rounded = (raw >= 255.0f) ? 255.0f : (raw + 0.5f);
+    }
+
+    return (uint8_t)rounded;
+}
+
+float platform_shutdown_request_shutdown_deadline_decode(uint8_t value)
+{
+    return ((float)value);
+}
+
+bool platform_shutdown_request_shutdown_deadline_is_in_range(uint8_t value)
+{
+    (void)value;
+
+    return (true);
+}
+
+bool platform_shutdown_request_shutdown_deadline_is_in_phys_range(float value)
+{
+    return ((value >= 0.0f) && (value <= 255.0f));
+}
+
+int platform_shutdown_ack_pack(
+    uint8_t *dst_p,
+    const struct platform_shutdown_ack_t *src_p,
+    size_t size)
+{
+    if (size < 8u) {
+        return (-EINVAL);
+    }
+
+    (void)memset(&dst_p[0], 0, 8);
+
+    dst_p[0] |= pack_left_shift_u8(src_p->shutdown_ack_state, 0u, 0x03u);
+    dst_p[1] |= pack_left_shift_u8(src_p->shutdown_ack_id, 0u, 0x0fu);
+
+    return (8);
+}
+
+int platform_shutdown_ack_unpack(
+    struct platform_shutdown_ack_t *dst_p,
+    const uint8_t *src_p,
+    size_t size)
+{
+    if (size < 8u) {
+        return (-EINVAL);
+    }
+
+    dst_p->shutdown_ack_state = unpack_right_shift_u8(src_p[0], 0u, 0x03u);
+    dst_p->shutdown_ack_id = unpack_right_shift_u8(src_p[1], 0u, 0x0fu);
+
+    return (0);
+}
+
+int platform_shutdown_ack_init(struct platform_shutdown_ack_t *msg_p)
+{
+    if (msg_p == NULL) {
+        return -1;
+    }
+
+    (void)memset(msg_p, 0, sizeof(struct platform_shutdown_ack_t));
+
+    return 0;
+}
+
+uint8_t platform_shutdown_ack_shutdown_ack_state_encode(float value)
+{
+    const float raw = value;
+    float rounded = 0.0f;
+
+    if (raw > 0.0f) { /* raw <= 0 or NaN: 0 */
+        rounded = (raw >= 255.0f) ? 255.0f : (raw + 0.5f);
+    }
+
+    return (uint8_t)rounded;
+}
+
+float platform_shutdown_ack_shutdown_ack_state_decode(uint8_t value)
+{
+    return ((float)value);
+}
+
+bool platform_shutdown_ack_shutdown_ack_state_is_in_range(uint8_t value)
+{
+    return (value <= 3u);
+}
+
+bool platform_shutdown_ack_shutdown_ack_state_is_in_phys_range(float value)
+{
+    return ((value >= 0.0f) && (value <= 3.0f));
+}
+
+uint8_t platform_shutdown_ack_shutdown_ack_id_encode(float value)
+{
+    const float raw = value;
+    float rounded = 0.0f;
+
+    if (raw > 0.0f) { /* raw <= 0 or NaN: 0 */
+        rounded = (raw >= 255.0f) ? 255.0f : (raw + 0.5f);
+    }
+
+    return (uint8_t)rounded;
+}
+
+float platform_shutdown_ack_shutdown_ack_id_decode(uint8_t value)
+{
+    return ((float)value);
+}
+
+bool platform_shutdown_ack_shutdown_ack_id_is_in_range(uint8_t value)
+{
+    return (value <= 15u);
+}
+
+bool platform_shutdown_ack_shutdown_ack_id_is_in_phys_range(float value)
+{
+    return ((value >= 0.0f) && (value <= 15.0f));
+}
+
 bool platform_ekf_lean_lean_angle_state_is_defined(uint8_t value)
 {
     return ((value == 0u) || (value == 1u) || (value == 3u));
@@ -2585,6 +2839,60 @@ int platform_safety_request_pack_checked(
         platform_safety_request_immobilizer_lock_request_is_in_range(src_p->immobilizer_lock_request) &&
         platform_safety_request_immobilizer_lock_request_is_defined(src_p->immobilizer_lock_request)) {
         result = platform_safety_request_pack(dst_p, src_p, size);
+    }
+
+    return (result);
+}
+
+bool platform_shutdown_request_shutdown_request_is_defined(uint8_t value)
+{
+    return ((value == 0u) || (value == 1u));
+}
+
+bool platform_shutdown_request_shutdown_reason_is_defined(uint8_t value)
+{
+    return ((value == 0u) || (value == 1u) || (value == 2u) || (value == 3u));
+}
+
+int platform_shutdown_request_pack_checked(
+    uint8_t *dst_p,
+    const struct platform_shutdown_request_t *src_p,
+    size_t size)
+{
+    int result = (-EINVAL);
+
+    if ((dst_p != NULL) &&
+        (src_p != NULL) &&
+        platform_shutdown_request_shutdown_request_is_in_range(src_p->shutdown_request) &&
+        platform_shutdown_request_shutdown_request_is_defined(src_p->shutdown_request) &&
+        platform_shutdown_request_shutdown_reason_is_in_range(src_p->shutdown_reason) &&
+        platform_shutdown_request_shutdown_reason_is_defined(src_p->shutdown_reason) &&
+        platform_shutdown_request_shutdown_request_id_is_in_range(src_p->shutdown_request_id) &&
+        platform_shutdown_request_shutdown_deadline_is_in_range(src_p->shutdown_deadline)) {
+        result = platform_shutdown_request_pack(dst_p, src_p, size);
+    }
+
+    return (result);
+}
+
+bool platform_shutdown_ack_shutdown_ack_state_is_defined(uint8_t value)
+{
+    return ((value == 0u) || (value == 1u) || (value == 2u));
+}
+
+int platform_shutdown_ack_pack_checked(
+    uint8_t *dst_p,
+    const struct platform_shutdown_ack_t *src_p,
+    size_t size)
+{
+    int result = (-EINVAL);
+
+    if ((dst_p != NULL) &&
+        (src_p != NULL) &&
+        platform_shutdown_ack_shutdown_ack_state_is_in_range(src_p->shutdown_ack_state) &&
+        platform_shutdown_ack_shutdown_ack_state_is_defined(src_p->shutdown_ack_state) &&
+        platform_shutdown_ack_shutdown_ack_id_is_in_range(src_p->shutdown_ack_id)) {
+        result = platform_shutdown_ack_pack(dst_p, src_p, size);
     }
 
     return (result);
@@ -3164,6 +3472,90 @@ int platform_safety_request_immobilizer_lock_request_encode_checked(float value,
     return (result);
 }
 
+int platform_shutdown_request_shutdown_request_encode_checked(float value, uint8_t *raw_p)
+{
+    int result = (-EINVAL);
+
+    if ((raw_p != NULL) && (value >= -3.4028234e+38f) &&
+        (value <= 3.4028234e+38f) &&
+        platform_shutdown_request_shutdown_request_is_in_phys_range(value)) {
+        *raw_p = platform_shutdown_request_shutdown_request_encode(value);
+        result = 0;
+    }
+
+    return (result);
+}
+
+int platform_shutdown_request_shutdown_reason_encode_checked(float value, uint8_t *raw_p)
+{
+    int result = (-EINVAL);
+
+    if ((raw_p != NULL) && (value >= -3.4028234e+38f) &&
+        (value <= 3.4028234e+38f) &&
+        platform_shutdown_request_shutdown_reason_is_in_phys_range(value)) {
+        *raw_p = platform_shutdown_request_shutdown_reason_encode(value);
+        result = 0;
+    }
+
+    return (result);
+}
+
+int platform_shutdown_request_shutdown_request_id_encode_checked(float value, uint8_t *raw_p)
+{
+    int result = (-EINVAL);
+
+    if ((raw_p != NULL) && (value >= -3.4028234e+38f) &&
+        (value <= 3.4028234e+38f) &&
+        platform_shutdown_request_shutdown_request_id_is_in_phys_range(value)) {
+        *raw_p = platform_shutdown_request_shutdown_request_id_encode(value);
+        result = 0;
+    }
+
+    return (result);
+}
+
+int platform_shutdown_request_shutdown_deadline_encode_checked(float value, uint8_t *raw_p)
+{
+    int result = (-EINVAL);
+
+    if ((raw_p != NULL) && (value >= -3.4028234e+38f) &&
+        (value <= 3.4028234e+38f) &&
+        platform_shutdown_request_shutdown_deadline_is_in_phys_range(value)) {
+        *raw_p = platform_shutdown_request_shutdown_deadline_encode(value);
+        result = 0;
+    }
+
+    return (result);
+}
+
+int platform_shutdown_ack_shutdown_ack_state_encode_checked(float value, uint8_t *raw_p)
+{
+    int result = (-EINVAL);
+
+    if ((raw_p != NULL) && (value >= -3.4028234e+38f) &&
+        (value <= 3.4028234e+38f) &&
+        platform_shutdown_ack_shutdown_ack_state_is_in_phys_range(value)) {
+        *raw_p = platform_shutdown_ack_shutdown_ack_state_encode(value);
+        result = 0;
+    }
+
+    return (result);
+}
+
+int platform_shutdown_ack_shutdown_ack_id_encode_checked(float value, uint8_t *raw_p)
+{
+    int result = (-EINVAL);
+
+    if ((raw_p != NULL) && (value >= -3.4028234e+38f) &&
+        (value <= 3.4028234e+38f) &&
+        platform_shutdown_ack_shutdown_ack_id_is_in_phys_range(value)) {
+        *raw_p = platform_shutdown_ack_shutdown_ack_id_encode(value);
+        result = 0;
+    }
+
+    return (result);
+}
+
 int platform_ekf_lean_unpack_checked(
     struct platform_ekf_lean_t *dst_p,
     const uint8_t *src_p,
@@ -3413,6 +3805,52 @@ int platform_safety_request_unpack_checked(
             platform_safety_request_ignition_state_is_in_range(tmp.ignition_state) &&
             platform_safety_request_park_mode_is_in_range(tmp.park_mode) &&
             platform_safety_request_immobilizer_lock_request_is_in_range(tmp.immobilizer_lock_request))) {
+            result = (-EINVAL);
+        }
+        if (result == 0) {
+            *dst_p = tmp;
+        }
+    }
+
+    return (result);
+}
+
+int platform_shutdown_request_unpack_checked(
+    struct platform_shutdown_request_t *dst_p,
+    const uint8_t *src_p,
+    size_t size)
+{
+    int result = (-EINVAL);
+    struct platform_shutdown_request_t tmp = {0};
+
+    if ((dst_p != NULL) && (src_p != NULL) && (size == PLATFORM_SHUTDOWN_REQUEST_LENGTH)) {
+        result = platform_shutdown_request_unpack(&tmp, src_p, size);
+        if (!(platform_shutdown_request_shutdown_request_is_in_range(tmp.shutdown_request) &&
+            platform_shutdown_request_shutdown_reason_is_in_range(tmp.shutdown_reason) &&
+            platform_shutdown_request_shutdown_request_id_is_in_range(tmp.shutdown_request_id) &&
+            platform_shutdown_request_shutdown_deadline_is_in_range(tmp.shutdown_deadline))) {
+            result = (-EINVAL);
+        }
+        if (result == 0) {
+            *dst_p = tmp;
+        }
+    }
+
+    return (result);
+}
+
+int platform_shutdown_ack_unpack_checked(
+    struct platform_shutdown_ack_t *dst_p,
+    const uint8_t *src_p,
+    size_t size)
+{
+    int result = (-EINVAL);
+    struct platform_shutdown_ack_t tmp = {0};
+
+    if ((dst_p != NULL) && (src_p != NULL) && (size == PLATFORM_SHUTDOWN_ACK_LENGTH)) {
+        result = platform_shutdown_ack_unpack(&tmp, src_p, size);
+        if (!(platform_shutdown_ack_shutdown_ack_state_is_in_range(tmp.shutdown_ack_state) &&
+            platform_shutdown_ack_shutdown_ack_id_is_in_range(tmp.shutdown_ack_id))) {
             result = (-EINVAL);
         }
         if (result == 0) {

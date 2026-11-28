@@ -66,6 +66,10 @@ VEHICLE_ENGINE_CYCLE_TIME_MS = 50
 SAFETY_REQUEST_FRAME_ID = 0x120
 SAFETY_REQUEST_CYCLE_TIME_MS = 100
 SAFETY_REQUEST_E2E_DATA_ID = 0x1120
+SHUTDOWN_REQUEST_FRAME_ID = 0x121
+SHUTDOWN_REQUEST_CYCLE_TIME_MS = 100
+SHUTDOWN_ACK_FRAME_ID = 0x122
+SHUTDOWN_ACK_CYCLE_TIME_MS = 100
 
 MESSAGES = {
     "EkfLean": {"frame_id": 0x020, "length": 8, "cycle_time_ms": 20, "sender": "RT_CORE", "e2e_data_id": 0x1020},
@@ -78,6 +82,8 @@ MESSAGES = {
     "HeartbeatLinux": {"frame_id": 0x085, "length": 8, "cycle_time_ms": 100, "sender": "LINUX", "e2e_data_id": 0x1085},
     "VehicleEngine": {"frame_id": 0x110, "length": 8, "cycle_time_ms": 50, "sender": "RT_CORE", "e2e_data_id": None},
     "SafetyRequest": {"frame_id": 0x120, "length": 8, "cycle_time_ms": 100, "sender": "RT_CORE", "e2e_data_id": 0x1120},
+    "ShutdownRequest": {"frame_id": 0x121, "length": 8, "cycle_time_ms": 100, "sender": "RT_CORE", "e2e_data_id": None},
+    "ShutdownAck": {"frame_id": 0x122, "length": 8, "cycle_time_ms": 100, "sender": "LINUX", "e2e_data_id": None},
 }
 
 # message name -> signals in DBC (start-bit) order; keyed by name like MESSAGES
@@ -160,5 +166,15 @@ SIGNALS: dict[str, tuple[Signal, ...]] = {
         Signal('IGNITION_STATE', 12, 2, 'little_endian', False, 1, 0, 0, 3, '', ('SAFETY',), {0: 'UNKNOWN', 1: 'OFF', 2: 'ON', 3: 'RESERVED'}, False, None, None),
         Signal('PARK_MODE', 14, 2, 'little_endian', False, 1, 0, 0, 3, '', ('SAFETY',), {0: 'UNKNOWN', 1: 'INACTIVE', 2: 'ACTIVE', 3: 'RESERVED'}, False, None, None),
         Signal('IMMOBILIZER_LOCK_REQUEST', 16, 2, 'little_endian', False, 1, 0, 0, 3, '', ('SAFETY',), {0: 'NONE', 1: 'RESERVED', 2: 'RESERVED', 3: 'LOCK'}, False, None, None),
+    ),
+    "ShutdownRequest": (
+        Signal('SHUTDOWN_REQUEST', 0, 2, 'little_endian', False, 1, 0, 0, 3, '', ('LINUX', 'CONN'), {0: 'NONE', 1: 'SHUTDOWN', 2: 'RESERVED', 3: 'RESERVED'}, False, None, None),
+        Signal('SHUTDOWN_REASON', 2, 4, 'little_endian', False, 1, 0, 0, 15, '', ('LINUX', 'CONN'), {0: 'NONE', 1: 'KEY_OFF', 2: 'LOW_VOLTAGE', 3: 'SERVICE'}, False, None, None),
+        Signal('SHUTDOWN_REQUEST_ID', 8, 4, 'little_endian', False, 1, 0, 0, 15, '', ('LINUX', 'CONN'), None, False, None, None),
+        Signal('SHUTDOWN_DEADLINE', 16, 8, 'little_endian', False, 1, 0, 0, 255, 's', ('LINUX', 'CONN'), None, False, None, None),
+    ),
+    "ShutdownAck": (
+        Signal('SHUTDOWN_ACK_STATE', 0, 2, 'little_endian', False, 1, 0, 0, 3, '', ('RT_CORE',), {0: 'NONE', 1: 'HALTING', 2: 'READY_TO_CUT', 3: 'RESERVED'}, False, None, None),
+        Signal('SHUTDOWN_ACK_ID', 8, 4, 'little_endian', False, 1, 0, 0, 15, '', ('RT_CORE',), None, False, None, None),
     ),
 }
